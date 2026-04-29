@@ -55,15 +55,30 @@
     --ff-sans:  'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
     /* Fluid type scale — clamp(min, preferred, max) */
-    --fs-display:  clamp(3rem,   9vw,  7.5rem);   /* huge serif (manifeste, cta) */
-    --fs-h1:       clamp(2.5rem, 8vw,  6rem);
-    --fs-h2:       clamp(2rem,   6vw,  4.5rem);
-    --fs-h3:       clamp(1.5rem, 3.5vw, 2.25rem);
-    --fs-lede:     clamp(1.125rem, 1.6vw, 1.5rem);
-    --fs-body:     clamp(1rem,   1.15vw, 1.125rem);
-    --fs-small:    clamp(0.875rem, 1vw, 1rem);
-    --fs-xs:       0.75rem;
-    --fs-typewriter: clamp(1.5rem, 4.5vw, 3rem);
+    --fs-display:    clamp(3rem,     9vw,   7.5rem);    /* manifeste statement */
+    --fs-h1:         clamp(2.5rem,   8vw,   6rem);      /* hero question, promesse title */
+    --fs-h2:         clamp(2rem,     6vw,   4.5rem);    /* manifeste, testimonial, cta */
+    --fs-h3:         clamp(1.5rem,   3.5vw, 2.25rem);   /* value cards, manifeste numbers */
+    --fs-prose:      clamp(1.25rem,  2.2vw, 1.75rem);   /* origin long-form serif */
+    --fs-lede:       clamp(1.125rem, 1.6vw, 1.5rem);    /* sub-headings, ledes, objections q */
+    --fs-body:       clamp(1rem,     1.15vw, 1.125rem); /* body text */
+    --fs-small:      clamp(0.875rem, 1vw,   1rem);      /* captions, footer */
+    --fs-xs:         0.75rem;                            /* eyebrow / micro-labels */
+    --fs-typewriter: clamp(1.5rem,   4.5vw, 3rem);      /* hero 6 typed lines */
+
+    /* Type rhythm — harmonised line-heights */
+    --lh-display:    1.0;
+    --lh-tight:      1.05;     /* h1, h2, display headlines */
+    --lh-snug:       1.15;     /* italic quotes, hero typewriter */
+    --lh-medium:     1.4;      /* sub-headings, ledes, prose */
+    --lh-body:       1.55;     /* body text */
+    --lh-loose:      1.7;      /* multi-line contact info */
+
+    /* Letter-spacing — tightens proportional to size */
+    --ls-display:    -0.025em;
+    --ls-h1:         -0.02em;
+    --ls-h2:         -0.015em;  /* h2 + h3 share this */
+    --ls-eyebrow:    0.18em;
 
     /* Spacing — fluid */
     --pad-x:       clamp(1.5rem, 5vw, 8rem);
@@ -121,7 +136,7 @@
   body {
     font-family: var(--ff-sans);
     font-size: var(--fs-body);
-    line-height: 1.55;
+    line-height: var(--lh-body);
     color: var(--c-fg);
     background: var(--c-bg);
     -webkit-font-smoothing: antialiased;
@@ -237,8 +252,8 @@
   .hero__lines {
     font-family: var(--ff-serif);
     font-size: var(--fs-typewriter);
-    line-height: 1.18;
-    letter-spacing: -0.01em;
+    line-height: var(--lh-snug);
+    letter-spacing: var(--ls-h2);
     max-width: 28ch;
     margin-bottom: 0;
   }
@@ -253,8 +268,8 @@
   .hero__question {
     font-family: var(--ff-serif);
     font-size: var(--fs-h1);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-h1);
     font-weight: 400;
     font-style: italic;
     text-align: center;
@@ -342,8 +357,8 @@
   .promesse__title {
     font-family: var(--ff-serif);
     font-size: var(--fs-h1);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-h1);
     font-weight: 400;
     margin-bottom: var(--gap-sm);
     max-width: 14ch;
@@ -351,7 +366,7 @@
 
   .promesse__subtitle {
     font-size: var(--fs-lede);
-    line-height: 1.55;
+    line-height: var(--lh-body);
     color: var(--c-fg-muted);
     margin-bottom: var(--gap-sm);
     max-width: 32ch;
@@ -362,7 +377,7 @@
 
   .promesse__lede {
     font-size: var(--fs-lede);
-    line-height: 1.55;
+    line-height: var(--lh-body);
     max-width: 50ch;
     margin-bottom: var(--gap-md);
   }
@@ -396,8 +411,8 @@
   .proof__logo {
     font-family: var(--ff-sans);
     font-weight: 700;
-    font-size: clamp(1rem, 1.6vw, 1.25rem);
-    letter-spacing: 0.18em;
+    font-size: var(--fs-small);
+    letter-spacing: var(--ls-eyebrow);
     text-transform: uppercase;
     text-align: center;
     padding: 1.5rem 0.5rem;
@@ -415,6 +430,7 @@
 
   .proof__caption {
     font-size: var(--fs-lede);
+    line-height: var(--lh-body);
     color: var(--c-fg-muted);
     text-align: center;
     max-width: 50ch;
@@ -424,9 +440,9 @@
   /* ════════ SECTION 4 — ORIGIN STORY ════════ */
   .origin__line {
     font-family: var(--ff-serif);
-    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
-    line-height: 1.45;
-    letter-spacing: -0.005em;
+    font-size: var(--fs-prose);
+    line-height: var(--lh-medium);
+    letter-spacing: 0;
   }
   .origin__line + .origin__line {
     margin-top: var(--gap-md);
@@ -451,8 +467,8 @@
   .manifeste__title {
     font-family: var(--ff-serif);
     font-size: var(--fs-h2);
-    line-height: 1.05;
-    letter-spacing: -0.015em;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-h2);
     font-weight: 400;
     margin-bottom: var(--gap-md);
     max-width: 18ch;
@@ -472,17 +488,17 @@
 
   .manifeste__num {
     font-family: var(--ff-serif);
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: var(--fs-h3);
     color: var(--c-accent);
-    line-height: 1;
+    line-height: var(--lh-display);
     min-width: 2.5ch;
   }
 
   .manifeste__statement {
     font-family: var(--ff-serif);
     font-size: var(--fs-display);
-    line-height: 1.05;
-    letter-spacing: -0.025em;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-display);
     font-weight: 400;
     max-width: 22ch;
   }
@@ -490,6 +506,7 @@
   .manifeste__outro {
     margin-top: var(--gap-md);
     font-size: var(--fs-lede);
+    line-height: var(--lh-body);
     color: var(--c-fg-inverse-muted);
     max-width: 50ch;
   }
@@ -528,9 +545,9 @@
   .value__title {
     font-family: var(--ff-serif);
     font-size: var(--fs-h3);
-    line-height: 1.1;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-h2);
     font-weight: 400;
-    letter-spacing: -0.015em;
     position: relative;
     padding-bottom: 0.4rem;
   }
@@ -554,20 +571,20 @@
   .value__sub {
     font-size: var(--fs-body);
     font-weight: 500;
-    line-height: 1.4;
+    line-height: var(--lh-medium);
     color: var(--c-fg);
   }
 
   .value__desc {
     font-size: var(--fs-body);
     color: var(--c-fg-muted);
-    line-height: 1.6;
+    line-height: var(--lh-body);
   }
 
   .value__case {
     font-size: var(--fs-small);
     color: var(--c-fg-muted);
-    line-height: 1.55;
+    line-height: var(--lh-body);
     margin-top: auto;
   }
   .value__case em { font-style: italic; }
@@ -621,10 +638,10 @@
   .showcase__caption {
     text-align: center;
     font-size: var(--fs-lede);
+    line-height: var(--lh-body);
     color: var(--c-fg-muted);
     max-width: 42ch;
     margin-inline: auto;
-    line-height: 1.55;
   }
 
   /* ════════ SECTION 8 — TESTIMONIAL ════════ */
@@ -641,8 +658,8 @@
     font-family: var(--ff-serif);
     font-style: italic;
     font-size: var(--fs-h2);
-    line-height: 1.15;
-    letter-spacing: -0.015em;
+    line-height: var(--lh-snug);
+    letter-spacing: var(--ls-h2);
     font-weight: 400;
     max-width: 22ch;
     margin-inline: auto;
@@ -687,14 +704,14 @@
   .objections__q {
     font-family: var(--ff-serif);
     font-style: italic;
-    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
-    line-height: 1.4;
+    font-size: var(--fs-lede);
+    line-height: var(--lh-medium);
     color: var(--c-fg-muted);
   }
 
   .objections__a {
     font-size: var(--fs-body);
-    line-height: 1.6;
+    line-height: var(--lh-body);
     color: var(--c-fg);
     position: relative;
   }
@@ -716,8 +733,8 @@
   .cta__title {
     font-family: var(--ff-serif);
     font-size: var(--fs-h2);
-    line-height: 1.1;
-    letter-spacing: -0.015em;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-h2);
     font-weight: 400;
     margin-bottom: var(--gap-md);
     max-width: 22ch;
@@ -750,8 +767,8 @@
   .cta__contact {
     margin-top: var(--gap-md);
     font-size: var(--fs-body);
+    line-height: var(--lh-loose);
     color: var(--c-fg-inverse-muted);
-    line-height: 1.7;
   }
   .cta__email,
   .cta__phone {
