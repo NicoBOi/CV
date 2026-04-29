@@ -219,18 +219,21 @@
     display: grid;
     place-items: center;
     position: relative;
+    background: var(--c-bg);
+    transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .hero__lines,
-  .hero__question {
+  /* Cinematic black-out cut between the 6 lines and the final title */
+  .hero.is-blackout {
+    background: #000;
+  }
+
+  .hero__lines {
     font-family: var(--ff-serif);
     font-size: var(--fs-typewriter);
     line-height: 1.18;
     letter-spacing: -0.01em;
     max-width: 28ch;
-  }
-
-  .hero__lines {
     margin-bottom: 0;
   }
 
@@ -239,9 +242,18 @@
     display: block;
   }
 
+  /* Final question — treated as the page's visual h1
+     (same scale and weight as Section 2 title), perfectly centered */
   .hero__question {
-    margin-top: 1.5rem;
+    font-family: var(--ff-serif);
+    font-size: var(--fs-h1);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-weight: 400;
     font-style: italic;
+    text-align: center;
+    max-width: 18ch;
+    margin: 0 auto;
   }
 
   /* When JS is enabled, lines are typed letter-by-letter */
@@ -275,12 +287,6 @@
   @keyframes cursor-blink {
     0%, 49.99% { opacity: 1; }
     50%, 100%  { opacity: 0; }
-  }
-
-  /* The fade-out moment between line-6 and the question */
-  .hero__lines.is-clearing {
-    transition: opacity var(--dur-fast) var(--ease);
-    opacity: 0;
   }
 
   /* Reduced-motion: hide the 6 lines, show only the question */

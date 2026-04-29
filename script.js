@@ -3,10 +3,12 @@
    Vanilla ES module. Zero dependencies. Designed for < 5 KB gzipped.
    ════════════════════════════════════════════════════════════════════ */
 
-const TYPING_SPEED  = 35;    // ms per character
-const LINE_GAP      = 600;   // ms between lines
-const FINAL_PAUSE   = 1500;  // ms before screen clears
-const CLEAR_FADE    = 400;   // ms for fade-out of the 6 lines
+/* Hero typewriter — accelerating cadence per line, fast final.
+   Speeds and gaps shrink as the 6 lines progress (start slow, end snappy). */
+const HERO_SPEEDS    = [60, 50, 42, 34, 26, 20]; // ms per char, line by line
+const HERO_GAPS      = [600, 500, 400, 320, 240, 200]; // ms after each line; last = pause before blackout
+const HERO_BLACKOUT  = 800;  // ms of pure black between the 6 lines and the final title
+const HERO_FINAL     = 15;   // ms per char for the final question
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -103,7 +105,7 @@ const buildCursor = () => {
   return c;
 };
 
-const typeInto = async (el, text) => {
+const typeInto = async (el, text, speed) => {
   /* Replace original textContent with empty span + cursor */
   const typed = document.createElement('span');
   typed.className = 'typed-text';
@@ -116,7 +118,7 @@ const typeInto = async (el, text) => {
 
   for (const char of text) {
     typed.appendChild(document.createTextNode(char));
-    await sleep(TYPING_SPEED);
+    await sleep(speed);
   }
 
   el.classList.remove('is-typing');
@@ -135,31 +137,36 @@ const runHeroTypewriter = async () => {
   heroLines.forEach((el) => { el.textContent = ''; });
   heroQuestion.textContent = '';
 
-  /* Type each line in sequence */
+  const hero = document.querySelector('.hero');
+
+  /* Type each line in sequence — speed and gap accelerate as we descend */
   for (let i = 0; i < heroLines.length; i++) {
-    await typeInto(heroLines[i], lineTexts[i]);
+    await typeInto(heroLines[i], lineTexts[i], HERO_SPEEDS[i]);
     if (i < heroLines.length - 1) {
       /* Move cursor to start of next line for visual continuity */
       const nextLine = heroLines[i + 1];
       nextLine.style.visibility = 'visible';
       nextLine.appendChild(buildCursor());
-      await sleep(LINE_GAP);
-      /* Remove the placeholder cursor from next line — typeInto adds its own */
+      await sleep(HERO_GAPS[i]);
       const placeholder = nextLine.querySelector('.typed-cursor');
       if (placeholder) placeholder.remove();
     }
   }
 
-  /* Hold the screen on "Un stratège." for the dramatic pause */
-  await sleep(FINAL_PAUSE);
+  /* Brief breath after the last line, then a hard cut to black */
+  await sleep(HERO_GAPS[HERO_GAPS.length - 1]);
 
-  /* Fade out the 6 lines */
-  heroList.classList.add('is-clearing');
-  await sleep(CLEAR_FADE);
+  if (hero) hero.classList.add('is-blackout');
+  await sleep(HERO_BLACKOUT);
+
+  /* Drop the 6 lines from layout and lift the blackout in the same frame
+     so the final question can appear, perfectly centered, against the
+     hero returning to its background colour. */
   heroList.style.display = 'none';
+  if (hero) hero.classList.remove('is-blackout');
 
-  /* Type the final question */
-  await typeInto(heroQuestion, questionText);
+  /* Type the final question — fast, centered, treated as the page's visual h1 */
+  await typeInto(heroQuestion, questionText, HERO_FINAL);
 
   /* Persist a blinking cursor at the end of the question forever */
   heroQuestion.appendChild(buildCursor());
