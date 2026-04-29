@@ -625,10 +625,35 @@
     color: var(--c-fg);
   }
 
-  .value__desc {
-    font-size: var(--fs-body);
-    color: var(--c-fg-muted);
-    line-height: var(--lh-body);
+  /* Skills pills — discreet inline labels under the description */
+  .value__skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border: 1px solid var(--c-fg-faint);
+    border-radius: 100px;
+    background: transparent;
+    font-family: var(--ff-sans);
+    font-size: 0.8125rem;        /* 13px */
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--c-fg);
+    white-space: nowrap;
+    transition:
+      background-color var(--dur-tap) var(--ease),
+      color var(--dur-tap) var(--ease),
+      border-color var(--dur-tap) var(--ease);
+  }
+  .pill:hover {
+    background: var(--c-accent);
+    color: var(--c-fg-inverse);
+    border-color: var(--c-accent);
   }
 
   .value__case {
