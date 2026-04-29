@@ -183,21 +183,26 @@
 /* ──────────────────────────────────────────────────────────────────── */
 @layer components {
 
-  /* ════════ FADE-IN (Intersection Observer) ════════ */
+  /* ════════ FADE-IN (Intersection Observer) — Apple-like reveal ════════
+     opacity 0 → 1, translateY(40 → 0), scale(0.98 → 1), blur(8 → 0)
+     1000ms · cubic-bezier(0.22, 1, 0.36, 1) · 100ms cascade per index */
   .fade-in {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(40px) scale(0.98);
+    filter: blur(8px);
     transition:
-      opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
-    transition-delay: calc(var(--stagger, 0) * 120ms);
-    will-change: opacity, transform;
+      opacity 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--stagger, 0) * 100ms);
+    will-change: opacity, transform, filter;
   }
   .fade-in.is-visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0);
   }
-  /* Once revealed, free up GPU layer */
+  /* Once revealed, free up GPU layers (compositor + filter) */
   .fade-in.is-visible {
     will-change: auto;
   }
@@ -207,6 +212,7 @@
     .fade-in {
       opacity: 1;
       transform: none;
+      filter: none;
       transition: none;
       will-change: auto;
     }
@@ -430,10 +436,6 @@
     color: var(--c-fg);
   }
 
-  /* On origin section, fades are slower for narrative pace */
-  .origin .fade-in {
-    transition-duration: 1200ms;
-  }
 
   /* ════════ SECTION 5 — MANIFESTE (inverse) ════════ */
   .manifeste {

@@ -34,13 +34,13 @@ if (reducedMotion.matches) {
       for (const entry of entries) {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
+          /* unobserve = element stays visible on scroll-up, no re-animation */
           io.unobserve(entry.target);
         }
       }
     },
     {
-      rootMargin: '0px 0px -10% 0px',
-      threshold: 0.1,
+      threshold: 0.15,
     }
   );
   fadeTargets.forEach((el) => io.observe(el));
