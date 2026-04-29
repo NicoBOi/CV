@@ -93,6 +93,31 @@ if (videos.length) {
   }
 }
 
+/* ─── Theme switcher ──────────────────────────────────────────────────
+   <body data-theme> follows whichever section / footer is crossing the
+   centre of the viewport (rootMargin -45% top, -45% bottom = a 10% band
+   in the middle). CSS handles the smooth bg + text colour transition.
+   Reduced-motion users skip the swap; CSS hard-pins dark sections instead. */
+if (!reducedMotion.matches) {
+  const themedTargets = document.querySelectorAll('main section, body > footer');
+  if (themedTargets.length) {
+    const themeIO = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            document.body.dataset.theme = entry.target.dataset.theme || 'light';
+          }
+        }
+      },
+      {
+        rootMargin: '-45% 0px -45% 0px',
+        threshold: 0,
+      }
+    );
+    themedTargets.forEach((el) => themeIO.observe(el));
+  }
+}
+
 /* ─── Hero typewriter ─────────────────────────────────────────────── */
 const heroLines    = document.querySelectorAll('[data-typewriter] .hero__line');
 const heroQuestion = document.querySelector('[data-typewriter-final]');

@@ -40,15 +40,16 @@
 /* ──────────────────────────────────────────────────────────────────── */
 @layer tokens {
   :root {
-    /* Color — pure black on pure white, single accent */
+    /* Theme-aware tokens — flipped via body[data-theme="dark"] below.
+       Default = light. */
     --c-bg:           #FFFFFF;
     --c-fg:           #000000;
     --c-fg-muted:     #595959;          /* 7.07:1 on white — AAA */
-    --c-fg-faint:     #BFBFBF;          /* decorative borders only, never text */
-    --c-accent:       #C8501E;          /* 4.84:1 on white — AA, used for icons + bg */
-    --c-bg-inverse:   #000000;
-    --c-fg-inverse:   #FFFFFF;
-    --c-fg-inverse-muted: #B0B0B0;      /* 9.55:1 on black — AAA */
+    --c-fg-faint:     #BFBFBF;          /* decorative borders only */
+
+    /* Brand-locked — constant across themes */
+    --c-accent:       #C8501E;          /* terracotta */
+    --c-on-accent:    #FFFFFF;          /* text on orange — always white */
 
     /* Type families */
     --ff-serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
@@ -95,6 +96,18 @@
     --dur:          800ms;
     --dur-fast:     400ms;
     --dur-tap:      180ms;
+    --dur-theme:    600ms;
+  }
+
+  /* Dark theme — set by JS on <body> when a section[data-theme="dark"]
+     crosses the centre of the viewport. Tokens flip; everything that
+     uses canonical vars (--c-bg / --c-fg / --c-fg-muted / --c-fg-faint)
+     re-cascades automatically. */
+  body[data-theme="dark"] {
+    --c-bg:         #000000;
+    --c-fg:         #FFFFFF;
+    --c-fg-muted:   #B0B0B0;          /* 9.55:1 on black — AAA */
+    --c-fg-faint:   #404040;          /* decorative borders on dark */
   }
 }
 
@@ -126,7 +139,7 @@
 
   button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 
-  ::selection { background: var(--c-accent); color: var(--c-fg-inverse); }
+  ::selection { background: var(--c-accent); color: var(--c-on-accent); }
 }
 
 /* ──────────────────────────────────────────────────────────────────── */
@@ -143,6 +156,12 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
+    transition:
+      background-color var(--dur-theme) cubic-bezier(0.22, 1, 0.36, 1),
+      color var(--dur-theme) cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body { transition: none; }
   }
 
   :focus-visible {
@@ -184,13 +203,20 @@
   .section {
     padding-block: var(--gap-section);
   }
+  /* Sections are transparent — body owns the theme.
+     Sections marked [data-theme="dark"] tell the JS observer to switch
+     <body> to dark mode when they cross the centre of the viewport;
+     bg + text colours then animate on body via the canonical tokens.
 
-  /* Inverted (black) sections */
-  .section--inverse {
-    background: var(--c-bg-inverse);
-    color: var(--c-fg-inverse);
+     No-JS fallback: if the typewriter / theme-observer module never runs
+     (the .js class is added by script.js), dark-marked sections still
+     need to look dark. Hard-pin their colours. */
+  html:not(.js) [data-theme="dark"] {
+    background: #000000;
+    color: #FFFFFF;
+    --c-fg-muted: #B0B0B0;
+    --c-fg-faint: #404040;
   }
-  .section--inverse ::selection { background: var(--c-accent); color: var(--c-fg-inverse); }
 }
 
 /* ──────────────────────────────────────────────────────────────────── */
@@ -231,6 +257,14 @@
       transition: none;
       will-change: auto;
     }
+    /* Theme observer is disabled in reduced-motion (script.js).
+       Hard-pin dark-marked sections so they still read as designed. */
+    [data-theme="dark"] {
+      background: #000000;
+      color: #FFFFFF;
+      --c-fg-muted: #B0B0B0;
+      --c-fg-faint: #404040;
+    }
   }
 
   /* ════════ SECTION 1 — HERO ════════ */
@@ -240,11 +274,11 @@
     display: grid;
     place-items: center;
     position: relative;
-    background: var(--c-bg);
     transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Cinematic black-out cut between the 6 lines and the final title */
+  /* Cinematic black-out cut between the 6 lines and the final title.
+     Overrides the body's transparent show-through with a hard black stage. */
   .hero.is-blackout {
     background: #000;
   }
@@ -557,7 +591,7 @@
     margin-top: var(--gap-md);
     font-size: var(--fs-lede);
     line-height: var(--lh-body);
-    color: var(--c-fg-inverse-muted);
+    color: var(--c-fg-muted);
     max-width: 50ch;
   }
 
@@ -652,7 +686,7 @@
   }
   .pill:hover {
     background: var(--c-accent);
-    color: var(--c-fg-inverse);
+    color: var(--c-on-accent);
     border-color: var(--c-accent);
   }
 
@@ -823,7 +857,7 @@
     padding: clamp(1rem, 1.6vw, 1.25rem) clamp(2rem, 3vw, 2.75rem);
     min-height: 56px;
     background: var(--c-accent);
-    color: var(--c-fg-inverse);
+    color: var(--c-on-accent);
     font-family: var(--ff-sans);
     /* min 24px keeps white-on-#C8501E (4.56:1) within WCAG AAA "large text" */
     font-size: clamp(1.5rem, 1.6vw, 1.625rem);
@@ -843,12 +877,12 @@
     margin-top: var(--gap-md);
     font-size: var(--fs-body);
     line-height: var(--lh-loose);
-    color: var(--c-fg-inverse-muted);
+    color: var(--c-fg-muted);
   }
   .cta__email,
   .cta__phone {
-    color: var(--c-fg-inverse);
-    border-bottom: 1px solid var(--c-fg-inverse-muted);
+    color: var(--c-fg);
+    border-bottom: 1px solid var(--c-fg-muted);
     padding-bottom: 1px;
     transition: color var(--dur-tap) var(--ease), border-color var(--dur-tap) var(--ease);
   }
@@ -858,20 +892,20 @@
     border-color: var(--c-accent);
   }
 
-  /* ════════ FOOTER ════════ */
+  /* ════════ FOOTER ════════
+     Marked data-theme="dark" so body flips dark when footer is in view;
+     bg + text colours then come from the canonical theme tokens. */
   .footer {
-    background: var(--c-bg-inverse);
-    color: var(--c-fg-inverse-muted);
     padding-block: clamp(1.5rem, 3vw, 2.5rem);
-    border-top: 1px solid rgb(255 255 255 / 0.08);
+    border-top: 1px solid var(--c-fg-faint);
   }
   .footer__line {
     font-size: var(--fs-small);
     text-align: center;
-    color: var(--c-fg-inverse-muted);
+    color: var(--c-fg-muted);
   }
   .footer a {
-    color: var(--c-fg-inverse);
+    color: var(--c-fg);
     border-bottom: 1px solid transparent;
     transition: border-color var(--dur-tap) var(--ease), color var(--dur-tap) var(--ease);
   }
