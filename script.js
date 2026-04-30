@@ -87,7 +87,7 @@
     scrollTrigger: {
       trigger: scene,
       start: 'top top',
-      end: '+=120%',
+      end: '+=70%',           // pin réduit (220dvh → 170dvh)
       pin: true,
       scrub: 0.8,
       invalidateOnRefresh: true,
@@ -174,20 +174,20 @@
     const iris = scene.querySelector('.scene-transition__iris');
     if (!iris) return;
 
+    // Centrage GSAP : préserve la translate pendant l'anim de scale.
+    gsap.set(iris, { xPercent: -50, yPercent: -50, scale: 0 });
+
     gsap.timeline({
       scrollTrigger: {
         trigger: scene,
         start: 'top top',
-        end: '+=100%',
+        end: '+=50%',          // pin réduit (200dvh → 150dvh par transition)
         pin: true,
-        scrub: 0.6,
+        scrub: 0.4,
         invalidateOnRefresh: true,
       },
     })
-      .fromTo(iris,
-        { scale: 0 },
-        { scale: 1, ease: eases.iris }
-      );
+      .to(iris, { scale: 1, ease: eases.iris });
   });
 })();
 
