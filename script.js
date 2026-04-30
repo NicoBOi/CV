@@ -70,7 +70,6 @@
 
   const stage = scene.querySelector('.scene-hero__stage');
   const words = scene.querySelectorAll('.scene-hero__word');
-  const name  = scene.querySelector('.scene-hero__name');
 
   /* 1) Entrée : on cache d'abord (CSS visible par défaut → fallback no-JS),
         puis stagger révélé un par un, ordre aléatoire. */
@@ -82,8 +81,8 @@
       stagger: { each: 0.16, from: 'random' },
     });
 
-  /* 2) Convergence : pin de la scène, scroll → mots vers centre, "sempere" émerge.
-        Function-based values + invalidateOnRefresh : robuste au resize. */
+  /* 2) Convergence scrubbed : pin de la scène, scroll → mots vers centre.
+        fromTo explicite pour garantir réversibilité (scroll up = restauration). */
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: scene,
@@ -96,30 +95,25 @@
   });
 
   words.forEach((w) => {
-    tl.to(w, {
-      // Delta vers le centre du stage, recalculé à chaque refresh
-      x: () => {
-        const s = stage.getBoundingClientRect();
-        const r = w.getBoundingClientRect();
-        return (s.left + s.width / 2) - (r.left + r.width / 2);
+    tl.fromTo(w,
+      { x: 0, y: 0, scale: 1, opacity: 1 },
+      {
+        x: () => {
+          const s = stage.getBoundingClientRect();
+          const r = w.getBoundingClientRect();
+          return (s.left + s.width / 2) - (r.left + r.width / 2);
+        },
+        y: () => {
+          const s = stage.getBoundingClientRect();
+          const r = w.getBoundingClientRect();
+          return (s.top + s.height / 2) - (r.top + r.height / 2);
+        },
+        scale: 0.35,
+        opacity: 0,
+        ease: eases.cinematic,
       },
-      y: () => {
-        const s = stage.getBoundingClientRect();
-        const r = w.getBoundingClientRect();
-        return (s.top + s.height / 2) - (r.top + r.height / 2);
-      },
-      scale: 0.35,
-      opacity: 0,
-      ease: eases.cinematic,
-    }, 0);
+    0);
   });
-
-  // "sempere" se révèle pendant la 2e moitié de la convergence
-  tl.to(name, {
-    opacity: 1,
-    scale: 1,
-    ease: eases.cinematic,
-  }, 0.4);
 })();
 
 /* ──────────────────────────────────────────────
@@ -147,10 +141,15 @@
   gsap.set(bottom, { yPercent:  200, opacity: 0 });
   gsap.set([marker, cap], { opacity: 0, y: 20 });
 
-  // Entrée orchestrée au passage du milieu d'écran (one-shot)
+  // Entrée orchestrée — réversible : reverse au scroll up sortant
   gsap.timeline({
     defaults: { ease: eases.cinematic },
-    scrollTrigger: { trigger: scene, start: 'top 70%', once: true },
+    scrollTrigger: {
+      trigger: scene,
+      start: 'top 70%',
+      end: 'bottom 30%',
+      toggleActions: 'play none play reverse',
+    },
   })
     .to(marker, { opacity: 1, y: 0, duration: 0.6 })
     .to(top,    { yPercent: 0, opacity: 1, duration: 1.2 }, 0.1)
@@ -295,7 +294,12 @@
 
   gsap.timeline({
     defaults: { ease: eases.cinematic, duration: 0.9 },
-    scrollTrigger: { trigger: scene, start: 'top 70%', once: true },
+    scrollTrigger: {
+      trigger: scene,
+      start: 'top 70%',
+      end: 'bottom 30%',
+      toggleActions: 'play none play reverse',
+    },
   })
     .to(lines, {
       clipPath: 'inset(0 0% 0 0)',
@@ -319,14 +323,19 @@
   if (!scene) return;
 
   scene.querySelectorAll('.scene-objections__pair').forEach((pair) => {
-    // Reveal one-shot quand la paire entre dans le viewport
+    // Reveal réversible — reverse au scroll up sortant
     gsap.timeline({
-      scrollTrigger: { trigger: pair, start: 'top 75%', once: true },
+      scrollTrigger: {
+        trigger: pair,
+        start: 'top 75%',
+        end: 'bottom 25%',
+        toggleActions: 'play none play reverse',
+      },
       defaults: { ease: eases.cinematic },
     })
       .to(pair, { opacity: 1, y: 0, duration: 0.8 });
 
-    // Tracé de flèche : scrubbed sur la traversée verticale
+    // Tracé de flèche : scrubbed (déjà réversible par nature)
     const path = pair.querySelector('.scene-objections__arrow path');
     if (path) {
       gsap.fromTo(path,
