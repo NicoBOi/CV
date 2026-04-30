@@ -78,7 +78,9 @@
   const words = scene.querySelectorAll('.scene-hero__word');
   const name  = scene.querySelector('.scene-hero__name');
 
-  /* 1) Entrée : un par un, ordre aléatoire, pas tous d'un coup */
+  /* 1) Entrée : on cache d'abord (CSS visible par défaut → fallback no-JS),
+        puis stagger révélé un par un, ordre aléatoire. */
+  gsap.set(words, { opacity: 0 });
   gsap.timeline({ defaults: { ease: eases.cinematic } })
     .to(words, {
       opacity: 1,

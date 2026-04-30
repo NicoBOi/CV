@@ -134,6 +134,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   scroll-behavior: auto !important;
 }
 
+/* Reduced-motion : pas de convergence → masque le mot final. Mots visibles statiques. */
+.reduced-motion .scene-hero__name { display: none; }
+
 /* ──────────────────────────────────────────────
    SCÈNE 1 — HERO
    6 mots éparpillés → convergence "sempere"
@@ -159,7 +162,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   line-height: var(--lh-tight);
   letter-spacing: var(--tr-tight);
   color: var(--fg);
-  opacity: 0;                /* Pilote JS : entrée staggered */
+  /* Visible par défaut. JS pose opacity:0 avant stagger.
+     Sans JS / reduced-motion → mots affichés statiquement. */
   white-space: nowrap;
   will-change: transform, opacity;
   transform: translate3d(0, 0, 0);
