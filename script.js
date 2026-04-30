@@ -196,3 +196,57 @@
       { scale: 1, ease: eases.iris }
     );
 })();
+
+/* ──────────────────────────────────────────────
+   SCÈNE 5 — MANIFESTE
+   Pin × 3 vues, blur out / sharp in entre 3 phrases,
+   indicator "01—02—03" pulse en terracotta sur l'actif.
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cine = window.__cinematic;
+  if (!cine || cine.reduced) return;
+
+  const { gsap, eases } = cine;
+  const scene = document.querySelector('.scene-manifesto');
+  if (!scene) return;
+
+  const phrases = scene.querySelectorAll('.scene-manifesto__phrase');
+  const dots    = scene.querySelectorAll('.scene-manifesto__dot');
+  if (phrases.length !== 3) return;
+
+  // Initial : phrases 1 et 2 floues + invisibles, phrase 0 nette + visible
+  gsap.set(phrases, { autoAlpha: 0, filter: 'blur(20px)' });
+  gsap.set(phrases[0], { autoAlpha: 1, filter: 'blur(0px)' });
+  dots[0].classList.add('is-active');
+
+  const tl = gsap.timeline({
+    defaults: { ease: eases.cinematic, duration: 1 },
+    scrollTrigger: {
+      trigger: scene,
+      start: 'top top',
+      end: '+=300%',                  // 3 vues de scroll
+      pin: true,
+      scrub: 0.5,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        // Indicator : 0..0.33 → step 0, 0.33..0.66 → 1, 0.66..1 → 2
+        const idx = Math.min(2, Math.floor(self.progress * 3));
+        dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+      },
+    },
+  });
+
+  // Phase 0 → 1
+  tl.to(phrases[0], { autoAlpha: 0, filter: 'blur(20px)' })
+    .to(phrases[1], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
+
+  // Pause de lecture (timeline avance, phrases stables)
+  tl.to({}, { duration: 0.5 });
+
+  // Phase 1 → 2
+  tl.to(phrases[1], { autoAlpha: 0, filter: 'blur(20px)' })
+    .to(phrases[2], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
+})();

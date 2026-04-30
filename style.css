@@ -276,3 +276,83 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* Reduced-motion : pas d'iris, fond sombre direct */
 .reduced-motion .scene-transition { background: var(--color-coal); }
 .reduced-motion .scene-transition__iris { display: none; }
+
+/* ──────────────────────────────────────────────
+   SCÈNE 5 — MANIFESTE
+   3 phrases empilées, blur out / sharp in, pin x3 vues
+   ────────────────────────────────────────────── */
+
+.scene-manifesto {
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr;
+  padding: var(--sp-5) var(--sp-4);
+  align-items: center;
+}
+
+.scene-manifesto__marker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  align-self: start;
+}
+
+.scene-manifesto__stage {
+  position: relative;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  min-height: 50dvh;
+}
+
+.scene-manifesto__phrase {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  max-width: min(90vw, 22ch);
+  height: max-content;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: var(--fs-4xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+  text-align: center;
+  /* JS pose l'état initial. Sans JS → toutes visibles empilées. */
+  will-change: opacity, filter;
+}
+
+.scene-manifesto__progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.18em;
+  color: var(--fg-muted);
+  align-self: end;
+}
+
+.scene-manifesto__dot {
+  transition: color var(--t-fast) var(--ease-snap);
+}
+.scene-manifesto__dot.is-active {
+  color: var(--accent);
+}
+
+/* Reduced-motion : phrases empilées en flux, lisibles sans pin */
+.reduced-motion .scene-manifesto__stage {
+  display: block;
+  min-height: auto;
+}
+.reduced-motion .scene-manifesto__phrase {
+  position: static;
+  margin: var(--sp-4) auto;
+  filter: none !important;
+  opacity: 1 !important;
+}
+.reduced-motion .scene-manifesto__progress { display: none; }
