@@ -195,3 +195,84 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   pointer-events: none;
   will-change: transform, opacity;
 }
+
+/* ──────────────────────────────────────────────
+   SCÈNE 3 — IDENTITÉ
+   Page de titre : marker, nom massif 2 lignes, légende
+   ────────────────────────────────────────────── */
+
+.scene-identity {
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr;
+  align-items: center;
+  padding: var(--sp-5) var(--sp-4);
+}
+
+.scene-identity__marker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  align-self: start;
+  will-change: transform, opacity;
+}
+
+.scene-identity__name {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-6xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  text-align: center;
+  color: var(--fg);
+}
+
+.scene-identity__row {
+  display: block;
+  will-change: transform, opacity;
+}
+
+.scene-identity__caption {
+  margin: 0;
+  margin-inline: auto;
+  align-self: end;
+  text-align: center;
+  font-size: var(--fs-base);
+  color: var(--fg-muted);
+  letter-spacing: var(--tr-loose);
+  max-width: 50ch;
+  will-change: transform, opacity;
+}
+
+/* ──────────────────────────────────────────────
+   SCÈNE 4 — TRANSITION SOMBRE
+   Iris circulaire qui grandit au scroll, scrub + pin
+   ────────────────────────────────────────────── */
+
+.scene-transition {
+  background: var(--color-cream);
+  position: relative;
+}
+
+.scene-transition__iris {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150vmax;
+  height: 150vmax;
+  background: var(--color-coal);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* Reduced-motion : pas d'iris, fond sombre direct */
+.reduced-motion .scene-transition { background: var(--color-coal); }
+.reduced-motion .scene-transition__iris { display: none; }

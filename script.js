@@ -127,3 +127,72 @@
     ease: eases.cinematic,
   }, 0.4);
 })();
+
+/* ──────────────────────────────────────────────
+   SCÈNE 3 — IDENTITÉ
+   "Nicolas" descend, "Sempere" monte, rendezvous au centre
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cine = window.__cinematic;
+  if (!cine || cine.reduced) return;
+
+  const { gsap, eases } = cine;
+  const scene = document.querySelector('.scene-identity');
+  if (!scene) return;
+
+  const top    = scene.querySelector('.scene-identity__row--top');
+  const bottom = scene.querySelector('.scene-identity__row--bottom');
+  const marker = scene.querySelector('.scene-identity__marker');
+  const cap    = scene.querySelector('.scene-identity__caption');
+
+  // État initial : nom hors-champ (haut + bas), marker/légende fade
+  gsap.set(top,    { yPercent: -200, opacity: 0 });
+  gsap.set(bottom, { yPercent:  200, opacity: 0 });
+  gsap.set([marker, cap], { opacity: 0, y: 20 });
+
+  // Entrée orchestrée au passage du milieu d'écran (one-shot)
+  gsap.timeline({
+    defaults: { ease: eases.cinematic },
+    scrollTrigger: { trigger: scene, start: 'top 70%', once: true },
+  })
+    .to(marker, { opacity: 1, y: 0, duration: 0.6 })
+    .to(top,    { yPercent: 0, opacity: 1, duration: 1.2 }, 0.1)
+    .to(bottom, { yPercent: 0, opacity: 1, duration: 1.2 }, 0.1)
+    .to(cap,    { opacity: 1, y: 0, duration: 0.6 }, 0.6);
+})();
+
+/* ──────────────────────────────────────────────
+   SCÈNE 4 — TRANSITION SOMBRE
+   Iris circulaire scrubbed pendant le pin de la scène
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cine = window.__cinematic;
+  if (!cine || cine.reduced) return;
+
+  const { gsap, eases } = cine;
+  const scene = document.querySelector('.scene-transition');
+  if (!scene) return;
+
+  const iris = scene.querySelector('.scene-transition__iris');
+
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: scene,
+      start: 'top top',
+      end: '+=100%',
+      pin: true,
+      scrub: 0.6,
+      invalidateOnRefresh: true,
+    },
+  })
+    .fromTo(iris,
+      { scale: 0 },
+      { scale: 1, ease: eases.iris }
+    );
+})();
