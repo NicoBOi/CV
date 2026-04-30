@@ -144,7 +144,8 @@ body::before {
 [data-scene] {
   position: relative;
   display: grid;
-  overflow: clip;
+  /* overflow visible par défaut : laisse les descenders (g, p, q) respirer.
+     Les transitions iris ayant été retirées, plus besoin de clipper. */
 }
 
 /* Mode self-scoped : chaque scène applique sa palette via data-mode.

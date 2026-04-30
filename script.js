@@ -83,32 +83,48 @@
     });
 
   /* 2) Convergence scrubbed : pin de la scène, scroll → mots vers centre.
-        fromTo explicite pour garantir réversibilité (scroll up = restauration). */
+        Positions cibles cachées (recalculées sur load + resize + ScrollTrigger.refresh)
+        pour éviter le bug "premier mot bloqué" causé par getBoundingClientRect prématuré. */
+  const positions = new Array(words.length);
+  const refreshPositions = () => {
+    const sr = stage.getBoundingClientRect();
+    const cx = sr.left + sr.width / 2;
+    const cy = sr.top + sr.height / 2;
+    words.forEach((w, i) => {
+      const r = w.getBoundingClientRect();
+      positions[i] = {
+        x: cx - (r.left + r.width / 2),
+        y: cy - (r.top + r.height / 2),
+      };
+    });
+  };
+
+  // Première mesure quand le layout est stable
+  if (document.readyState === 'complete') {
+    refreshPositions();
+  } else {
+    window.addEventListener('load', refreshPositions, { once: true });
+  }
+  window.addEventListener('resize', refreshPositions);
+
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: scene,
       start: 'top top',
-      end: '+=70%',           // pin réduit (220dvh → 170dvh)
+      end: '+=70%',
       pin: true,
       scrub: 0.8,
       invalidateOnRefresh: true,
+      onRefresh: refreshPositions,   // recalcul aussi à chaque ScrollTrigger.refresh
     },
   });
 
-  words.forEach((w) => {
+  words.forEach((w, i) => {
     tl.fromTo(w,
       { x: 0, y: 0, scale: 1, opacity: 1 },
       {
-        x: () => {
-          const s = stage.getBoundingClientRect();
-          const r = w.getBoundingClientRect();
-          return (s.left + s.width / 2) - (r.left + r.width / 2);
-        },
-        y: () => {
-          const s = stage.getBoundingClientRect();
-          const r = w.getBoundingClientRect();
-          return (s.top + s.height / 2) - (r.top + r.height / 2);
-        },
+        x: () => positions[i] ? positions[i].x : 0,
+        y: () => positions[i] ? positions[i].y : 0,
         scale: 0.35,
         opacity: 0,
         ease: eases.cinematic,
@@ -364,33 +380,47 @@
 })();
 
 /* ──────────────────────────────────────────────
-   COMPTEUR + MODE SWAP (hard cut, sans overlay)
-   Observer unique : détecte la scène active, met à jour le compteur,
-   swap instant body data-mode → fond hérite via la transition body 400ms.
+   COMPTEUR + MODE SWAP (rAF scroll-based)
+   Détecte la scène qui contient le centre du viewport → source de vérité unique.
+   Plus robuste que IntersectionObserver pour scènes de hauteurs variables.
    ────────────────────────────────────────────── */
 
 (() => {
   'use strict';
 
   const current = document.querySelector('.scene-counter__current');
-  const scenes  = document.querySelectorAll('[data-scene][data-scene-num]');
-  if (!current || !scenes.length || !('IntersectionObserver' in window)) return;
+  const scenes  = Array.from(document.querySelectorAll('[data-scene][data-scene-num]'));
+  if (!current || !scenes.length) return;
 
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting && e.intersectionRatio > 0.45) {
-        const num = e.target.dataset.sceneNum || '01';
-        current.textContent = String(num).padStart(2, '0');
+  let raf = null;
+  let lastNum = '';
 
-        const mode = e.target.dataset.mode;
-        if (mode && document.body.dataset.mode !== mode) {
-          document.body.dataset.mode = mode;
-        }
-      }
-    });
-  }, { threshold: [0.45, 0.55] });
+  const update = () => {
+    raf = null;
+    const center = window.innerHeight / 2;
+    let active = scenes[0];
+    for (const s of scenes) {
+      const r = s.getBoundingClientRect();
+      if (r.top <= center && r.bottom >= center) { active = s; break; }
+    }
+    const num = active.dataset.sceneNum || '01';
+    if (num === lastNum) return;
+    lastNum = num;
+    current.textContent = String(num).padStart(2, '0');
+    const mode = active.dataset.mode;
+    if (mode && document.body.dataset.mode !== mode) {
+      document.body.dataset.mode = mode;
+    }
+  };
 
-  scenes.forEach((s) => obs.observe(s));
+  const onScroll = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
 })();
 
 /* ──────────────────────────────────────────────
