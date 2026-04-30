@@ -331,10 +331,9 @@
 })();
 
 /* ──────────────────────────────────────────────
-   COMPTEUR + IRIS CONTROLLER + MODE SWAP
-   Single observer : détecte la scène active, met à jour le compteur,
-   et orchestre la transition iris quand le mode change.
-   Fallback : si GSAP/iris absents, swap mode instant (rail suit quand même).
+   COMPTEUR + MODE SWAP (hard cut, sans overlay)
+   Observer unique : détecte la scène active, met à jour le compteur,
+   swap instant body data-mode → fond hérite via la transition body 400ms.
    ────────────────────────────────────────────── */
 
 (() => {
@@ -344,72 +343,16 @@
   const scenes  = document.querySelectorAll('[data-scene][data-scene-num]');
   if (!current || !scenes.length || !('IntersectionObserver' in window)) return;
 
-  const cine     = window.__cinematic;
-  const canAnim  = cine && !cine.reduced;
-  const overlay  = canAnim ? document.querySelector('.iris-overlay') : null;
-  const circle   = canAnim ? document.querySelector('.iris-overlay__circle') : null;
-  const useIris  = canAnim && overlay && circle;
-
-  if (useIris) {
-    // Centrage préservé pendant scale (GSAP pilote la transform entière)
-    cine.gsap.set(circle, { xPercent: -50, yPercent: -50, scale: 0 });
-  }
-
-  let currentMode = document.body.dataset.mode || 'dark';
-  let active      = false;
-  let pendingMode = null;
-
-  const colorFor = (mode) => getComputedStyle(document.documentElement)
-    .getPropertyValue(mode === 'dark' ? '--color-coal' : '--color-cream').trim();
-
-  const runSwap = () => {
-    if (pendingMode === null || pendingMode === currentMode) {
-      pendingMode = null;
-      return;
-    }
-    const target = pendingMode;
-    pendingMode  = null;
-    currentMode  = target;
-
-    // Pas d'iris : swap instant (reduced-motion ou libs absentes)
-    if (!useIris) {
-      document.body.dataset.mode = target;
-      return;
-    }
-
-    active = true;
-    overlay.style.setProperty('--iris-color', colorFor(target));
-    overlay.classList.add('is-active');
-
-    cine.gsap.timeline({
-      onComplete: () => {
-        overlay.classList.remove('is-active');
-        active = false;
-        runSwap();      // joue la dernière intention si l'utilisateur a scrollé pendant l'anim
-      },
-    })
-      // 1) Iris recouvre (300ms)
-      .to(circle, { scale: 1, duration: 0.3, ease: cine.eases.iris })
-      // 2) Snap body data-mode sous la couverture
-      .call(() => { document.body.dataset.mode = target; })
-      // 3) Petite tenue pour que le bg du body s'établisse
-      .to({}, { duration: 0.05 })
-      // 4) Iris se rétracte (300ms)
-      .to(circle, { scale: 0, duration: 0.3, ease: cine.eases.iris });
-  };
-
-  const setMode = (newMode) => {
-    if (!newMode || newMode === currentMode) return;
-    pendingMode = newMode;
-    if (!active) runSwap();
-  };
-
   const obs = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       if (e.isIntersecting && e.intersectionRatio > 0.45) {
         const num = e.target.dataset.sceneNum || '01';
         current.textContent = String(num).padStart(2, '0');
-        setMode(e.target.dataset.mode);
+
+        const mode = e.target.dataset.mode;
+        if (mode && document.body.dataset.mode !== mode) {
+          document.body.dataset.mode = mode;
+        }
       }
     });
   }, { threshold: [0.45, 0.55] });

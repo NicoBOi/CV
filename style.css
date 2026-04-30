@@ -72,7 +72,6 @@
 
   /* ── Z-stack ── */
   --z-skip:  999;
-  --z-iris:  800;     /* overlay de transition mode */
   --z-grain: 50;
 }
 
@@ -171,38 +170,6 @@ body::before {
 .scene--full {
   min-height: 100dvh;     /* dvh > vh, évite le jump iOS */
 }
-
-/* ──────────────────────────────────────────────
-   IRIS OVERLAY — masque circulaire global pour mode-swap
-   Hors-flow, fixed sur viewport, contrôlé par JS.
-   ────────────────────────────────────────────── */
-
-.iris-overlay {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: var(--z-iris);
-  overflow: hidden;
-  /* État neutre : invisible. JS active la transition. */
-  visibility: hidden;
-}
-.iris-overlay.is-active { visibility: visible; }
-
-.iris-overlay__circle {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 150vmax;
-  height: 150vmax;
-  border-radius: 50%;
-  background: var(--iris-color, var(--color-coal));
-  transform-origin: center;
-  /* GSAP pose xPercent/yPercent + scale ; pas de transform CSS pour éviter l'écrasement */
-  will-change: transform;
-}
-
-/* Reduced-motion : iris désactivé (mode swap instant via body data-mode) */
-.reduced-motion .iris-overlay { display: none; }
 
 /* ──────────────────────────────────────────────
    FIL CONDUCTEUR — ligne verticale fixed gauche, fill scrubbed
