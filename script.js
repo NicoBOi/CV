@@ -1,13 +1,11 @@
 /* ──────────────────────────────────────────────
    sempere.studio — pipeline fondation
-   Lenis (smooth scroll) + GSAP/ScrollTrigger.
+   GSAP + ScrollTrigger sur scroll natif (Lenis retiré : casse pin+scrub).
    API publique : window.__cinematic
    ────────────────────────────────────────────── */
 
 (() => {
   'use strict';
-
-  document.documentElement.classList.add('js');
 
   // Bypass total si l'utilisateur préfère réduire le mouvement
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -17,29 +15,22 @@
     return;
   }
 
-  // Enregistre le plugin GSAP
+  // Vérification libs : sans GSAP, on garde le DOM brut visible (pas de .js)
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+    console.warn('[sempere] GSAP ou ScrollTrigger absent : fallback statique');
+    return;
+  }
+
+  // OK, on prend la main
+  document.documentElement.classList.add('js');
   gsap.registerPlugin(ScrollTrigger);
-
-  // Lenis : smooth scroll, momentum natif sur iOS (réactivité)
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    smoothTouch: false,
-  });
-
-  // Synchronisation Lenis ↔ ScrollTrigger
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis.raf(time * 1000));
-  gsap.ticker.lagSmoothing(0);
 
   // Anti-jank pin sur iOS Safari
   ScrollTrigger.config({ ignoreMobileResize: true });
   ScrollTrigger.defaults({ markers: false });
 
-  // API publique consommée par les futures scènes
+  // API publique consommée par les scènes
   window.__cinematic = {
-    lenis,
     gsap,
     ScrollTrigger,
     eases: {
@@ -56,6 +47,9 @@
       }
     },
   };
+
+  // Refresh après que tous les IIFEs aient enregistré leurs ScrollTriggers
+  requestAnimationFrame(() => ScrollTrigger.refresh());
 })();
 
 /* ──────────────────────────────────────────────

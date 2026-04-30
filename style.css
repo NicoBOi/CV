@@ -321,8 +321,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: var(--tr-tight);
   color: var(--fg);
   text-align: center;
-  /* JS pose l'état initial. Sans JS → toutes visibles empilées. */
+  /* Défaut CSS : phrases 2 et 3 floues + cachées. Phrase 1 nette. */
+  opacity: 0;
+  filter: blur(20px);
   will-change: opacity, filter;
+}
+.scene-manifesto__phrase[data-step="0"] {
+  opacity: 1;
+  filter: blur(0);
 }
 
 .scene-manifesto__progress {
