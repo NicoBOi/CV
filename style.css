@@ -21,6 +21,7 @@
   /* ── Typo : Inter Display, échelle sculptée (xs → 6xl) ── */
   --font-display: 'Inter Display', 'Inter', system-ui, sans-serif;
   --font-mono: ui-monospace, 'JetBrains Mono', monospace;
+  --font-serif: 'Times New Roman', Georgia, serif;
 
   /* Amplitude large pour contraste extrême dans une même phrase */
   --fs-xs:   clamp(0.75rem, 0.70rem + 0.2vw,  0.875rem);
@@ -134,7 +135,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   overflow: clip;
 }
 
-/* ── Reduced motion : neutralise tout ── */
+/* Reduced motion : neutralise tout */
 .reduced-motion *,
 .reduced-motion *::before,
 .reduced-motion *::after {
@@ -142,9 +143,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
 }
-
-/* Reduced-motion : pas de convergence → masque le mot final. Mots visibles statiques. */
-.reduced-motion .scene-hero__name { display: none; }
 
 /* ──────────────────────────────────────────────
    SCÈNE 1 — HERO
@@ -186,23 +184,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .scene-hero__word:nth-child(5) { --x: 10%; --y: 78%; --size: var(--fs-2xl); }
 .scene-hero__word:nth-child(6) { --x: 55%; --y: 84%; --size: var(--fs-3xl); }
 
-/* Mot final : centré absolu, masqué jusqu'à la convergence */
-.scene-hero__name {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: max-content;
-  height: max-content;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--fs-6xl);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tr-tight);
-  color: var(--accent);
-  opacity: 0;
-  transform: scale(0.92);
-  pointer-events: none;
-  will-change: transform, opacity;
+/* Anti-flash init : si JS prend la main, on cache avant que stagger révèle.
+   Sans .js (libs absentes) → mots visibles d'office (fallback gracieux). */
+.js .scene-hero__word { opacity: 0; }
+
+/* Mobile : on évite l'overflow des très grandes tailles sur petit viewport */
+@media (max-width: 480px) {
+  .scene-hero__word:nth-child(3) { --size: var(--fs-3xl); }
+  .scene-hero__word:nth-child(1),
+  .scene-hero__word:nth-child(4),
+  .scene-hero__word:nth-child(6) { --size: var(--fs-2xl); }
 }
 
 /* ──────────────────────────────────────────────
@@ -257,6 +248,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: var(--tr-loose);
   max-width: 50ch;
   will-change: transform, opacity;
+}
+
+/* Mobile : on cap le nom géant pour qu'il tienne dans le viewport */
+@media (max-width: 480px) {
+  .scene-identity { padding: var(--sp-4) var(--sp-3); }
+  .scene-identity__name { font-size: clamp(3.5rem, 14vw, 5.5rem); }
 }
 
 /* ──────────────────────────────────────────────
@@ -371,6 +368,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   opacity: 1 !important;
 }
 .reduced-motion .scene-manifesto__progress { display: none; }
+
+/* Mobile : padding + taille adaptés */
+@media (max-width: 480px) {
+  .scene-manifesto { padding: var(--sp-4) var(--sp-3); }
+  .scene-manifesto__phrase { font-size: var(--fs-3xl); }
+}
 
 /* ──────────────────────────────────────────────
    SCÈNE 7 — CASE STUDY FOOH PHILLIPS
@@ -499,7 +502,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   position: absolute;
   top: -0.45em;
   left: -0.15em;
-  font-family: 'Times New Roman', Georgia, serif;
+  font-family: var(--font-serif);
   font-size: 20vw;
   line-height: 1;
   color: rgba(26, 26, 26, 0.08);
@@ -537,6 +540,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* Reduced-motion : citation visible directement */
 .reduced-motion .scene-quote__line { clip-path: none !important; }
+
+/* Mobile : padding adapté, citation à taille proportionnelle */
+@media (max-width: 480px) {
+  .scene-quote { padding: var(--sp-4) var(--sp-3); }
+  .scene-quote__text { font-size: var(--fs-xl); }
+}
 
 /* ──────────────────────────────────────────────
    COMPTEUR DE SCÈNE (polish)
@@ -585,9 +594,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--sp-4);
-  min-height: 80dvh;
+  min-height: 55dvh;       /* Densifié : 4 paires × 55dvh = 220dvh au lieu de 320dvh */
   padding-block: var(--sp-4);
-  opacity: 0;             /* Reveal JS */
+  opacity: 0;              /* Reveal JS */
   transform: translateY(30px);
   will-change: opacity, transform;
 }
@@ -664,7 +673,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .scene-cta {
   place-items: center;
   text-align: center;
-  padding: var(--sp-5) var(--sp-4) var(--sp-6);
+  padding: var(--sp-5) var(--sp-4);
 }
 
 .scene-cta__hook {
