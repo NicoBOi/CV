@@ -374,9 +374,45 @@
       if (e.isIntersecting && e.intersectionRatio > 0.45) {
         const num = e.target.dataset.sceneNum || '01';
         current.textContent = String(num).padStart(2, '0');
+
+        // Sync body data-mode → fil conducteur (et futur iris) suit la scène active
+        const mode = e.target.dataset.mode;
+        if (mode && document.body.dataset.mode !== mode) {
+          document.body.dataset.mode = mode;
+        }
       }
     });
   }, { threshold: [0.45, 0.55] });
 
   scenes.forEach((s) => obs.observe(s));
+})();
+
+/* ──────────────────────────────────────────────
+   FIL CONDUCTEUR — fill scrubbed sur scroll global
+   rAF-throttled pour ne pas bloquer le main thread.
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const fill = document.querySelector('.thread__fill');
+  if (!fill) return;
+
+  let raf = null;
+
+  const update = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    fill.style.height = (p * 100).toFixed(2) + '%';
+    raf = null;
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
 })();
