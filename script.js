@@ -73,13 +73,13 @@
   const claim = scene.querySelector('.scene-hero__claim');
 
   /* 1) Entrée : on cache d'abord (CSS visible par défaut → fallback no-JS),
-        puis stagger lent — un par un, posé, le visiteur a le temps de lire chaque mot. */
+        puis stagger un par un, ordre aléatoire, rythme rapide mais discernable. */
   gsap.set(words, { opacity: 0 });
   gsap.timeline({ defaults: { ease: eases.cinematic } })
     .to(words, {
       opacity: 1,
-      duration: 0.6,
-      stagger: { each: 0.75, from: 'random' },   // 750ms entre chaque (vs 160ms)
+      duration: 0.45,
+      stagger: { each: 0.3, from: 'random' },    // 300ms entre chaque
     });
 
   /* 2) Convergence scrubbed : pin de la scène, scroll → mots vers centre.

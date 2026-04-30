@@ -230,7 +230,8 @@ body::before {
   left: var(--x);
   top: var(--y);
   font-family: var(--font-display);
-  font-size: var(--fs-3xl);   /* taille homogène ; rythme via poids + italic */
+  font-weight: 600;
+  font-size: var(--size);
   line-height: var(--lh-tight);
   letter-spacing: var(--tr-tight);
   color: var(--fg);
@@ -241,13 +242,13 @@ body::before {
   transform: translate3d(0, 0, 0);
 }
 
-/* Positions curatées + variation typographique (pas de variation de taille) */
-.scene-hero__word:nth-child(1) { --x:  8%; --y: 14%; font-weight: 600; }
-.scene-hero__word:nth-child(2) { --x: 62%; --y: 22%; font-weight: 300; font-style: italic; }
-.scene-hero__word:nth-child(3) { --x: 18%; --y: 48%; font-weight: 400; }
-.scene-hero__word:nth-child(4) { --x: 70%; --y: 60%; font-weight: 600; }
-.scene-hero__word:nth-child(5) { --x: 10%; --y: 78%; font-weight: 300; font-style: italic; }
-.scene-hero__word:nth-child(6) { --x: 55%; --y: 84%; font-weight: 400; }
+/* Positions curatées + tailles asymétriques (rythme éditorial) */
+.scene-hero__word:nth-child(1) { --x:  8%; --y: 14%; --size: var(--fs-3xl); }
+.scene-hero__word:nth-child(2) { --x: 62%; --y: 22%; --size: var(--fs-2xl); }
+.scene-hero__word:nth-child(3) { --x: 18%; --y: 48%; --size: var(--fs-4xl); font-style: italic; }
+.scene-hero__word:nth-child(4) { --x: 70%; --y: 60%; --size: var(--fs-3xl); }
+.scene-hero__word:nth-child(5) { --x: 10%; --y: 78%; --size: var(--fs-2xl); }
+.scene-hero__word:nth-child(6) { --x: 55%; --y: 84%; --size: var(--fs-3xl); }
 
 /* Anti-flash init : si JS prend la main, on cache avant que stagger révèle.
    Sans .js (libs absentes) → mots visibles d'office (fallback gracieux). */
@@ -281,9 +282,12 @@ body::before {
   margin: var(--sp-5) auto 0;
 }
 
-/* Mobile : on garde la taille homogène, juste un crop si besoin */
+/* Mobile : on cap les très grandes tailles pour éviter l'overflow horizontal */
 @media (max-width: 480px) {
-  .scene-hero__word { font-size: var(--fs-2xl); }
+  .scene-hero__word:nth-child(3) { --size: var(--fs-3xl); }
+  .scene-hero__word:nth-child(1),
+  .scene-hero__word:nth-child(4),
+  .scene-hero__word:nth-child(6) { --size: var(--fs-2xl); }
 }
 
 /* ──────────────────────────────────────────────
@@ -390,6 +394,7 @@ body::before {
 .scene-clients__name {
   font-family: var(--font-display);
   font-weight: 600;
+  font-size: var(--type-h2);    /* taille homogène pour les 7 noms */
   line-height: var(--lh-tight);
   letter-spacing: var(--tr-tight);
   color: var(--fg);
@@ -398,15 +403,6 @@ body::before {
   clip-path: inset(0 100% 0 0);
   will-change: clip-path;
 }
-
-/* Tailles variées pour rythme asymétrique éditorial */
-.scene-clients__name:nth-child(1) { font-size: var(--type-h2); }
-.scene-clients__name:nth-child(2) { font-size: var(--type-h3); }
-.scene-clients__name:nth-child(3) { font-size: var(--type-h2); }
-.scene-clients__name:nth-child(4) { font-size: var(--type-h3); }
-.scene-clients__name:nth-child(5) { font-size: var(--type-h2); }
-.scene-clients__name:nth-child(6) { font-size: var(--type-h3); }
-.scene-clients__name:nth-child(7) { font-size: var(--type-h2); }
 
 .scene-clients__name--italic {
   font-style: italic;
