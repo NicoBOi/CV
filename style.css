@@ -34,6 +34,15 @@
   --fs-5xl:  clamp(6rem,    3.50rem + 12vw,  13rem);
   --fs-6xl:  clamp(8rem,    4.00rem + 18vw,  20rem);
 
+  /* Tokens sémantiques (mapping → échelle fs-*) */
+  --type-micro:  var(--fs-xs);
+  --type-small:  var(--fs-sm);
+  --type-body:   var(--fs-base);
+  --type-body-l: var(--fs-lg);
+  --type-h3:     var(--fs-2xl);
+  --type-h2:     var(--fs-4xl);
+  --type-h1:     var(--fs-5xl);
+
   /* Tracking + leading sculptés */
   --lh-tight: 0.92;
   --lh-snug:  1.05;
@@ -362,3 +371,169 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   opacity: 1 !important;
 }
 .reduced-motion .scene-manifesto__progress { display: none; }
+
+/* ──────────────────────────────────────────────
+   SCÈNE 7 — CASE STUDY FOOH PHILLIPS
+   Split 50/50, vidéo gauche, copy droite. Mobile : stack vertical.
+   ────────────────────────────────────────────── */
+
+.scene-case {
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  padding: 0;
+}
+
+.scene-case__media {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-coal-soft);
+}
+
+.scene-case__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* source 9:16, on remplit la colonne, on rogne ce qui dépasse */
+  display: block;
+}
+
+.scene-case__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-4);
+  max-width: 56ch;
+}
+
+.scene-case__marker {
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.scene-case__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-h2);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+}
+
+.scene-case__desc {
+  margin: 0;
+  max-width: 38ch;
+  font-size: var(--type-body-l);
+  line-height: var(--lh-base);
+  color: var(--fg);
+}
+
+.scene-case__pills {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.scene-case__pills li {
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--fg-muted);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: var(--type-small);
+  color: var(--fg);
+  letter-spacing: 0.04em;
+}
+
+.scene-case__note {
+  margin-top: var(--sp-2);
+  font-size: var(--type-small);
+  color: var(--fg-muted);
+  letter-spacing: var(--tr-loose);
+}
+
+/* Mobile : stack vertical, vidéo en haut */
+@media (max-width: 768px) {
+  .scene-case {
+    grid-template-columns: 1fr;
+    grid-template-rows: 50dvh auto;
+  }
+  .scene-case__copy {
+    padding: var(--sp-4) var(--sp-3);
+  }
+}
+
+/* ──────────────────────────────────────────────
+   SCÈNE 8 — TRANSITION VERS CLAIR (modifier inverse)
+   ────────────────────────────────────────────── */
+
+.scene-transition--light {
+  background: var(--color-coal);
+}
+.scene-transition--light .scene-transition__iris {
+  background: var(--color-cream);
+}
+.reduced-motion .scene-transition--light { background: var(--color-cream); }
+
+/* ──────────────────────────────────────────────
+   SCÈNE 9 — TÉMOIGNAGE
+   Guillemet géant déco + citation italic + attribution
+   ────────────────────────────────────────────── */
+
+.scene-quote {
+  place-items: center;
+  padding: var(--sp-5) var(--sp-4);
+}
+
+.scene-quote__container {
+  position: relative;
+  max-width: 800px;
+  text-align: center;
+}
+
+.scene-quote__mark {
+  position: absolute;
+  top: -0.45em;
+  left: -0.15em;
+  font-family: 'Times New Roman', Georgia, serif;
+  font-size: 20vw;
+  line-height: 1;
+  color: rgba(26, 26, 26, 0.08);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.scene-quote__text {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--type-h3);
+  line-height: 1.3;
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+  z-index: 1;
+}
+
+.scene-quote__line {
+  display: block;
+  will-change: clip-path;
+}
+
+.scene-quote__attr {
+  display: block;
+  margin-top: var(--sp-4);
+  font-size: var(--type-small);
+  color: var(--fg-muted);
+  font-style: normal;
+  letter-spacing: var(--tr-loose);
+}
+
+/* Reduced-motion : citation visible directement */
+.reduced-motion .scene-quote__line { clip-path: none !important; }

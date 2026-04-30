@@ -159,8 +159,8 @@
 })();
 
 /* ──────────────────────────────────────────────
-   SCÈNE 4 — TRANSITION SOMBRE
-   Iris circulaire scrubbed pendant le pin de la scène
+   SCÈNES 4 + 8 — TRANSITIONS IRIS (multi-instance)
+   Itère sur toutes les .scene-transition (sombre ou claire)
    ────────────────────────────────────────────── */
 
 (() => {
@@ -170,25 +170,26 @@
   if (!cine || cine.reduced) return;
 
   const { gsap, eases } = cine;
-  const scene = document.querySelector('.scene-transition');
-  if (!scene) return;
 
-  const iris = scene.querySelector('.scene-transition__iris');
+  document.querySelectorAll('.scene-transition').forEach((scene) => {
+    const iris = scene.querySelector('.scene-transition__iris');
+    if (!iris) return;
 
-  gsap.timeline({
-    scrollTrigger: {
-      trigger: scene,
-      start: 'top top',
-      end: '+=100%',
-      pin: true,
-      scrub: 0.6,
-      invalidateOnRefresh: true,
-    },
-  })
-    .fromTo(iris,
-      { scale: 0 },
-      { scale: 1, ease: eases.iris }
-    );
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: scene,
+        start: 'top top',
+        end: '+=100%',
+        pin: true,
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+      },
+    })
+      .fromTo(iris,
+        { scale: 0 },
+        { scale: 1, ease: eases.iris }
+      );
+  });
 })();
 
 /* ──────────────────────────────────────────────
@@ -243,4 +244,61 @@
   // Phase 1 → 2
   tl.to(phrases[1], { autoAlpha: 0, filter: 'blur(20px)' })
     .to(phrases[2], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
+})();
+
+/* ──────────────────────────────────────────────
+   SCÈNE 7 — CASE STUDY
+   Lazy-load vidéo via IntersectionObserver (économie data hors viewport)
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const videos = document.querySelectorAll('.scene-case__video[data-src]');
+  if (!videos.length || !('IntersectionObserver' in window)) return;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const v = e.target;
+      v.src = v.dataset.src;
+      v.load();
+      // Tente lecture (autoplay muet : navigateurs autorisent)
+      v.play().catch(() => { /* ignore : autoplay refusé */ });
+      obs.unobserve(v);
+    });
+  }, { rootMargin: '300px 0px' });
+
+  videos.forEach((v) => obs.observe(v));
+})();
+
+/* ──────────────────────────────────────────────
+   SCÈNE 9 — TÉMOIGNAGE
+   Reveal ligne par ligne via clip-path inset gauche → droite
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cine = window.__cinematic;
+  if (!cine || cine.reduced) return;
+
+  const { gsap, eases } = cine;
+  const scene = document.querySelector('.scene-quote');
+  if (!scene) return;
+
+  const lines = scene.querySelectorAll('.scene-quote__line');
+  if (!lines.length) return;
+
+  // Initial : chaque ligne masquée à droite (visible 0% sur la gauche)
+  gsap.set(lines, { clipPath: 'inset(0 100% 0 0)' });
+
+  gsap.timeline({
+    defaults: { ease: eases.cinematic, duration: 0.9 },
+    scrollTrigger: { trigger: scene, start: 'top 70%', once: true },
+  })
+    .to(lines, {
+      clipPath: 'inset(0 0% 0 0)',
+      stagger: 0.15,
+    });
 })();
