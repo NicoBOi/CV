@@ -302,3 +302,72 @@
       stagger: 0.15,
     });
 })();
+
+/* ──────────────────────────────────────────────
+   SCÈNE 10 — OBJECTIONS
+   Reveal pair-by-pair + tracé de flèche scrubbed
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cine = window.__cinematic;
+  if (!cine || cine.reduced) return;
+
+  const { gsap, eases } = cine;
+  const scene = document.querySelector('.scene-objections');
+  if (!scene) return;
+
+  scene.querySelectorAll('.scene-objections__pair').forEach((pair) => {
+    // Reveal one-shot quand la paire entre dans le viewport
+    gsap.timeline({
+      scrollTrigger: { trigger: pair, start: 'top 75%', once: true },
+      defaults: { ease: eases.cinematic },
+    })
+      .to(pair, { opacity: 1, y: 0, duration: 0.8 });
+
+    // Tracé de flèche : scrubbed sur la traversée verticale
+    const path = pair.querySelector('.scene-objections__arrow path');
+    if (path) {
+      gsap.fromTo(path,
+        { strokeDashoffset: 200 },
+        {
+          strokeDashoffset: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: pair,
+            start: 'top 70%',
+            end: 'top 30%',
+            scrub: 0.5,
+          },
+        }
+      );
+    }
+  });
+})();
+
+/* ──────────────────────────────────────────────
+   COMPTEUR DE SCÈNE (polish)
+   IntersectionObserver — fonctionne sans GSAP, OK reduced-motion
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const current = document.querySelector('.scene-counter__current');
+  if (!current || !('IntersectionObserver' in window)) return;
+
+  const scenes = document.querySelectorAll('[data-scene][data-scene-num]');
+  if (!scenes.length) return;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting && e.intersectionRatio > 0.45) {
+        const num = e.target.dataset.sceneNum || '01';
+        current.textContent = String(num).padStart(2, '0');
+      }
+    });
+  }, { threshold: [0.45, 0.55] });
+
+  scenes.forEach((s) => obs.observe(s));
+})();
