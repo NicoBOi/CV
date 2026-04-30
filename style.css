@@ -286,6 +286,34 @@ body::before {
    Sans .js (libs absentes) → mots visibles d'office (fallback gracieux). */
 .js .scene-hero__word { opacity: 0; }
 
+/* Phrase-promesse révélée à la fin de la convergence.
+   Cachée par défaut, JS la révèle pendant le scrub final. */
+.scene-hero__claim {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  max-width: 90vw;
+  height: max-content;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+  text-align: center;
+  opacity: 0;                 /* JS reveal */
+  transform: translateY(20px);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.reduced-motion .scene-hero__claim {
+  opacity: 1;
+  transform: none;
+  position: static;
+  margin: var(--sp-5) auto 0;
+}
+
 /* Mobile : on évite l'overflow des très grandes tailles sur petit viewport */
 @media (max-width: 480px) {
   .scene-hero__word:nth-child(3) { --size: var(--fs-3xl); }
@@ -762,6 +790,14 @@ body::before {
   color: var(--fg);
 }
 .scene-cta__hook em { font-style: italic; }
+
+.scene-cta__assertion {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--type-body-l);
+  color: var(--fg-muted);
+  letter-spacing: var(--tr-loose);
+  max-width: 40ch;
+}
 
 .scene-cta__email {
   display: inline-flex;

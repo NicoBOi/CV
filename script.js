@@ -70,6 +70,7 @@
 
   const stage = scene.querySelector('.scene-hero__stage');
   const words = scene.querySelectorAll('.scene-hero__word');
+  const claim = scene.querySelector('.scene-hero__claim');
 
   /* 1) Entrée : on cache d'abord (CSS visible par défaut → fallback no-JS),
         puis stagger révélé un par un, ordre aléatoire. */
@@ -114,6 +115,14 @@
       },
     0);
   });
+
+  // Phrase-promesse révélée pendant la 2e moitié de la convergence
+  if (claim) {
+    tl.fromTo(claim,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, ease: eases.cinematic },
+    0.5);
+  }
 })();
 
 /* ──────────────────────────────────────────────
