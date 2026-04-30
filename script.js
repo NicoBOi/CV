@@ -158,40 +158,6 @@
 })();
 
 /* ──────────────────────────────────────────────
-   SCÈNES 4 + 8 — TRANSITIONS IRIS (multi-instance)
-   Itère sur toutes les .scene-transition (sombre ou claire)
-   ────────────────────────────────────────────── */
-
-(() => {
-  'use strict';
-
-  const cine = window.__cinematic;
-  if (!cine || cine.reduced) return;
-
-  const { gsap, eases } = cine;
-
-  document.querySelectorAll('.scene-transition').forEach((scene) => {
-    const iris = scene.querySelector('.scene-transition__iris');
-    if (!iris) return;
-
-    // Centrage GSAP : préserve la translate pendant l'anim de scale.
-    gsap.set(iris, { xPercent: -50, yPercent: -50, scale: 0 });
-
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: scene,
-        start: 'top top',
-        end: '+=50%',          // pin réduit (200dvh → 150dvh par transition)
-        pin: true,
-        scrub: 0.4,
-        invalidateOnRefresh: true,
-      },
-    })
-      .to(iris, { scale: 1, ease: eases.iris });
-  });
-})();
-
-/* ──────────────────────────────────────────────
    SCÈNE 5 — MANIFESTE
    Pin × 3 vues, blur out / sharp in entre 3 phrases,
    indicator "01—02—03" pulse en terracotta sur l'actif.
@@ -356,30 +322,85 @@
 })();
 
 /* ──────────────────────────────────────────────
-   COMPTEUR DE SCÈNE (polish)
-   IntersectionObserver — fonctionne sans GSAP, OK reduced-motion
+   COMPTEUR + IRIS CONTROLLER + MODE SWAP
+   Single observer : détecte la scène active, met à jour le compteur,
+   et orchestre la transition iris quand le mode change.
+   Fallback : si GSAP/iris absents, swap mode instant (rail suit quand même).
    ────────────────────────────────────────────── */
 
 (() => {
   'use strict';
 
   const current = document.querySelector('.scene-counter__current');
-  if (!current || !('IntersectionObserver' in window)) return;
+  const scenes  = document.querySelectorAll('[data-scene][data-scene-num]');
+  if (!current || !scenes.length || !('IntersectionObserver' in window)) return;
 
-  const scenes = document.querySelectorAll('[data-scene][data-scene-num]');
-  if (!scenes.length) return;
+  const cine     = window.__cinematic;
+  const canAnim  = cine && !cine.reduced;
+  const overlay  = canAnim ? document.querySelector('.iris-overlay') : null;
+  const circle   = canAnim ? document.querySelector('.iris-overlay__circle') : null;
+  const useIris  = canAnim && overlay && circle;
+
+  if (useIris) {
+    // Centrage préservé pendant scale (GSAP pilote la transform entière)
+    cine.gsap.set(circle, { xPercent: -50, yPercent: -50, scale: 0 });
+  }
+
+  let currentMode = document.body.dataset.mode || 'dark';
+  let active      = false;
+  let pendingMode = null;
+
+  const colorFor = (mode) => getComputedStyle(document.documentElement)
+    .getPropertyValue(mode === 'dark' ? '--color-coal' : '--color-cream').trim();
+
+  const runSwap = () => {
+    if (pendingMode === null || pendingMode === currentMode) {
+      pendingMode = null;
+      return;
+    }
+    const target = pendingMode;
+    pendingMode  = null;
+    currentMode  = target;
+
+    // Pas d'iris : swap instant (reduced-motion ou libs absentes)
+    if (!useIris) {
+      document.body.dataset.mode = target;
+      return;
+    }
+
+    active = true;
+    overlay.style.setProperty('--iris-color', colorFor(target));
+    overlay.classList.add('is-active');
+
+    cine.gsap.timeline({
+      onComplete: () => {
+        overlay.classList.remove('is-active');
+        active = false;
+        runSwap();      // joue la dernière intention si l'utilisateur a scrollé pendant l'anim
+      },
+    })
+      // 1) Iris recouvre (300ms)
+      .to(circle, { scale: 1, duration: 0.3, ease: cine.eases.iris })
+      // 2) Snap body data-mode sous la couverture
+      .call(() => { document.body.dataset.mode = target; })
+      // 3) Petite tenue pour que le bg du body s'établisse
+      .to({}, { duration: 0.05 })
+      // 4) Iris se rétracte (300ms)
+      .to(circle, { scale: 0, duration: 0.3, ease: cine.eases.iris });
+  };
+
+  const setMode = (newMode) => {
+    if (!newMode || newMode === currentMode) return;
+    pendingMode = newMode;
+    if (!active) runSwap();
+  };
 
   const obs = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       if (e.isIntersecting && e.intersectionRatio > 0.45) {
         const num = e.target.dataset.sceneNum || '01';
         current.textContent = String(num).padStart(2, '0');
-
-        // Sync body data-mode → fil conducteur (et futur iris) suit la scène active
-        const mode = e.target.dataset.mode;
-        if (mode && document.body.dataset.mode !== mode) {
-          document.body.dataset.mode = mode;
-        }
+        setMode(e.target.dataset.mode);
       }
     });
   }, { threshold: [0.45, 0.55] });
