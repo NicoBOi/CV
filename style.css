@@ -4,13 +4,14 @@
    ────────────────────────────────────────────── */
 
 :root {
-  /* ── Palette : charbon profond + crème chaude + terracotta ── */
+  /* ── Palette : charbon profond + crème chaude + violet mature ── */
   --color-coal:        #14110f;
   --color-coal-soft:   #1d1a17;
   --color-cream:       #f4ede2;
   --color-cream-soft:  #ebe2d4;
-  --color-accent:      #c8512a;   /* Terracotta brûlé */
-  --color-accent-soft: #e6724a;
+  --color-accent:      #4A2EAB;   /* Violet profond, accent principal */
+  --color-accent-soft: #6B4FCB;   /* Plus clair, pour hover + dark theme */
+  --color-accent-deep: #2D1B69;   /* Plus sombre, pour accents soutenus */
 
   /* ── Thème par défaut : clair (crème) ── */
   --bg: var(--color-cream);
@@ -842,8 +843,13 @@ body::before {
 }
 .scene-cta__email-text {
   text-decoration: underline;
+  text-decoration-color: var(--accent);    /* soulignement violet (touche accent) */
   text-underline-offset: 0.2em;
-  text-decoration-thickness: 1px;
+  text-decoration-thickness: 1.5px;
+}
+.scene-cta__email:hover .scene-cta__email-text,
+.scene-cta__email:focus-visible .scene-cta__email-text {
+  text-decoration-thickness: 2px;          /* hover : épaississement subtil */
 }
 .scene-cta__arrow {
   display: inline-block;
