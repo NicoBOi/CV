@@ -72,6 +72,7 @@
 
   /* ── Z-stack ── */
   --z-skip: 999;
+  --z-grain: 50;
 }
 
 /* ── Thème sombre sectionnel : appliqué via [data-theme="dark"] sur scène ── */
@@ -100,6 +101,20 @@ body {
 }
 img, svg, video { display: block; max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+/* ── Grain texture global : SVG noise via pseudo-element fixed.
+      pointer-events: none + z-index sous le counter pour ne rien bloquer. ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-grain);
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.reduced-motion body::before { display: none; }
 
 /* Variable font axes (wght, slnt) si supportés */
 @supports (font-variation-settings: normal) {
@@ -206,6 +221,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   grid-template-columns: 1fr;
   align-items: center;
   padding: var(--sp-5) var(--sp-4);
+  min-height: 80dvh;        /* densifié vs 100dvh pour réduire le vide vertical */
 }
 
 .scene-identity__marker {
@@ -240,20 +256,25 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .scene-identity__caption {
   margin: 0;
-  margin-inline: auto;
   align-self: end;
-  text-align: center;
+  justify-self: end;       /* axe éditorial : marker top-left + caption bottom-right */
+  text-align: right;
   font-size: var(--fs-base);
   color: var(--fg-muted);
   letter-spacing: var(--tr-loose);
-  max-width: 50ch;
+  max-width: 40ch;
   will-change: transform, opacity;
 }
 
-/* Mobile : on cap le nom géant pour qu'il tienne dans le viewport */
+/* Mobile : on cap le nom géant + caption recentrée (l'asymétrie casse en stack) */
 @media (max-width: 480px) {
   .scene-identity { padding: var(--sp-4) var(--sp-3); }
   .scene-identity__name { font-size: clamp(3.5rem, 14vw, 5.5rem); }
+  .scene-identity__caption {
+    justify-self: stretch;
+    text-align: center;
+    max-width: 100%;
+  }
 }
 
 /* ──────────────────────────────────────────────
@@ -444,7 +465,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .scene-case__pills li {
   padding: var(--sp-2) var(--sp-3);
-  border: 1px solid var(--fg-muted);
+  background: color-mix(in oklab, var(--fg) 6%, transparent);
+  border: 1px solid color-mix(in oklab, var(--fg) 15%, transparent);
   border-radius: 999px;
   font-family: var(--font-mono);
   font-size: var(--type-small);
@@ -490,6 +512,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .scene-quote {
   place-items: center;
   padding: var(--sp-5) var(--sp-4);
+  min-height: 75dvh;       /* densifié : moins de vide central */
 }
 
 .scene-quote__container {
@@ -577,6 +600,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   display: block;
   padding: var(--sp-5) var(--sp-4);
   min-height: auto;
+  max-width: 1400px;       /* cap sur très grands écrans */
+  margin-inline: auto;
 }
 
 .scene-objections__marker {
