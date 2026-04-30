@@ -173,34 +173,6 @@ body::before {
   min-height: 100dvh;     /* dvh > vh, évite le jump iOS */
 }
 
-/* ──────────────────────────────────────────────
-   FIL CONDUCTEUR — ligne verticale fixed gauche, fill scrubbed
-   Couleurs héritées du body data-mode (track via --fg, fill via --accent)
-   ────────────────────────────────────────────── */
-
-.thread {
-  position: fixed;
-  left: var(--sp-3);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1.5px;
-  height: 60vh;
-  background: color-mix(in oklab, var(--fg) 15%, transparent);
-  z-index: var(--z-skip);
-  pointer-events: none;
-}
-
-.thread__fill {
-  display: block;
-  width: 100%;
-  height: 0%;
-  background: var(--accent);
-  /* JS pose la hauteur. Transition courte pour lisser entre rAF frames. */
-  transition: height 80ms linear;
-}
-
-/* Reduced-motion : on garde le rail (info utile) mais sans transition d'easing */
-.reduced-motion .thread__fill { transition: none; }
 
 /* Reduced motion : neutralise tout */
 .reduced-motion *,
@@ -674,25 +646,31 @@ body::before {
 }
 
 /* ──────────────────────────────────────────────
-   COMPTEUR DE SCÈNE (polish)
-   Fixed top-right, lisibilité auto via mix-blend-mode difference
+   BARRE DE PROGRESSION — fixed bottom, full width
+   Track tinté du fg actif, fill en accent (violet).
+   Couleurs auto-adaptatives via body data-mode.
    ────────────────────────────────────────────── */
 
-.scene-counter {
+.progress-bar {
   position: fixed;
-  top: var(--sp-3);
-  right: var(--sp-3);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: color-mix(in oklab, var(--fg) 15%, transparent);
   z-index: var(--z-skip);
-  display: flex;
-  gap: 0.25em;
-  font-family: var(--font-mono);
-  font-size: var(--type-micro);
-  letter-spacing: 0.18em;
   pointer-events: none;
-  /* Inverse de la couleur du fond → toujours lisible (light + dark) */
-  color: white;
-  mix-blend-mode: difference;
 }
+
+.progress-bar__fill {
+  display: block;
+  width: 0%;
+  height: 100%;
+  background: var(--accent);
+  transition: width 80ms linear;
+}
+
+.reduced-motion .progress-bar__fill { transition: none; }
 
 /* ──────────────────────────────────────────────
    SCÈNE 10 — OBJECTIONS BRUTAL-HONEST

@@ -23,16 +23,9 @@
 <body data-mode="dark">
   <a class="skip-link" href="#scenes">Aller au contenu</a>
 
-  <!-- Fil conducteur : ligne verticale fixed gauche, fill scrubbed sur scroll global. -->
-  <aside class="thread" aria-hidden="true">
-    <span class="thread__fill"></span>
-  </aside>
-
-  <!-- Compteur global de scène (mix-blend pour lisibilité light/dark) -->
-  <div class="scene-counter" aria-hidden="true">
-    <span class="scene-counter__current">01</span>
-    <span class="scene-counter__sep">/</span>
-    <span class="scene-counter__total">08</span>
+  <!-- Barre de progression : fixed bottom, full width, fill au scroll global. -->
+  <div class="progress-bar" aria-hidden="true">
+    <span class="progress-bar__fill"></span>
   </div>
 
   <main id="scenes" data-scenes>

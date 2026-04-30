@@ -380,36 +380,44 @@
 })();
 
 /* ──────────────────────────────────────────────
-   COMPTEUR + MODE SWAP (rAF scroll-based)
-   Détecte la scène qui contient le centre du viewport → source de vérité unique.
-   Plus robuste que IntersectionObserver pour scènes de hauteurs variables.
+   BARRE DE PROGRESSION + MODE SWAP (rAF scroll-based)
+   Single IIFE : remplit la barre selon scrollY/maxScroll
+   ET détecte la scène à viewport-center pour swap body data-mode.
    ────────────────────────────────────────────── */
 
 (() => {
   'use strict';
 
-  const current = document.querySelector('.scene-counter__current');
-  const scenes  = Array.from(document.querySelectorAll('[data-scene][data-scene-num]'));
-  if (!current || !scenes.length) return;
+  const fill   = document.querySelector('.progress-bar__fill');
+  const scenes = Array.from(document.querySelectorAll('[data-scene][data-mode]'));
+  if (!fill && !scenes.length) return;
 
   let raf = null;
-  let lastNum = '';
+  let lastMode = '';
 
   const update = () => {
     raf = null;
-    const center = window.innerHeight / 2;
-    let active = scenes[0];
-    for (const s of scenes) {
-      const r = s.getBoundingClientRect();
-      if (r.top <= center && r.bottom >= center) { active = s; break; }
+
+    // 1) Remplissage barre = position globale dans le document
+    if (fill) {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      fill.style.width = (p * 100).toFixed(2) + '%';
     }
-    const num = active.dataset.sceneNum || '01';
-    if (num === lastNum) return;
-    lastNum = num;
-    current.textContent = String(num).padStart(2, '0');
-    const mode = active.dataset.mode;
-    if (mode && document.body.dataset.mode !== mode) {
-      document.body.dataset.mode = mode;
+
+    // 2) Mode swap = scène qui contient le centre du viewport
+    if (scenes.length) {
+      const center = window.innerHeight / 2;
+      let active = scenes[0];
+      for (const s of scenes) {
+        const r = s.getBoundingClientRect();
+        if (r.top <= center && r.bottom >= center) { active = s; break; }
+      }
+      const mode = active.dataset.mode;
+      if (mode && mode !== lastMode) {
+        lastMode = mode;
+        document.body.dataset.mode = mode;
+      }
     }
   };
 
@@ -423,32 +431,3 @@
   update();
 })();
 
-/* ──────────────────────────────────────────────
-   FIL CONDUCTEUR — fill scrubbed sur scroll global
-   rAF-throttled pour ne pas bloquer le main thread.
-   ────────────────────────────────────────────── */
-
-(() => {
-  'use strict';
-
-  const fill = document.querySelector('.thread__fill');
-  if (!fill) return;
-
-  let raf = null;
-
-  const update = () => {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    fill.style.height = (p * 100).toFixed(2) + '%';
-    raf = null;
-  };
-
-  const onScroll = () => {
-    if (raf) return;
-    raf = requestAnimationFrame(update);
-  };
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  update();
-})();
