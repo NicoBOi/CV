@@ -20,20 +20,26 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script defer src="/script.js"></script>
 </head>
-<body>
+<body data-mode="dark">
   <a class="skip-link" href="#scenes">Aller au contenu</a>
+
+  <!-- Overlay iris global : couvre tout le viewport pendant un changement de mode.
+       Hors-flow, contrôlé par JS, lit le data-mode de la scène entrante. -->
+  <div class="iris-overlay" aria-hidden="true">
+    <span class="iris-overlay__circle"></span>
+  </div>
 
   <!-- Compteur global de scène (mix-blend pour lisibilité light/dark) -->
   <div class="scene-counter" aria-hidden="true">
     <span class="scene-counter__current">01</span>
     <span class="scene-counter__sep">/</span>
-    <span class="scene-counter__total">12</span>
+    <span class="scene-counter__total">07</span>
   </div>
 
   <main id="scenes" data-scenes>
 
     <!-- ═══ SCÈNE 1 — HERO ═══ -->
-    <section class="scene-hero" data-scene data-scene-num="1" data-theme="dark" aria-label="Six métiers, une personne">
+    <section class="scene-hero scene--full" data-scene data-scene-num="1" data-mode="dark" aria-label="Six métiers, une personne">
       <div class="scene-hero__stage">
         <span class="scene-hero__word">designer</span>
         <span class="scene-hero__word">motion</span>
@@ -45,7 +51,7 @@
     </section>
 
     <!-- ═══ SCÈNE 3 — IDENTITÉ ═══ -->
-    <section class="scene-identity" data-scene data-scene-num="3" aria-label="Identité">
+    <section class="scene-identity scene--full" data-scene data-scene-num="2" data-mode="light" aria-label="Identité">
       <div class="scene-identity__marker" aria-hidden="true">01 / IDENTITÉ</div>
       <h2 class="scene-identity__name">
         <span class="scene-identity__row scene-identity__row--top">Nicolas</span>
@@ -54,13 +60,8 @@
       <p class="scene-identity__caption">Brand engineer hybride. Disponible partout en France.</p>
     </section>
 
-    <!-- ═══ SCÈNE 4 — TRANSITION SOMBRE ═══ -->
-    <section class="scene-transition" data-scene data-scene-num="4" aria-hidden="true">
-      <span class="scene-transition__iris"></span>
-    </section>
-
     <!-- ═══ SCÈNE 5 — MANIFESTE ═══ -->
-    <section class="scene-manifesto" data-scene data-scene-num="5" data-theme="dark" aria-label="Manifeste">
+    <section class="scene-manifesto scene--full" data-scene data-scene-num="3" data-mode="dark" aria-label="Manifeste">
       <div class="scene-manifesto__marker" aria-hidden="true">02 / CONVICTION</div>
 
       <div class="scene-manifesto__stage">
@@ -88,7 +89,7 @@
     </section>
 
     <!-- ═══ SCÈNE 7 — CASE STUDY FOOH PHILLIPS ═══ -->
-    <section class="scene-case" data-scene data-scene-num="7" data-theme="dark" aria-label="Case study FOOH Phillips">
+    <section class="scene-case scene--full" data-scene data-scene-num="4" data-mode="dark" aria-label="Case study FOOH Phillips">
       <div class="scene-case__media">
         <video class="scene-case__video"
                data-src="/videos/fooh-phillips.mp4"
@@ -118,13 +119,8 @@
       </div>
     </section>
 
-    <!-- ═══ SCÈNE 8 — TRANSITION VERS CLAIR ═══ -->
-    <section class="scene-transition scene-transition--light" data-scene data-scene-num="8" aria-hidden="true">
-      <span class="scene-transition__iris"></span>
-    </section>
-
     <!-- ═══ SCÈNE 9 — TÉMOIGNAGE ═══ -->
-    <section class="scene-quote" data-scene data-scene-num="9" aria-label="Témoignage">
+    <section class="scene-quote" data-scene data-scene-num="5" data-mode="light" aria-label="Témoignage">
       <div class="scene-quote__container">
         <span class="scene-quote__mark" aria-hidden="true">&#8220;</span>
         <blockquote class="scene-quote__text">
@@ -138,7 +134,7 @@
     </section>
 
     <!-- ═══ SCÈNE 10 — OBJECTIONS BRUTAL-HONEST ═══ -->
-    <section class="scene-objections" data-scene data-scene-num="10" aria-label="Objections">
+    <section class="scene-objections" data-scene data-scene-num="6" data-mode="light" aria-label="Objections">
       <span class="scene-objections__marker" aria-hidden="true">04 / OBJECTIONS</span>
 
       <div class="scene-objections__pair">
@@ -190,13 +186,8 @@
       </div>
     </section>
 
-    <!-- ═══ SCÈNE 11 — TRANSITION FINALE VERS SOMBRE ═══ -->
-    <section class="scene-transition" data-scene data-scene-num="11" aria-hidden="true">
-      <span class="scene-transition__iris"></span>
-    </section>
-
     <!-- ═══ SCÈNE 12 — CTA FINAL ═══ -->
-    <section class="scene-cta" data-scene data-scene-num="12" data-theme="dark" aria-label="Contact">
+    <section class="scene-cta scene--full" data-scene data-scene-num="7" data-mode="dark" aria-label="Contact">
       <h2 class="scene-cta__hook"><em>On en parle&nbsp;?</em></h2>
       <a class="scene-cta__email" href="mailto:nicosmp.pro@gmail.com">
         <span class="scene-cta__email-text">nicosmp.pro@gmail.com</span>

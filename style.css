@@ -71,12 +71,13 @@
   --t-slow: 800ms;
 
   /* ── Z-stack ── */
-  --z-skip: 999;
+  --z-skip:  999;
+  --z-iris:  800;     /* overlay de transition mode */
   --z-grain: 50;
 }
 
-/* ── Thème sombre sectionnel : appliqué via [data-theme="dark"] sur scène ── */
-[data-theme="dark"] {
+/* ── Mode sombre : source de vérité unique sur <body data-mode="dark"> ── */
+[data-mode="dark"] {
   --bg: var(--color-coal);
   --fg: var(--color-cream);
   --fg-muted: color-mix(in oklab, var(--color-cream) 60%, transparent);
@@ -137,18 +138,71 @@ body::before {
 }
 .skip-link:focus { transform: translateY(0); }
 
-/* ── Conteneur scènes ── */
+/* ── Conteneur scènes : aucune marge entre scènes ── */
 [data-scenes] { display: block; }
 
-/* ── Squelette d'une scène : 100dvh, 1 focal par défaut ── */
+/* ── Squelette d'une scène : hauteur naturelle, mode self-scoped ── */
 [data-scene] {
   position: relative;
-  min-height: 100dvh;     /* dvh > vh, évite le jump iOS */
   display: grid;
-  background: var(--bg);
-  color: var(--fg);
   overflow: clip;
 }
+
+/* Mode self-scoped : chaque scène applique sa palette via data-mode.
+   Robuste sans JS : les couleurs sont déjà bonnes au load. */
+[data-scene][data-mode="light"] {
+  background: var(--color-cream);
+  color: var(--color-coal);
+  --bg: var(--color-cream);
+  --fg: var(--color-coal);
+  --fg-muted: color-mix(in oklab, var(--color-coal) 60%, transparent);
+  --accent: var(--color-accent);
+}
+[data-scene][data-mode="dark"] {
+  background: var(--color-coal);
+  color: var(--color-cream);
+  --bg: var(--color-coal);
+  --fg: var(--color-cream);
+  --fg-muted: color-mix(in oklab, var(--color-cream) 60%, transparent);
+  --accent: var(--color-accent-soft);
+}
+
+/* Scènes fortes : forcent 100dvh (hero, identité, manifeste, case, cta) */
+.scene--full {
+  min-height: 100dvh;     /* dvh > vh, évite le jump iOS */
+}
+
+/* ──────────────────────────────────────────────
+   IRIS OVERLAY — masque circulaire global pour mode-swap
+   Hors-flow, fixed sur viewport, contrôlé par JS.
+   ────────────────────────────────────────────── */
+
+.iris-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-iris);
+  overflow: hidden;
+  /* État neutre : invisible. JS active la transition. */
+  visibility: hidden;
+}
+.iris-overlay.is-active { visibility: visible; }
+
+.iris-overlay__circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150vmax;
+  height: 150vmax;
+  border-radius: 50%;
+  background: var(--iris-color, var(--color-coal));
+  transform-origin: center;
+  /* GSAP pose xPercent/yPercent + scale ; pas de transform CSS pour éviter l'écrasement */
+  will-change: transform;
+}
+
+/* Reduced-motion : iris désactivé (mode swap instant via body data-mode) */
+.reduced-motion .iris-overlay { display: none; }
 
 /* Reduced motion : neutralise tout */
 .reduced-motion *,
@@ -276,34 +330,6 @@ body::before {
     max-width: 100%;
   }
 }
-
-/* ──────────────────────────────────────────────
-   SCÈNE 4 — TRANSITION SOMBRE
-   Iris circulaire qui grandit au scroll, scrub + pin
-   ────────────────────────────────────────────── */
-
-.scene-transition {
-  background: var(--color-cream);
-  position: relative;
-}
-
-.scene-transition__iris {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 150vmax;
-  height: 150vmax;
-  background: var(--color-coal);
-  border-radius: 50%;
-  /* Pas de transform CSS : GSAP pilote tout (xPercent/yPercent + scale)
-     pour éviter l'écrasement du translate au moment du scale. */
-  transform-origin: center;
-  will-change: transform;
-}
-
-/* Reduced-motion : pas d'iris, fond sombre direct */
-.reduced-motion .scene-transition { background: var(--color-coal); }
-.reduced-motion .scene-transition__iris { display: none; }
 
 /* ──────────────────────────────────────────────
    SCÈNE 5 — MANIFESTE
@@ -492,18 +518,6 @@ body::before {
     padding: var(--sp-4) var(--sp-3);
   }
 }
-
-/* ──────────────────────────────────────────────
-   SCÈNE 8 — TRANSITION VERS CLAIR (modifier inverse)
-   ────────────────────────────────────────────── */
-
-.scene-transition--light {
-  background: var(--color-coal);
-}
-.scene-transition--light .scene-transition__iris {
-  background: var(--color-cream);
-}
-.reduced-motion .scene-transition--light { background: var(--color-cream); }
 
 /* ──────────────────────────────────────────────
    SCÈNE 9 — TÉMOIGNAGE
