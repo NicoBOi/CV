@@ -4,30 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
-  <title>Et si c'était la même personne&nbsp;?</title>
-  <meta name="description" content="Nicolas Sempere — brand engineer hybride. Brand, motion, product, no-code. 6 ans, 30+ projets pour Sephora, Phillips, Betclic Group, Showroom Privé. Disponible en CDI/CDD à Bordeaux et partout en France.">
-  <link rel="canonical" href="https://sempere.studio/">
-
-  <!-- OG / Twitter -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://sempere.studio/">
-  <meta property="og:title" content="Et si c'était la même personne ?">
-  <meta property="og:description" content="Nicolas Sempere — brand engineer hybride. 6 ans, 30+ projets. Disponible en CDI/CDD.">
-  <meta property="og:image" content="https://sempere.studio/assets/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Et si c'était la même personne ?">
-  <meta name="twitter:description" content="Brand · motion · product · no-code. CDI/CDD à Bordeaux, partout en France.">
-  <meta name="twitter:image" content="https://sempere.studio/assets/og-image.png">
+  <title>Nicolas Sempere — sempere.studio</title>
+  <meta name="description" content="Brand engineer hybride. DA, motion, 3D, no-code. Bordeaux + France.">
 
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 
-  <!-- Inter Display variable via rsms.me -->
+  <!-- Inter Display variable -->
   <link rel="preconnect" href="https://rsms.me" crossorigin>
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
   <link rel="stylesheet" href="/style.css">
 
-  <!-- Cinematic stack: GSAP 3.12 + ScrollTrigger + Lenis -->
+  <!-- Smooth scroll + scroll anims (defer pour FCP) -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
@@ -35,6 +23,21 @@
 </head>
 <body>
   <a class="skip-link" href="#scenes">Aller au contenu</a>
-  <main id="scenes"></main>
+  <main id="scenes" data-scenes>
+
+    <!-- ═══ SCÈNE 1 — HERO ═══ -->
+    <section class="scene-hero" data-scene data-theme="dark" aria-label="Six métiers, une personne">
+      <div class="scene-hero__stage">
+        <span class="scene-hero__word">designer</span>
+        <span class="scene-hero__word">motion</span>
+        <span class="scene-hero__word">brand</span>
+        <span class="scene-hero__word">no-code</span>
+        <span class="scene-hero__word">vidéaste</span>
+        <span class="scene-hero__word">stratège</span>
+        <h1 class="scene-hero__name" aria-hidden="true">sempere</h1>
+      </div>
+    </section>
+
+  </main>
 </body>
 </html>
