@@ -537,3 +537,193 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* Reduced-motion : citation visible directement */
 .reduced-motion .scene-quote__line { clip-path: none !important; }
+
+/* ──────────────────────────────────────────────
+   COMPTEUR DE SCÈNE (polish)
+   Fixed top-right, lisibilité auto via mix-blend-mode difference
+   ────────────────────────────────────────────── */
+
+.scene-counter {
+  position: fixed;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  z-index: var(--z-skip);
+  display: flex;
+  gap: 0.25em;
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.18em;
+  pointer-events: none;
+  /* Inverse de la couleur du fond → toujours lisible (light + dark) */
+  color: white;
+  mix-blend-mode: difference;
+}
+
+/* ──────────────────────────────────────────────
+   SCÈNE 10 — OBJECTIONS BRUTAL-HONEST
+   Flow vertical, paires Q | flèche | R, reveal one-shot + flèche scrubbed
+   ────────────────────────────────────────────── */
+
+.scene-objections {
+  display: block;
+  padding: var(--sp-5) var(--sp-4);
+  min-height: auto;
+}
+
+.scene-objections__marker {
+  display: block;
+  margin-bottom: var(--sp-5);
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.scene-objections__pair {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--sp-4);
+  min-height: 80dvh;
+  padding-block: var(--sp-4);
+  opacity: 0;             /* Reveal JS */
+  transform: translateY(30px);
+  will-change: opacity, transform;
+}
+
+.scene-objections__q {
+  margin: 0;
+  justify-self: end;
+  text-align: right;
+  max-width: 30ch;
+  font-size: var(--type-h3);
+  font-style: italic;
+  font-weight: 400;
+  line-height: var(--lh-snug);
+  color: var(--fg-muted);
+}
+.scene-objections__q em { font-style: italic; }
+
+.scene-objections__arrow {
+  width: clamp(80px, 10vw, 160px);
+  height: auto;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  fill: none;
+  flex-shrink: 0;
+}
+.scene-objections__arrow path {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200; /* JS scrub → 0 */
+}
+
+.scene-objections__a {
+  margin: 0;
+  justify-self: start;
+  text-align: left;
+  max-width: 36ch;
+  font-size: var(--type-h3);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  color: var(--fg);
+}
+
+@media (max-width: 768px) {
+  .scene-objections__pair {
+    grid-template-columns: 1fr;
+    gap: var(--sp-3);
+    text-align: left;
+    min-height: auto;
+    padding-block: var(--sp-5);
+  }
+  .scene-objections__q {
+    justify-self: start;
+    text-align: left;
+    max-width: 100%;
+  }
+  .scene-objections__a { max-width: 100%; }
+  .scene-objections__arrow {
+    width: 32px;
+    transform: rotate(90deg);
+    justify-self: start;
+  }
+}
+
+.reduced-motion .scene-objections__pair {
+  opacity: 1 !important;
+  transform: none !important;
+}
+.reduced-motion .scene-objections__arrow path { stroke-dashoffset: 0 !important; }
+
+/* ──────────────────────────────────────────────
+   SCÈNE 12 — CTA FINAL
+   Hook italic XL + mailto avec flèche translate hover + contact bottom
+   ────────────────────────────────────────────── */
+
+.scene-cta {
+  place-items: center;
+  text-align: center;
+  padding: var(--sp-5) var(--sp-4) var(--sp-6);
+}
+
+.scene-cta__hook {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: var(--type-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+}
+.scene-cta__hook em { font-style: italic; }
+
+.scene-cta__email {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--type-h3);
+  color: var(--fg);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.scene-cta__email-text {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+.scene-cta__arrow {
+  display: inline-block;
+  transition: transform var(--t-fast) var(--ease-snap);
+}
+.scene-cta__email:hover .scene-cta__arrow,
+.scene-cta__email:focus-visible .scene-cta__arrow {
+  transform: translateX(0.4em);
+}
+
+.scene-cta__contact {
+  position: absolute;
+  bottom: var(--sp-4);
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--type-small);
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+}
+.scene-cta__contact-sep { opacity: 0.5; }
+
+@media (max-width: 768px) {
+  .scene-cta__contact {
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .scene-cta__contact-sep { display: none; }
+}

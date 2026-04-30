@@ -22,10 +22,18 @@
 </head>
 <body>
   <a class="skip-link" href="#scenes">Aller au contenu</a>
+
+  <!-- Compteur global de scène (mix-blend pour lisibilité light/dark) -->
+  <div class="scene-counter" aria-hidden="true">
+    <span class="scene-counter__current">01</span>
+    <span class="scene-counter__sep">/</span>
+    <span class="scene-counter__total">12</span>
+  </div>
+
   <main id="scenes" data-scenes>
 
     <!-- ═══ SCÈNE 1 — HERO ═══ -->
-    <section class="scene-hero" data-scene data-theme="dark" aria-label="Six métiers, une personne">
+    <section class="scene-hero" data-scene data-scene-num="1" data-theme="dark" aria-label="Six métiers, une personne">
       <div class="scene-hero__stage">
         <span class="scene-hero__word">designer</span>
         <span class="scene-hero__word">motion</span>
@@ -38,7 +46,7 @@
     </section>
 
     <!-- ═══ SCÈNE 3 — IDENTITÉ ═══ -->
-    <section class="scene-identity" data-scene aria-label="Identité">
+    <section class="scene-identity" data-scene data-scene-num="3" aria-label="Identité">
       <div class="scene-identity__marker" aria-hidden="true">01 / IDENTITÉ</div>
       <h2 class="scene-identity__name">
         <span class="scene-identity__row scene-identity__row--top">Nicolas</span>
@@ -48,12 +56,12 @@
     </section>
 
     <!-- ═══ SCÈNE 4 — TRANSITION SOMBRE ═══ -->
-    <section class="scene-transition" data-scene aria-hidden="true">
+    <section class="scene-transition" data-scene data-scene-num="4" aria-hidden="true">
       <span class="scene-transition__iris"></span>
     </section>
 
     <!-- ═══ SCÈNE 5 — MANIFESTE ═══ -->
-    <section class="scene-manifesto" data-scene data-theme="dark" aria-label="Manifeste">
+    <section class="scene-manifesto" data-scene data-scene-num="5" data-theme="dark" aria-label="Manifeste">
       <div class="scene-manifesto__marker" aria-hidden="true">02 / CONVICTION</div>
 
       <div class="scene-manifesto__stage">
@@ -81,7 +89,7 @@
     </section>
 
     <!-- ═══ SCÈNE 7 — CASE STUDY FOOH PHILLIPS ═══ -->
-    <section class="scene-case" data-scene data-theme="dark" aria-label="Case study FOOH Phillips">
+    <section class="scene-case" data-scene data-scene-num="7" data-theme="dark" aria-label="Case study FOOH Phillips">
       <div class="scene-case__media">
         <video class="scene-case__video"
                data-src="/videos/fooh-phillips.mp4"
@@ -112,12 +120,12 @@
     </section>
 
     <!-- ═══ SCÈNE 8 — TRANSITION VERS CLAIR ═══ -->
-    <section class="scene-transition scene-transition--light" data-scene aria-hidden="true">
+    <section class="scene-transition scene-transition--light" data-scene data-scene-num="8" aria-hidden="true">
       <span class="scene-transition__iris"></span>
     </section>
 
     <!-- ═══ SCÈNE 9 — TÉMOIGNAGE ═══ -->
-    <section class="scene-quote" data-scene aria-label="Témoignage">
+    <section class="scene-quote" data-scene data-scene-num="9" aria-label="Témoignage">
       <div class="scene-quote__container">
         <span class="scene-quote__mark" aria-hidden="true">&#8220;</span>
         <blockquote class="scene-quote__text">
@@ -127,6 +135,78 @@
           <span class="scene-quote__line">Et c'était meilleur.</span>
         </blockquote>
         <cite class="scene-quote__attr">— Head of Brand,<br>fintech parisienne, 2025</cite>
+      </div>
+    </section>
+
+    <!-- ═══ SCÈNE 10 — OBJECTIONS BRUTAL-HONEST ═══ -->
+    <section class="scene-objections" data-scene data-scene-num="10" aria-label="Objections">
+      <span class="scene-objections__marker" aria-hidden="true">04 / OBJECTIONS</span>
+
+      <div class="scene-objections__pair">
+        <p class="scene-objections__q"><em>«&nbsp;On cherche un designer, pas un freelance.&nbsp;»</em></p>
+        <svg class="scene-objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
+          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
+        </svg>
+        <p class="scene-objections__a">
+          Tant mieux. Je cherche un CDI.<br>
+          J'en ai marre de facturer ma journée<br>
+          à des gens qui me prennent pour une option.
+        </p>
+      </div>
+
+      <div class="scene-objections__pair">
+        <p class="scene-objections__q"><em>«&nbsp;On a déjà un designer, un motion, un dev.&nbsp;»</em></p>
+        <svg class="scene-objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
+          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
+        </svg>
+        <p class="scene-objections__a">
+          Et ils se parlent ? Sérieusement ?<br>
+          Je suis le mec qui fait le boulot des trois<br>
+          sans réunion de raccord.
+        </p>
+      </div>
+
+      <div class="scene-objections__pair">
+        <p class="scene-objections__q"><em>«&nbsp;On est plutôt B2B, pas une marque lifestyle.&nbsp;»</em></p>
+        <svg class="scene-objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
+          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
+        </svg>
+        <p class="scene-objections__a">
+          Le B2B, c'est exactement là où le brand<br>
+          est le plus mal fait en France.<br>
+          J'en fais mon terrain depuis 6 ans.
+        </p>
+      </div>
+
+      <div class="scene-objections__pair">
+        <p class="scene-objections__q"><em>«&nbsp;On est à Lyon, Paris, ailleurs.&nbsp;»</em></p>
+        <svg class="scene-objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
+          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
+        </svg>
+        <p class="scene-objections__a">
+          Bordeaux, mais mes valises ne sont jamais loin.<br>
+          Et le remote, je l'ai inventé<br>
+          avant que ça soit cool.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ SCÈNE 11 — TRANSITION FINALE VERS SOMBRE ═══ -->
+    <section class="scene-transition" data-scene data-scene-num="11" aria-hidden="true">
+      <span class="scene-transition__iris"></span>
+    </section>
+
+    <!-- ═══ SCÈNE 12 — CTA FINAL ═══ -->
+    <section class="scene-cta" data-scene data-scene-num="12" data-theme="dark" aria-label="Contact">
+      <h2 class="scene-cta__hook"><em>On en parle&nbsp;?</em></h2>
+      <a class="scene-cta__email" href="mailto:nicosmp.pro@gmail.com">
+        <span class="scene-cta__email-text">nicosmp.pro@gmail.com</span>
+        <span class="scene-cta__arrow" aria-hidden="true">→</span>
+      </a>
+      <div class="scene-cta__contact">
+        <span>Bordeaux, France</span>
+        <span class="scene-cta__contact-sep">·</span>
+        <span>06&nbsp;68&nbsp;49&nbsp;95&nbsp;04</span>
       </div>
     </section>
 
