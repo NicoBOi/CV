@@ -230,8 +230,7 @@ body::before {
   left: var(--x);
   top: var(--y);
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--size);
+  font-size: var(--fs-3xl);   /* taille homogène ; rythme via poids + italic */
   line-height: var(--lh-tight);
   letter-spacing: var(--tr-tight);
   color: var(--fg);
@@ -242,13 +241,13 @@ body::before {
   transform: translate3d(0, 0, 0);
 }
 
-/* Positions curatées : asymétrie éditoriale, pas de symétrie centrée */
-.scene-hero__word:nth-child(1) { --x:  8%; --y: 14%; --size: var(--fs-3xl); }
-.scene-hero__word:nth-child(2) { --x: 62%; --y: 22%; --size: var(--fs-2xl); }
-.scene-hero__word:nth-child(3) { --x: 18%; --y: 48%; --size: var(--fs-4xl); font-style: italic; }
-.scene-hero__word:nth-child(4) { --x: 70%; --y: 60%; --size: var(--fs-3xl); }
-.scene-hero__word:nth-child(5) { --x: 10%; --y: 78%; --size: var(--fs-2xl); }
-.scene-hero__word:nth-child(6) { --x: 55%; --y: 84%; --size: var(--fs-3xl); }
+/* Positions curatées + variation typographique (pas de variation de taille) */
+.scene-hero__word:nth-child(1) { --x:  8%; --y: 14%; font-weight: 600; }
+.scene-hero__word:nth-child(2) { --x: 62%; --y: 22%; font-weight: 300; font-style: italic; }
+.scene-hero__word:nth-child(3) { --x: 18%; --y: 48%; font-weight: 400; }
+.scene-hero__word:nth-child(4) { --x: 70%; --y: 60%; font-weight: 600; }
+.scene-hero__word:nth-child(5) { --x: 10%; --y: 78%; font-weight: 300; font-style: italic; }
+.scene-hero__word:nth-child(6) { --x: 55%; --y: 84%; font-weight: 400; }
 
 /* Anti-flash init : si JS prend la main, on cache avant que stagger révèle.
    Sans .js (libs absentes) → mots visibles d'office (fallback gracieux). */
@@ -282,12 +281,9 @@ body::before {
   margin: var(--sp-5) auto 0;
 }
 
-/* Mobile : on évite l'overflow des très grandes tailles sur petit viewport */
+/* Mobile : on garde la taille homogène, juste un crop si besoin */
 @media (max-width: 480px) {
-  .scene-hero__word:nth-child(3) { --size: var(--fs-3xl); }
-  .scene-hero__word:nth-child(1),
-  .scene-hero__word:nth-child(4),
-  .scene-hero__word:nth-child(6) { --size: var(--fs-2xl); }
+  .scene-hero__word { font-size: var(--fs-2xl); }
 }
 
 /* ──────────────────────────────────────────────
