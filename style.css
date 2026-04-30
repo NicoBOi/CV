@@ -204,6 +204,35 @@ body::before {
 /* Reduced-motion : iris désactivé (mode swap instant via body data-mode) */
 .reduced-motion .iris-overlay { display: none; }
 
+/* ──────────────────────────────────────────────
+   FIL CONDUCTEUR — ligne verticale fixed gauche, fill scrubbed
+   Couleurs héritées du body data-mode (track via --fg, fill via --accent)
+   ────────────────────────────────────────────── */
+
+.thread {
+  position: fixed;
+  left: var(--sp-3);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5px;
+  height: 60vh;
+  background: color-mix(in oklab, var(--fg) 15%, transparent);
+  z-index: var(--z-skip);
+  pointer-events: none;
+}
+
+.thread__fill {
+  display: block;
+  width: 100%;
+  height: 0%;
+  background: var(--accent);
+  /* JS pose la hauteur. Transition courte pour lisser entre rAF frames. */
+  transition: height 80ms linear;
+}
+
+/* Reduced-motion : on garde le rail (info utile) mais sans transition d'easing */
+.reduced-motion .thread__fill { transition: none; }
+
 /* Reduced motion : neutralise tout */
 .reduced-motion *,
 .reduced-motion *::before,
@@ -615,7 +644,13 @@ body::before {
   display: block;
   padding: var(--sp-5) var(--sp-4);
   min-height: auto;
-  max-width: 1400px;       /* cap sur très grands écrans */
+}
+
+/* Le cap 1400px s'applique au contenu interne, pas à la scène full-bleed.
+   Sinon, sur >1400px, le body laisse apparaître des bandes de couleur. */
+.scene-objections__marker,
+.scene-objections__pair {
+  max-width: 1400px;
   margin-inline: auto;
 }
 
