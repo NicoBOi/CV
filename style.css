@@ -356,6 +356,76 @@ body::before {
 }
 
 /* ──────────────────────────────────────────────
+   SCÈNE — RÉFÉRENCES (mur typographique éditorial)
+   7 noms en font-display, tailles asymétriques, italique sur quelques uns.
+   Reveal clip-path stagger gauche→droite, réversible au scroll.
+   ────────────────────────────────────────────── */
+
+.scene-clients {
+  padding: var(--sp-5) var(--sp-4);
+  min-height: 50dvh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  gap: var(--sp-4);
+}
+
+.scene-clients__marker {
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.scene-clients__list {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-3) var(--sp-4);
+  max-width: 1400px;
+  width: 100%;
+}
+
+.scene-clients__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+  white-space: nowrap;
+  /* Reveal via clip-path. JS anime ; sans JS → noms visibles via fallback. */
+  clip-path: inset(0 100% 0 0);
+  will-change: clip-path;
+}
+
+/* Tailles variées pour rythme asymétrique éditorial */
+.scene-clients__name:nth-child(1) { font-size: var(--type-h2); }
+.scene-clients__name:nth-child(2) { font-size: var(--type-h3); }
+.scene-clients__name:nth-child(3) { font-size: var(--type-h2); }
+.scene-clients__name:nth-child(4) { font-size: var(--type-h3); }
+.scene-clients__name:nth-child(5) { font-size: var(--type-h2); }
+.scene-clients__name:nth-child(6) { font-size: var(--type-h3); }
+.scene-clients__name:nth-child(7) { font-size: var(--type-h2); }
+
+.scene-clients__name--italic {
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Reduced-motion : noms visibles d'office */
+.reduced-motion .scene-clients__name { clip-path: none !important; }
+
+/* Mobile : tailles serrées */
+@media (max-width: 480px) {
+  .scene-clients { padding: var(--sp-4) var(--sp-3); }
+  .scene-clients__name { font-size: var(--fs-xl) !important; }
+}
+
+/* ──────────────────────────────────────────────
    SCÈNE 5 — MANIFESTE
    3 phrases empilées, blur out / sharp in, pin x3 vues
    ────────────────────────────────────────────── */

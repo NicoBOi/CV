@@ -126,6 +126,39 @@
 })();
 
 /* ──────────────────────────────────────────────
+   SCÈNE — RÉFÉRENCES
+   Reveal stagger des noms via clip-path inset, réversible
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cine = window.__cinematic;
+  if (!cine || cine.reduced) return;
+
+  const { gsap, eases } = cine;
+  const scene = document.querySelector('.scene-clients');
+  if (!scene) return;
+
+  const names = scene.querySelectorAll('.scene-clients__name');
+  if (!names.length) return;
+
+  gsap.timeline({
+    defaults: { ease: eases.cinematic, duration: 0.7 },
+    scrollTrigger: {
+      trigger: scene,
+      start: 'top 75%',
+      end: 'bottom 25%',
+      toggleActions: 'play none play reverse',
+    },
+  })
+    .to(names, {
+      clipPath: 'inset(0 0% 0 0)',
+      stagger: 0.12,
+    });
+})();
+
+/* ──────────────────────────────────────────────
    SCÈNE 3 — IDENTITÉ
    "Nicolas" descend, "Sempere" monte, rendezvous au centre
    ────────────────────────────────────────────── */
