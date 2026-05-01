@@ -95,10 +95,8 @@ body {
   font-size: var(--fs-base);
   line-height: var(--lh-base);
   font-feature-settings: "ss01", "cv11";
-  /* Transition lisse entre scènes light/dark */
-  transition:
-    background var(--t-base) var(--ease-cinematic),
-    color      var(--t-base) var(--ease-cinematic);
+  /* Pas de transition body : chaque scène self-color via [data-mode], le body bg
+     n'a aucune raison d'être animé (ça créait un micro-flicker mode-swap). */
 }
 img, svg, video { display: block; max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
@@ -303,7 +301,7 @@ body::before {
   grid-template-columns: 1fr;
   align-items: center;
   padding: var(--sp-5) var(--sp-4);
-  min-height: 80dvh;        /* densifié vs 100dvh pour réduire le vide vertical */
+  min-height: 65dvh;        /* densifié encore : moins de vide central, conserve format page-titre */
 }
 
 .scene-identity__marker {
@@ -572,7 +570,7 @@ body::before {
   align-items: center;
   gap: var(--sp-3);
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;   /* proximity (vs mandatory) : ne hijack pas le scroll vertical */
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
@@ -593,6 +591,26 @@ body::before {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* Indicateur dots du carousel : signale visuellement la position + la scrollabilité */
+.scene-projects__indicator {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4) 0;
+}
+
+.scene-projects__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--fg) 25%, transparent);
+  transition: background 200ms var(--ease-snap), transform 200ms var(--ease-snap);
+}
+.scene-projects__dot.is-active {
+  background: var(--accent);
+  transform: scale(1.4);
 }
 
 @media (max-width: 768px) {
