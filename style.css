@@ -356,6 +356,199 @@ body::before {
 }
 
 /* ══════════════════════════════════════════════
+   03 — RÉFÉRENCES
+   Mur typographique 7 marques, clip-path inset reveal stagger
+   gauche → droite. Trigger sur la liste (pas la section).
+   ══════════════════════════════════════════════ */
+
+.scene--references {
+  grid-template-rows: auto 1fr;
+  align-items: start;
+  padding: var(--rhythm-section) var(--rhythm-block);
+  gap: var(--rhythm-block);
+  min-height: 70dvh;
+}
+
+.references__marker {
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.references__marker::before {
+  content: '\2022';
+  color: var(--accent);
+  font-size: 1.4em;
+  line-height: 0;
+}
+
+.references__list {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-self: center;
+  gap: var(--rhythm-default) var(--rhythm-block);
+  max-width: 1400px;
+  width: 100%;
+}
+
+.references__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--type-h2);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+  white-space: nowrap;
+  /* Clip étendu vertical : épargne descenders (lh tight clipperait) */
+  clip-path: inset(-0.25em 100% -0.25em 0);
+  will-change: clip-path;
+}
+.references__name--italic {
+  font-style: italic;
+  font-weight: 400;
+}
+
+@media (max-width: 480px) {
+  .scene--references { padding: var(--rhythm-block) var(--rhythm-default); }
+  .references__name { font-size: var(--type-h3); }
+}
+
+.reduced-motion .references__name { clip-path: none !important; }
+
+/* ══════════════════════════════════════════════
+   04 — CONVICTION
+   Manifeste 3 phrases. Sticky CSS (zéro pin GSAP).
+   Section 400dvh, inner sticky 100dvh, scrub avec reading pauses.
+   Highlight violet mode-aware (light = wash, dark = soulignement).
+   ══════════════════════════════════════════════ */
+
+.scene--conviction {
+  display: block;
+  min-height: 400dvh;
+  padding: 0 var(--rhythm-block);
+}
+
+.conviction__inner {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: center;
+  padding-block: var(--rhythm-section);
+}
+
+.conviction__marker {
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.conviction__marker::before {
+  content: '\2022';
+  color: var(--accent);
+  font-size: 1.4em;
+  line-height: 0;
+}
+
+.conviction__stage {
+  position: relative;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  min-height: 50dvh;
+}
+
+.conviction__phrase {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  max-width: min(90vw, 22ch);
+  height: max-content;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: var(--type-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+  text-align: center;
+  opacity: 0;
+  filter: blur(20px);
+  will-change: opacity, filter;
+}
+.conviction__phrase[data-step="0"] {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* Highlight violet : adaptatif selon mode actif de la scène
+   Light = wash translucide (visible sur cream)
+   Dark = soulignement plein violet (le wash est invisible sur coal) */
+.hl {
+  background-color: color-mix(in oklab, var(--violet) 20%, transparent);
+  padding: 0 0.08em;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+[data-mode="dark"] .hl,
+[data-scene][data-mode="dark"] .hl {
+  background-color: transparent;
+  border-radius: 0;
+  border-bottom: 2px solid var(--accent);
+  padding: 0 0 0.05em 0;
+}
+
+.conviction__progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--rhythm-tight);
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.2em;
+  color: var(--fg-muted);
+  align-self: end;
+}
+
+.conviction__dot {
+  transition: color var(--t-fast) var(--ease-snap);
+}
+.conviction__dot.is-active {
+  color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  .scene--conviction { padding: 0 var(--rhythm-default); }
+  .conviction__phrase { font-size: var(--type-h2); }
+}
+
+.reduced-motion .conviction__inner { position: static; height: auto; }
+.reduced-motion .conviction__stage { min-height: auto; display: block; }
+.reduced-motion .conviction__phrase {
+  position: static;
+  margin: var(--rhythm-default) auto;
+  filter: none !important;
+  opacity: 1 !important;
+}
+.reduced-motion .conviction__progress { display: none; }
+
+/* ══════════════════════════════════════════════
    ACCESSIBILITÉ — reduced motion
    ══════════════════════════════════════════════ */
 
