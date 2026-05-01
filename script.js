@@ -413,3 +413,88 @@
 
   videos.forEach((v) => obs.observe(v));
 })();
+
+/* ──────────────────────────────────────────────
+   06 — TÉMOIGNAGE
+   Reveal ligne par ligne via clip-path inset stagger gauche → droite
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cv = window.__cv;
+  if (!cv || cv.reduced) return;
+
+  const { gsap, eases } = cv;
+
+  const scene = document.querySelector('.scene--testimony');
+  if (!scene) return;
+
+  const lines = scene.querySelectorAll('.testimony__line');
+  if (!lines.length) return;
+
+  gsap.set(lines, { clipPath: 'inset(0 100% 0 0)' });
+
+  gsap.timeline({
+    defaults: { ease: eases.out, duration: 0.9 },
+    scrollTrigger: {
+      trigger: scene,
+      start: 'top 70%',
+      end: 'bottom 30%',
+      toggleActions: 'play none play reverse',
+    },
+  })
+    .to(lines, {
+      clipPath: 'inset(0 0% 0 0)',
+      stagger: 0.15,
+    });
+})();
+
+/* ──────────────────────────────────────────────
+   07 — OBJECTIONS
+   Reveal pair par pair (toggleActions reverse) + flèche scrubbed sur traversée
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cv = window.__cv;
+  if (!cv || cv.reduced) return;
+
+  const { gsap, eases } = cv;
+
+  const scene = document.querySelector('.scene--objections');
+  if (!scene) return;
+
+  scene.querySelectorAll('.objections__pair').forEach((pair) => {
+    // Reveal pair (réversible)
+    gsap.timeline({
+      defaults: { ease: eases.out },
+      scrollTrigger: {
+        trigger: pair,
+        start: 'top 75%',
+        end: 'bottom 25%',
+        toggleActions: 'play none play reverse',
+      },
+    })
+      .to(pair, { opacity: 1, y: 0, duration: 0.8 });
+
+    // Tracé de flèche scrubbed (réversible nativement)
+    const path = pair.querySelector('.objections__arrow path');
+    if (path) {
+      gsap.fromTo(path,
+        { strokeDashoffset: 200 },
+        {
+          strokeDashoffset: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: pair,
+            start: 'top 70%',
+            end: 'top 30%',
+            scrub: 0.5,
+          },
+        }
+      );
+    }
+  });
+})();
