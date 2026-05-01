@@ -99,11 +99,20 @@
     });
   };
 
-  // Première mesure quand le layout est stable
-  if (document.readyState === 'complete') {
+  // Première mesure APRÈS que toutes les fonts soient pleinement rendues
+  // (regular + italic + tous les axes/poids variables). Évite le bug du mot bloqué
+  // qui venait du font-swap arrivant après une mesure prématurée.
+  const onFontsReady = () => {
     refreshPositions();
+    ScrollTrigger.refresh();
+  };
+
+  if ('fonts' in document && document.fonts.ready) {
+    document.fonts.ready.then(onFontsReady);
+  } else if (document.readyState === 'complete') {
+    onFontsReady();
   } else {
-    window.addEventListener('load', refreshPositions, { once: true });
+    window.addEventListener('load', onFontsReady, { once: true });
   }
   window.addEventListener('resize', refreshPositions);
 
