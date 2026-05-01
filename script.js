@@ -295,6 +295,40 @@
 })();
 
 /* ──────────────────────────────────────────────
+   CARROUSEL PROJETS — dots indicator
+   Lit la position scroll horizontale du rail, met à jour le dot actif.
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const rail = document.querySelector('.scene-projects__rail');
+  const dots = document.querySelectorAll('.scene-projects__dot');
+  if (!rail || !dots.length) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const items = rail.children;
+    if (!items.length) return;
+    const itemRect = items[0].getBoundingClientRect();
+    const gap = parseFloat(getComputedStyle(rail).gap) || 0;
+    const stride = itemRect.width + gap;
+    const idx = Math.min(dots.length - 1, Math.max(0, Math.round(rail.scrollLeft / stride)));
+    dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(update);
+  };
+
+  rail.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+
+/* ──────────────────────────────────────────────
    LAZY-LOAD VIDÉOS (générique, toute scène avec video[data-src])
    IntersectionObserver — économie data hors viewport
    ────────────────────────────────────────────── */
