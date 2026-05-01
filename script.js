@@ -214,3 +214,48 @@
 
   window.addEventListener('resize', refreshPositions);
 })();
+
+/* ──────────────────────────────────────────────
+   02 — POSITION
+   "Nicolas" descend, "Sempere" monte, rendezvous au centre.
+   Reveal scrubbed sur l'entrée de la scène (top 80% → top 20%) → réversible nativement.
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cv = window.__cv;
+  if (!cv || cv.reduced) return;
+
+  const { gsap, eases } = cv;
+
+  const scene = document.querySelector('.scene--position');
+  if (!scene) return;
+
+  const marker = scene.querySelector('.position__marker');
+  const top    = scene.querySelector('.position__row--top');
+  const bottom = scene.querySelector('.position__row--bottom');
+  const stack  = scene.querySelector('.position__stack');
+  if (!top || !bottom) return;
+
+  // État initial unique : nom hors-champ haut/bas, marker + stack offset+invisible
+  gsap.set(top,    { yPercent: -50, opacity: 0 });
+  gsap.set(bottom, { yPercent:  50, opacity: 0 });
+  gsap.set([marker, stack].filter(Boolean), { opacity: 0, y: 20 });
+
+  // Reveal scrubbed : se joue sur les 60% du viewport en entrée de scène
+  gsap.timeline({
+    defaults: { ease: eases.out },
+    scrollTrigger: {
+      trigger: scene,
+      start: 'top 80%',
+      end: 'top 20%',
+      scrub: 0.6,
+      invalidateOnRefresh: true,
+    },
+  })
+    .to(marker, { opacity: 1, y: 0, duration: 0.5 }, 0)
+    .to(top,    { yPercent: 0, opacity: 1, duration: 1 }, 0.1)
+    .to(bottom, { yPercent: 0, opacity: 1, duration: 1 }, 0.1)
+    .to(stack,  { opacity: 1, y: 0, duration: 0.5 }, 0.7);
+})();

@@ -269,6 +269,93 @@ body::before {
 .reduced-motion .hero__claim { display: none; }
 
 /* ══════════════════════════════════════════════
+   02 — POSITION
+   Marker top-left, "Nicolas Sempere" rendezvous au centre,
+   stack info bottom-right (axe éditorial asymétrique).
+   ══════════════════════════════════════════════ */
+
+.scene--position {
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr;
+  align-items: center;
+  padding: var(--rhythm-section) var(--rhythm-block);
+}
+
+.position__marker {
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.position__marker::before {
+  content: '\2022';
+  color: var(--accent);
+  font-size: 1.4em;
+  line-height: 0;
+}
+
+.position__name {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-mega);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  text-align: center;
+  color: var(--fg);
+}
+
+.position__row {
+  display: block;
+  will-change: transform, opacity;
+}
+
+.position__stack {
+  align-self: end;
+  justify-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em var(--rhythm-default);
+  font-family: var(--font-mono);
+  font-size: var(--type-small);
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  max-width: 60ch;
+  text-align: right;
+  will-change: transform, opacity;
+}
+.position__sep {
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* Mobile : nom capé + stack recentré */
+@media (max-width: 768px) {
+  .scene--position { padding: var(--rhythm-block) var(--rhythm-default); }
+  .position__name { font-size: var(--type-h1); }
+  .position__stack {
+    justify-self: center;
+    text-align: center;
+  }
+}
+
+.reduced-motion .position__row,
+.reduced-motion .position__marker,
+.reduced-motion .position__stack {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ══════════════════════════════════════════════
    ACCESSIBILITÉ — reduced motion
    ══════════════════════════════════════════════ */
 
