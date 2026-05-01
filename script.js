@@ -85,21 +85,24 @@
   gsap.set(words, { opacity: 0, x: 0, y: 0, scale: 1 });
   if (claim) gsap.set(claim, { opacity: 0, y: 20 });
 
-  // Cache positions cibles convergence — recalculées après fonts.ready / resize
+  // Cache positions cibles convergence.
+  // CRITIQUE : offsetLeft/Top/Width/Height au lieu de getBoundingClientRect.
+  // getBoundingClientRect inclut les transforms GSAP appliqués → si onRefresh fire
+  // pendant une anim, les positions sont calculées depuis l'état transformé
+  // (deltas dégénérés ~30-60px au lieu de 200-400px réels). offsetXxx ignore
+  // les transforms et renvoie la position NATURELLE dans le offsetParent.
   const positions = new Array(words.length);
   const refreshPositions = () => {
-    const sr = stage.getBoundingClientRect();
-    const cx = sr.left + sr.width / 2;
-    const cy = sr.top + sr.height / 2;
-    console.warn('[hero] refreshPositions — stage:', { cx: cx.toFixed(1), cy: cy.toFixed(1), w: sr.width.toFixed(0), h: sr.height.toFixed(0) });
+    const cx = stage.offsetWidth / 2;
+    const cy = stage.offsetHeight / 2;
     words.forEach((w, i) => {
-      const r = w.getBoundingClientRect();
+      const naturalCx = w.offsetLeft + w.offsetWidth / 2;
+      const naturalCy = w.offsetTop + w.offsetHeight / 2;
       positions[i] = {
-        x: cx - (r.left + r.width / 2),
-        y: cy - (r.top + r.height / 2),
+        x: cx - naturalCx,
+        y: cy - naturalCy,
       };
       w.dataset.wordIndex = i;
-      console.warn(`[hero] pos[${i}] "${w.textContent}" — Δx: ${positions[i].x.toFixed(1)}, Δy: ${positions[i].y.toFixed(1)}, rect: ${r.width.toFixed(0)}×${r.height.toFixed(0)}`);
     });
   };
 
@@ -118,7 +121,6 @@
     });
 
     // Convergence scroll-driven, pin proactif (anticipatePin)
-    let firstUpdateLogged = false;
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: scene,
@@ -128,19 +130,7 @@
         scrub: 0.8,
         anticipatePin: 1,                // engagement pin proactif (anti-saccadé)
         invalidateOnRefresh: true,
-        onRefresh: () => {
-          refreshPositions();
-          console.warn('[hero] ScrollTrigger.onRefresh fired');
-        },
-        onUpdate: (self) => {
-          if (firstUpdateLogged) return;
-          firstUpdateLogged = true;
-          console.warn('[hero] FIRST scroll update — progress:', self.progress.toFixed(3));
-          words.forEach((w, i) => {
-            const r = w.getBoundingClientRect();
-            console.warn(`  word[${i}] current rect at first update:`, r.left.toFixed(1), r.top.toFixed(1));
-          });
-        },
+        onRefresh: refreshPositions,
       },
     });
 
