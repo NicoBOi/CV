@@ -122,13 +122,21 @@ body::before {
   body { font-family: 'Inter Display', 'Inter var', system-ui, sans-serif; }
 }
 
-/* ── Highlight violet translucide pour mots-clés stratégiques ── */
+/* ── Highlight violet : adapté au mode de la scène ──
+   - Light : wash translucide (visible sur cream)
+   - Dark : soulignement plein violet (le wash translucide est invisible sur coal) */
 .hl {
   background-color: color-mix(in oklab, var(--color-accent) 18%, transparent);
   padding: 0 0.08em;
   border-radius: 2px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+[data-mode="dark"] .hl {
+  background-color: transparent;
+  border-radius: 0;
+  border-bottom: 2px solid var(--accent);
+  padding: 0 0 0.05em 0;
 }
 
 /* ── Bullet violet préfixe sur tous les chapter markers ── */
@@ -415,15 +423,25 @@ body::before {
 }
 
 /* ──────────────────────────────────────────────
-   SCÈNE 5 — MANIFESTE
-   3 phrases empilées, blur out / sharp in, pin x3 vues
+   SCÈNE 4 — MANIFESTE (sticky, pas de pin GSAP)
+   Section haute (400dvh = 3 phases). Inner sticky reste au viewport pendant le scroll.
+   Plus de pin GSAP, plus de spacer-release, plus de répétition possible.
    ────────────────────────────────────────────── */
 
 .scene-manifesto {
+  display: block;          /* override grid de [data-scene] */
+  min-height: 400dvh;      /* 3 phases × ~133dvh chacune */
+  padding: 0 var(--sp-4);
+}
+
+.scene-manifesto__inner {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  display: grid;
   grid-template-rows: auto 1fr auto;
-  grid-template-columns: 1fr;
-  padding: var(--sp-5) var(--sp-4);
   align-items: center;
+  padding-block: var(--sp-5);
 }
 
 .scene-manifesto__marker {

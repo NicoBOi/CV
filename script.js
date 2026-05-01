@@ -61,7 +61,9 @@
 
 /* ──────────────────────────────────────────────
    SCÈNE 1 — HERO
-   Apparition staggered + convergence pinned au scroll
+   Single setup IIFE. Entry autoplay (verrouillé 0.5s/word, plus jamais retouché)
+   + convergence scroll-driven. État initial unique via gsap.set().
+   Plus de chained add(callback), plus de timelines en conflit.
    ────────────────────────────────────────────── */
 
 (() => {
@@ -79,10 +81,11 @@
   const words = scene.querySelectorAll('.scene-hero__word');
   const claim = scene.querySelector('.scene-hero__claim');
 
-  // État initial : tous les mots cachés (CSS visible par défaut → fallback no-JS).
-  gsap.set(words, { opacity: 0 });
+  // État initial unique — défini une seule fois, jamais surchargé ailleurs
+  gsap.set(words, { opacity: 0, x: 0, y: 0, scale: 1 });
+  if (claim) gsap.set(claim, { opacity: 0, y: 20 });
 
-  // Cache positions cibles, recalculées après fonts.ready / resize / ST.refresh.
+  // Cache positions cibles convergence — recalculées après fonts.ready / resize
   const positions = new Array(words.length);
   const refreshPositions = () => {
     const sr = stage.getBoundingClientRect();
@@ -97,11 +100,21 @@
     });
   };
 
-  // Setup convergence : créé UNIQUEMENT après la fin de l'entry.
-  // Une seule timeline animant les mots à la fois → plus de race condition.
-  const setupConvergence = () => {
+  // Setup unique : positions + entry autoplay + convergence ScrollTrigger.
+  // Entry's "to" state = convergence's "from" state, donc zéro conflit visuel
+  // si l'utilisateur scrolle pendant l'entry.
+  const setup = () => {
     refreshPositions();
 
+    // Entry stagger autoplay — 0.5s entre chaque mot, ordre aléatoire (~3.5s total)
+    gsap.to(words, {
+      opacity: 1,
+      duration: 0.5,
+      stagger: { each: 0.5, from: 'random' },
+      ease: eases.cinematic,
+    });
+
+    // Convergence scroll-driven, pin proactif (anticipatePin)
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: scene,
@@ -109,6 +122,7 @@
         end: '+=70%',
         pin: true,
         scrub: 0.8,
+        anticipatePin: 1,                // engagement pin proactif (anti-saccadé)
         invalidateOnRefresh: true,
         onRefresh: refreshPositions,
       },
@@ -137,21 +151,12 @@
     ScrollTrigger.refresh();
   };
 
-  /* PHASE 1 — Entry stagger posé (~5.5s total). Joue seul, puis chaîne convergence. */
-  const entryTl = gsap.timeline({ defaults: { ease: eases.cinematic } });
-  entryTl.to(words, {
-    opacity: 1,
-    duration: 0.7,
-    stagger: { each: 0.8, from: 'random' },   // 800ms entre chaque, posé
-  });
-  entryTl.add(() => {
-    // PHASE 2 — Convergence créée APRÈS entry + APRÈS fonts ready.
-    if ('fonts' in document && document.fonts.ready) {
-      document.fonts.ready.then(setupConvergence);
-    } else {
-      setupConvergence();
-    }
-  });
+  // Gate fonts.ready : aucune mesure layout avant que tous les axes/poids/styles soient rendus
+  if ('fonts' in document && document.fonts.ready) {
+    document.fonts.ready.then(setup);
+  } else {
+    setup();
+  }
 
   window.addEventListener('resize', refreshPositions);
 })();
@@ -171,15 +176,16 @@
   const scene = document.querySelector('.scene-clients');
   if (!scene) return;
 
+  const list  = scene.querySelector('.scene-clients__list');
   const names = scene.querySelectorAll('.scene-clients__name');
-  if (!names.length) return;
+  if (!names.length || !list) return;
 
   gsap.timeline({
     defaults: { ease: eases.cinematic, duration: 0.7 },
     scrollTrigger: {
-      trigger: scene,
-      start: 'top 75%',
-      end: 'bottom 25%',
+      trigger: list,                  // fire sur la LISTE (où les noms sont), pas la section
+      start: 'top 80%',
+      end: 'bottom 30%',
       toggleActions: 'play none play reverse',
     },
   })
@@ -255,17 +261,16 @@
   gsap.set(phrases[0], { autoAlpha: 1, filter: 'blur(0px)' });
   dots[0].classList.add('is-active');
 
+  // Pas de pin GSAP : la stage est sticky en CSS. ScrollTrigger pilote juste le scrub.
   const tl = gsap.timeline({
     defaults: { ease: eases.cinematic, duration: 1 },
     scrollTrigger: {
       trigger: scene,
       start: 'top top',
-      end: '+=300%',                  // 3 vues de scroll
-      pin: true,
+      end: 'bottom bottom',           // toute la hauteur de la section (400dvh)
       scrub: 0.5,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
-        // Indicator : 0..0.33 → step 0, 0.33..0.66 → 1, 0.66..1 → 2
         const idx = Math.min(2, Math.floor(self.progress * 3));
         dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
       },
@@ -276,12 +281,17 @@
   tl.to(phrases[0], { autoAlpha: 0, filter: 'blur(20px)' })
     .to(phrases[1], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
 
-  // Pause de lecture (timeline avance, phrases stables)
+  // Pause de lecture
   tl.to({}, { duration: 0.5 });
 
   // Phase 1 → 2
   tl.to(phrases[1], { autoAlpha: 0, filter: 'blur(20px)' })
     .to(phrases[2], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
+
+  // Phase finale : fade-out de phrase 2 dans le dernier 1/6e du scroll
+  // → la phrase ne "traîne" pas pendant que la section sort du viewport.
+  tl.to({}, { duration: 0.3 })
+    .to(phrases[2], { autoAlpha: 0, filter: 'blur(20px)', duration: 0.3 });
 })();
 
 /* ──────────────────────────────────────────────
