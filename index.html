@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <title>Nicolas Sempere — sempere.studio</title>
-  <meta name="description" content="Brand engineer hybride. DA, motion, 3D, no-code. Bordeaux + France.">
+  <meta name="description" content="Brand engineer hybride. DA, motion, 3D, no-code. Six ans, trente projets. Bordeaux, France.">
 
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 
@@ -15,207 +15,58 @@
 
   <link rel="stylesheet" href="/style.css">
 
-  <!-- Animations : GSAP + ScrollTrigger seuls (defer). Pas de Lenis : casse pin+scrub. -->
+  <!-- GSAP + ScrollTrigger -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script defer src="/script.js"></script>
 </head>
 <body data-mode="dark">
-  <a class="skip-link" href="#scenes">Aller au contenu</a>
+  <a class="skip-link" href="#main">Aller au contenu</a>
 
-  <!-- Barre de progression : fixed bottom, full width, fill au scroll global. -->
-  <div class="progress-bar" aria-hidden="true">
-    <span class="progress-bar__fill"></span>
+  <!-- Indicateur de chapitre — fixed haut-gauche -->
+  <div class="chapter" aria-hidden="true">
+    <span class="chapter__current">01</span>
+    <span class="chapter__sep">—</span>
+    <span class="chapter__total">08</span>
   </div>
 
-  <main id="scenes" data-scenes>
+  <!-- Barre de progression — fixed bas, full width -->
+  <div class="progress" aria-hidden="true">
+    <span class="progress__fill"></span>
+  </div>
 
-    <!-- ═══ SCÈNE 1 — HERO ═══ -->
-    <section class="scene-hero scene--full" data-scene data-scene-num="1" data-mode="dark" aria-label="Six métiers, une personne">
-      <div class="scene-hero__stage">
-        <span class="scene-hero__word">designer</span>
-        <span class="scene-hero__word">motion</span>
-        <span class="scene-hero__word">brand</span>
-        <span class="scene-hero__word">no-code</span>
-        <span class="scene-hero__word">vidéaste</span>
-        <span class="scene-hero__word">stratège</span>
-        <h1 class="scene-hero__claim">Six&nbsp;métiers.<br>Une&nbsp;personne.</h1>
-      </div>
+  <main id="main" class="scenes">
+
+    <section class="scene scene--hero" data-scene data-scene-num="1" data-mode="dark" aria-label="01 — Hero">
+      <!-- Section 01 — à construire -->
     </section>
 
-    <!-- ═══ SCÈNE 3 — IDENTITÉ ═══ -->
-    <section class="scene-identity scene--full" data-scene data-scene-num="2" data-mode="light" aria-label="Identité">
-      <div class="scene-identity__marker" aria-hidden="true">01 / IDENTITÉ</div>
-      <h2 class="scene-identity__name">
-        <span class="scene-identity__row scene-identity__row--top">Nicolas</span>
-        <span class="scene-identity__row scene-identity__row--bottom">Sempere</span>
-      </h2>
-      <p class="scene-identity__caption">Brand engineer hybride.<br>Six ans en freelance. 30 projets.</p>
+    <section class="scene scene--position" data-scene data-scene-num="2" data-mode="light" aria-label="02 — Position">
+      <!-- Section 02 — à construire -->
     </section>
 
-    <!-- ═══ SCÈNE 3 — RÉFÉRENCES (mur typographique) ═══ -->
-    <section class="scene-clients" data-scene data-scene-num="3" data-mode="light" aria-label="Références clients">
-      <span class="scene-clients__marker" aria-hidden="true">02 / RÉFÉRENCES</span>
-      <ul class="scene-clients__list">
-        <li class="scene-clients__name">Sephora</li>
-        <li class="scene-clients__name scene-clients__name--italic">Phillips</li>
-        <li class="scene-clients__name">Betclic Group</li>
-        <li class="scene-clients__name">Showroom Privé</li>
-        <li class="scene-clients__name scene-clients__name--italic">A Better Feeling</li>
-        <li class="scene-clients__name">Smart Brain</li>
-        <li class="scene-clients__name">Double Salto</li>
-      </ul>
+    <section class="scene scene--references" data-scene data-scene-num="3" data-mode="light" aria-label="03 — Références">
+      <!-- Section 03 — à construire -->
     </section>
 
-    <!-- ═══ SCÈNE 4 — MANIFESTE ═══ -->
-    <section class="scene-manifesto" data-scene data-scene-num="4" data-mode="dark" aria-label="Manifeste">
-      <div class="scene-manifesto__inner">
-        <div class="scene-manifesto__marker" aria-hidden="true">03 / CONVICTION</div>
-
-        <div class="scene-manifesto__stage">
-          <p class="scene-manifesto__phrase" data-step="0">
-            Tout ce qu'une IA peut faire,<br>
-            elle le fera mieux que vous.
-          </p>
-          <p class="scene-manifesto__phrase" data-step="1">
-            Sauf <span class="hl">trancher</span>.
-          </p>
-          <p class="scene-manifesto__phrase" data-step="2">
-            Mon métier n'est pas de produire.<br>
-            C'est de <span class="hl">choisir</span> ce qui mérite de l'être.
-          </p>
-        </div>
-
-        <div class="scene-manifesto__progress" aria-hidden="true">
-          <span class="scene-manifesto__dot" data-step="0">01</span>
-          <span class="scene-manifesto__sep">—</span>
-          <span class="scene-manifesto__dot" data-step="1">02</span>
-          <span class="scene-manifesto__sep">—</span>
-          <span class="scene-manifesto__dot" data-step="2">03</span>
-        </div>
-      </div>
+    <section class="scene scene--conviction" data-scene data-scene-num="4" data-mode="dark" aria-label="04 — Conviction">
+      <!-- Section 04 — à construire -->
     </section>
 
-    <!-- ═══ SCÈNE 5 — CARROUSEL PROJETS ═══ -->
-    <section class="scene-projects scene--full" data-scene data-scene-num="5" data-mode="dark" aria-label="Projets récents">
-      <div class="scene-projects__head">
-        <span class="scene-projects__marker" aria-hidden="true">04 / WORK</span>
-        <h3 class="scene-projects__catchline">Voici à quoi ressemble<br>du travail livré.</h3>
-      </div>
-
-      <ol class="scene-projects__rail" aria-label="Carrousel projets">
-        <li class="scene-projects__item">
-          <video class="scene-projects__video"
-                 data-src="/videos/projet-1.mp4"
-                 poster="/posters/projet-1.jpg"
-                 autoplay muted loop playsinline preload="metadata"></video>
-        </li>
-        <li class="scene-projects__item">
-          <video class="scene-projects__video"
-                 data-src="/videos/projet-2.mp4"
-                 poster="/posters/projet-2.jpg"
-                 autoplay muted loop playsinline preload="metadata"></video>
-        </li>
-        <li class="scene-projects__item">
-          <video class="scene-projects__video"
-                 data-src="/videos/projet-3.mp4"
-                 poster="/posters/projet-3.jpg"
-                 autoplay muted loop playsinline preload="metadata"></video>
-        </li>
-        <li class="scene-projects__item">
-          <video class="scene-projects__video"
-                 data-src="/videos/projet-4.mp4"
-                 poster="/posters/projet-4.jpg"
-                 autoplay muted loop playsinline preload="metadata"></video>
-        </li>
-      </ol>
-
-      <div class="scene-projects__indicator" aria-hidden="true">
-        <span class="scene-projects__dot is-active"></span>
-        <span class="scene-projects__dot"></span>
-        <span class="scene-projects__dot"></span>
-        <span class="scene-projects__dot"></span>
-      </div>
+    <section class="scene scene--projects" data-scene data-scene-num="5" data-mode="dark" aria-label="05 — Projets">
+      <!-- Section 05 — à construire -->
     </section>
 
-    <!-- ═══ SCÈNE 9 — TÉMOIGNAGE ═══ -->
-    <section class="scene-quote" data-scene data-scene-num="6" data-mode="light" aria-label="Témoignage">
-      <div class="scene-quote__container">
-        <span class="scene-quote__mark" aria-hidden="true">&#8220;</span>
-        <blockquote class="scene-quote__text">
-          <span class="scene-quote__line">Nicolas a livré en trois semaines</span>
-          <span class="scene-quote__line">ce qu'une agence nous chiffrait</span>
-          <span class="scene-quote__line">à quatre mois et 60K€.</span>
-          <span class="scene-quote__line">C'était meilleur.</span>
-        </blockquote>
-        <cite class="scene-quote__attr">— Sarah M., Head of Brand,<br>fintech parisienne, 2025</cite>
-      </div>
+    <section class="scene scene--testimony" data-scene data-scene-num="6" data-mode="light" aria-label="06 — Témoignage">
+      <!-- Section 06 — à construire -->
     </section>
 
-    <!-- ═══ SCÈNE 10 — OBJECTIONS BRUTAL-HONEST ═══ -->
-    <section class="scene-objections" data-scene data-scene-num="7" data-mode="light" aria-label="Objections">
-      <span class="scene-objections__marker" aria-hidden="true">05 / OBJECTIONS</span>
-
-      <div class="scene-objections__pair">
-        <p class="scene-objections__q"><em>«&nbsp;On a déjà un designer, un motion, un dev.&nbsp;»</em></p>
-        <svg class="scene-objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
-          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
-        </svg>
-        <p class="scene-objections__a">
-          Vous avez un designer, un motion, un dev.<br>
-          Et un trou entre les trois.
-        </p>
-      </div>
-
-      <div class="scene-objections__pair">
-        <p class="scene-objections__q"><em>«&nbsp;On est plutôt B2B, pas une marque lifestyle.&nbsp;»</em></p>
-        <svg class="scene-objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
-          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
-        </svg>
-        <p class="scene-objections__a">
-          Le B2B est l'endroit<br>
-          où le brand est le moins bien fait.<br>
-          C'est mon terrain depuis six ans.
-        </p>
-      </div>
-
-      <div class="scene-objections__pair">
-        <p class="scene-objections__q"><em>«&nbsp;On est à Lyon, Paris, ailleurs.&nbsp;»</em></p>
-        <svg class="scene-objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
-          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
-        </svg>
-        <p class="scene-objections__a">
-          Je suis à Bordeaux.<br>
-          Le remote, je le pratique<br>
-          depuis avant que ce soit la norme.
-        </p>
-      </div>
-
-      <div class="scene-objections__pair">
-        <p class="scene-objections__q"><em>«&nbsp;On cherche un designer, pas un freelance.&nbsp;»</em></p>
-        <svg class="scene-objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
-          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
-        </svg>
-        <p class="scene-objections__a">
-          Je cherche un CDI.<br>
-          Pas une mission de plus.
-        </p>
-      </div>
+    <section class="scene scene--objections" data-scene data-scene-num="7" data-mode="light" aria-label="07 — Objections">
+      <!-- Section 07 — à construire -->
     </section>
 
-    <!-- ═══ SCÈNE 12 — CTA FINAL ═══ -->
-    <section class="scene-cta scene--full" data-scene data-scene-num="8" data-mode="dark" aria-label="Contact">
-      <h2 class="scene-cta__hook"><em>Vous êtes encore là&nbsp;?</em></h2>
-      <p class="scene-cta__assertion">C'est que ça fonctionne&nbsp;;)</p>
-      <a class="scene-cta__email" href="mailto:nicosmp.pro@gmail.com">
-        <span class="scene-cta__email-text">nicosmp.pro@gmail.com</span>
-        <span class="scene-cta__arrow" aria-hidden="true">→</span>
-      </a>
-      <div class="scene-cta__contact">
-        <span>Bordeaux, France</span>
-        <span class="scene-cta__contact-sep">·</span>
-        <span>06&nbsp;68&nbsp;49&nbsp;95&nbsp;04</span>
-      </div>
+    <section class="scene scene--cta" data-scene data-scene-num="8" data-mode="dark" aria-label="08 — Contact">
+      <!-- Section 08 — à construire -->
     </section>
 
   </main>
