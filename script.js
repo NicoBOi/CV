@@ -357,3 +357,59 @@
   tl.to({}, { duration: 0.6 })
     .to(phrases[2], { autoAlpha: 0, filter: 'blur(20px)', duration: 0.3 });
 })();
+
+/* ──────────────────────────────────────────────
+   05 — PROJETS
+   Carrousel dots indicator (rAF-throttled scroll listener) +
+   lazy-load vidéos générique (toute video[data-src] sur le site).
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const rail = document.querySelector('.projects__rail');
+  const dots = document.querySelectorAll('.projects__dot');
+  if (!rail || !dots.length) return;
+
+  let raf = null;
+  const update = () => {
+    raf = null;
+    const items = rail.children;
+    if (!items.length) return;
+    const itemRect = items[0].getBoundingClientRect();
+    const gap = parseFloat(getComputedStyle(rail).gap) || 0;
+    const stride = itemRect.width + gap;
+    const idx = Math.min(dots.length - 1, Math.max(0, Math.round(rail.scrollLeft / stride)));
+    dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(update);
+  };
+
+  rail.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+
+/* Lazy-load vidéos — générique pour toute video[data-src] */
+(() => {
+  'use strict';
+
+  const videos = document.querySelectorAll('video[data-src]');
+  if (!videos.length || !('IntersectionObserver' in window)) return;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const v = e.target;
+      v.src = v.dataset.src;
+      v.load();
+      v.play().catch(() => { /* autoplay refusé : on ignore */ });
+      obs.unobserve(v);
+    });
+  }, { rootMargin: '300px 0px' });
+
+  videos.forEach((v) => obs.observe(v));
+})();
