@@ -186,6 +186,89 @@ body::before {
 }
 
 /* ══════════════════════════════════════════════
+   01 — HERO
+   6 mots éparpillés convergent vers "Une personne."
+   Sticky CSS (pas de pin GSAP). Section 200dvh, sticky 100dvh.
+   ══════════════════════════════════════════════ */
+
+.scene--hero {
+  min-height: 200dvh;        /* 100dvh sticky + 100dvh de scroll pour scrub */
+  display: block;            /* override grid de [data-scene] */
+}
+
+.hero__sticky {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.hero__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__word {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--size, var(--type-h2));
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+/* Positions curatées : asymétrie éditoriale + variation taille (rythme) */
+.hero__word[data-word="0"] { --x:  8%; --y: 14%; --size: var(--type-h2); }
+.hero__word[data-word="1"] { --x: 62%; --y: 22%; --size: var(--type-h3); }
+.hero__word[data-word="2"] { --x: 18%; --y: 48%; --size: var(--type-h2); font-style: italic; font-weight: 400; }
+.hero__word[data-word="3"] { --x: 70%; --y: 60%; --size: var(--type-h2); }
+.hero__word[data-word="4"] { --x: 10%; --y: 78%; --size: var(--type-h3); }
+.hero__word[data-word="5"] { --x: 55%; --y: 84%; --size: var(--type-h2); }
+
+/* JS prend la main : opacity 0 par défaut. Sans JS → tous visibles statiques. */
+.js .hero__word { opacity: 0; }
+
+.hero__claim {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  max-width: 90vw;
+  height: max-content;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: var(--type-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--accent);
+  text-align: center;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.js .hero__claim { opacity: 0; transform: scale(0.92); }
+
+/* Mobile : tailles réduites pour éviter overflow horizontal */
+@media (max-width: 768px) {
+  .hero__word[data-word="2"] { --size: var(--type-h3); }
+  .hero__word[data-word="0"],
+  .hero__word[data-word="3"],
+  .hero__word[data-word="5"] { --size: var(--type-h3); }
+  .hero__claim { font-size: var(--type-h2); }
+}
+
+/* Reduced-motion : claim affiché au centre, mots dispersés visibles. Pas de convergence. */
+.reduced-motion .hero__word { opacity: 1 !important; }
+.reduced-motion .hero__claim { display: none; }
+
+/* ══════════════════════════════════════════════
    ACCESSIBILITÉ — reduced motion
    ══════════════════════════════════════════════ */
 

@@ -109,3 +109,108 @@
   window.addEventListener('resize', onScroll);
   update();
 })();
+
+/* ──────────────────────────────────────────────
+   01 — HERO
+   Entry stagger autoplay + convergence scroll-driven (sticky CSS, pas de pin GSAP).
+   Positions calculées via offsetLeft/Top : transforms-immune.
+   Setup gated par document.fonts.ready : aucune mesure avant que la typo soit rendue.
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cv = window.__cv;
+  if (!cv || cv.reduced) return;
+
+  const { gsap, ScrollTrigger, eases } = cv;
+
+  const scene = document.querySelector('.scene--hero');
+  if (!scene) return;
+
+  const stage = scene.querySelector('.hero__stage');
+  const words = scene.querySelectorAll('.hero__word');
+  const claim = scene.querySelector('.hero__claim');
+  if (!stage || !words.length) return;
+
+  // État initial unique — gsap.set AVANT toute timeline
+  gsap.set(words, { opacity: 0, x: 0, y: 0, scale: 1 });
+  if (claim) gsap.set(claim, { opacity: 0, scale: 0.92 });
+
+  // Cache positions cibles (offsetLeft/Top : ignore les transforms GSAP)
+  const positions = new Array(words.length);
+  const refreshPositions = () => {
+    const cx = stage.offsetWidth / 2;
+    const cy = stage.offsetHeight / 2;
+    words.forEach((w, i) => {
+      positions[i] = {
+        x: cx - (w.offsetLeft + w.offsetWidth / 2),
+        y: cy - (w.offsetTop + w.offsetHeight / 2),
+      };
+    });
+  };
+
+  // Setup : positions + entry autoplay + convergence ScrollTrigger
+  const setup = () => {
+    refreshPositions();
+
+    // Entry autoplay — révélation posée des 6 mots (~3s total)
+    gsap.to(words, {
+      opacity: 1,
+      duration: 0.5,
+      stagger: { each: 0.35, from: 'random' },
+      ease: eases.out,
+    });
+
+    // Convergence scroll-driven — sticky CSS gère le pin, ScrollTrigger gère le scrub
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: scene,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.8,
+        invalidateOnRefresh: true,
+        onRefresh: refreshPositions,
+      },
+    });
+
+    // Pause initiale : laisse le visiteur lire les 6 mots dispersés avant convergence
+    tl.to({}, { duration: 0.4 });
+
+    // Convergence : tous les mots vers le centre, simultanément
+    words.forEach((w, i) => {
+      tl.fromTo(w,
+        { x: 0, y: 0, scale: 1, opacity: 1 },
+        {
+          x: () => positions[i] ? positions[i].x : 0,
+          y: () => positions[i] ? positions[i].y : 0,
+          scale: 0.4,
+          opacity: 0,
+          ease: eases.out,
+          duration: 1,
+        },
+        0.4
+      );
+    });
+
+    // Claim "Une personne." — apparaît dans la 2e moitié de la convergence
+    if (claim) {
+      tl.fromTo(claim,
+        { opacity: 0, scale: 0.92 },
+        { opacity: 1, scale: 1, ease: eases.out, duration: 0.6 },
+        1.0
+      );
+    }
+
+    ScrollTrigger.refresh();
+  };
+
+  // Gate fonts.ready : aucune mesure layout avant que tous les axes/poids soient rendus
+  if ('fonts' in document && document.fonts.ready) {
+    document.fonts.ready.then(setup);
+  } else {
+    setup();
+  }
+
+  window.addEventListener('resize', refreshPositions);
+})();
