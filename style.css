@@ -1,70 +1,58 @@
-/* ──────────────────────────────────────────────
+/* ══════════════════════════════════════════════
    sempere.studio — fondation
-   Tokens + reset + thèmes sectionnels.
-   ────────────────────────────────────────────── */
+   Reset complet + tokens design-system + chrome global.
+   Sections vides à ce stade, à construire une par une.
+   ══════════════════════════════════════════════ */
 
 :root {
-  /* ── Palette : charbon profond + crème chaude + violet mature ── */
-  --color-coal:        #14110f;
-  --color-coal-soft:   #1d1a17;
-  --color-cream:       #f4ede2;
-  --color-cream-soft:  #ebe2d4;
-  --color-accent:      #4A2EAB;   /* Violet profond, accent principal */
-  --color-accent-soft: #6B4FCB;   /* Plus clair, pour hover + dark theme */
-  --color-accent-deep: #2D1B69;   /* Plus sombre, pour accents soutenus */
+  /* ── Couleurs ── */
+  --coal:        #0E0E0E;
+  --coal-soft:   #1a1916;
+  --cream:       #F5F2ED;
+  --cream-soft:  #ebe5d6;
+  --violet:      #4A2EAB;
+  --violet-soft: #6B4FCB;
+  --violet-deep: #2D1B69;
 
-  /* ── Thème par défaut : clair (crème) ── */
-  --bg: var(--color-cream);
-  --fg: var(--color-coal);
-  --fg-muted: color-mix(in oklab, var(--color-coal) 60%, transparent);
-  --accent: var(--color-accent);
+  /* ── Mode par défaut : dark (body initial) ── */
+  --bg: var(--coal);
+  --fg: var(--cream);
+  --fg-muted: color-mix(in oklab, var(--cream) 60%, transparent);
+  --accent: var(--violet-soft);
 
-  /* ── Typo : Inter Display, échelle sculptée (xs → 6xl) ── */
+  /* ── Typographie ── */
   --font-display: 'Inter Display', 'Inter', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'JetBrains Mono', monospace;
-  --font-serif: 'Times New Roman', Georgia, serif;
+  --font-mono:    ui-monospace, 'JetBrains Mono', SFMono-Regular, monospace;
+  --font-serif:   'Times New Roman', Georgia, serif;
 
-  /* Amplitude large pour contraste extrême dans une même phrase */
-  --fs-xs:   clamp(0.75rem, 0.70rem + 0.2vw,  0.875rem);
-  --fs-sm:   clamp(0.875rem, 0.80rem + 0.3vw, 1rem);
-  --fs-base: clamp(1rem,    0.95rem + 0.4vw,  1.125rem);
-  --fs-lg:   clamp(1.25rem, 1.10rem + 0.7vw,  1.5rem);
-  --fs-xl:   clamp(1.5rem,  1.30rem + 1vw,    2rem);
-  --fs-2xl:  clamp(2rem,    1.60rem + 2vw,    3rem);
-  --fs-3xl:  clamp(3rem,    2.20rem + 4vw,    5rem);
-  --fs-4xl:  clamp(4.5rem,  3.00rem + 7vw,    8rem);
-  --fs-5xl:  clamp(6rem,    3.50rem + 12vw,  13rem);
-  --fs-6xl:  clamp(8rem,    4.00rem + 18vw,  20rem);
+  /* Échelle sémantique (sculptée, amplitude large) */
+  --type-micro:  clamp(0.7rem,  0.65rem + 0.2vw,  0.8rem);
+  --type-small:  clamp(0.875rem, 0.80rem + 0.3vw, 1rem);
+  --type-body:   clamp(1rem,    0.95rem + 0.4vw,  1.125rem);
+  --type-body-l: clamp(1.25rem, 1.10rem + 0.7vw,  1.5rem);
+  --type-h3:     clamp(2rem,    1.60rem + 2vw,    3rem);
+  --type-h2:     clamp(3rem,    2.20rem + 4vw,    5rem);
+  --type-h1:     clamp(4.5rem,  3.00rem + 7vw,    8rem);
+  --type-mega:   clamp(6rem,    3.50rem + 12vw,  13rem);
 
-  /* Tokens sémantiques (mapping → échelle fs-*) */
-  --type-micro:  var(--fs-xs);
-  --type-small:  var(--fs-sm);
-  --type-body:   var(--fs-base);
-  --type-body-l: var(--fs-lg);
-  --type-h3:     var(--fs-2xl);
-  --type-h2:     var(--fs-4xl);
-  --type-h1:     var(--fs-5xl);
-
-  /* Tracking + leading sculptés */
-  --lh-tight: 0.92;
-  --lh-snug:  1.05;
+  /* Tracking + leading */
+  --lh-tight: 0.95;
+  --lh-snug:  1.1;
   --lh-base:  1.4;
   --tr-tight: -0.04em;
   --tr-loose:  0.02em;
 
-  /* ── Espacements ── */
-  --sp-1: 0.25rem;
-  --sp-2: 0.5rem;
-  --sp-3: 1rem;
-  --sp-4: 2rem;
-  --sp-5: 4rem;
-  --sp-6: 8rem;
-  --sp-7: 16rem;
+  /* ── Rythme spatial (sémantique, pas discrétionnaire) ── */
+  --rhythm-tight:   0.5rem;
+  --rhythm-default: 1rem;
+  --rhythm-block:   2rem;
+  --rhythm-section: 4rem;
+  --rhythm-major:   8rem;
 
-  /* ── Easings (mirror JS window.__cinematic.eases) ── */
-  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-iris:      cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-snap:      cubic-bezier(0.4, 0, 0.2, 1);
+  /* ── Easings — vocabulaire motion ── */
+  --ease-out:  cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snap: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-iris: cubic-bezier(0.65, 0, 0.35, 1);
 
   /* ── Durées ── */
   --t-fast: 200ms;
@@ -72,19 +60,13 @@
   --t-slow: 800ms;
 
   /* ── Z-stack ── */
-  --z-skip:  999;
-  --z-grain: 50;
+  --z-skip:     999;
+  --z-chapter:  100;
+  --z-progress: 100;
+  --z-grain:     50;
 }
 
-/* ── Mode sombre : source de vérité unique sur <body data-mode="dark"> ── */
-[data-mode="dark"] {
-  --bg: var(--color-coal);
-  --fg: var(--color-cream);
-  --fg-muted: color-mix(in oklab, var(--color-cream) 60%, transparent);
-  --accent: var(--color-accent-soft);
-}
-
-/* ── Reset ciblé ── */
+/* ── Reset minimal ── */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; text-rendering: optimizeLegibility; }
@@ -92,824 +74,134 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-display);
-  font-size: var(--fs-base);
+  font-size: var(--type-body);
   line-height: var(--lh-base);
   font-feature-settings: "ss01", "cv11";
-  /* Pas de transition body : chaque scène self-color via [data-mode], le body bg
-     n'a aucune raison d'être animé (ça créait un micro-flicker mode-swap). */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 img, svg, video { display: block; max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 
-/* ── Grain texture global : SVG noise via pseudo-element fixed.
-      pointer-events: none + z-index sous le counter pour ne rien bloquer. ── */
+/* ── Mode swap (porté par body, source de vérité unique) ── */
+[data-mode="light"] {
+  --bg: var(--cream);
+  --fg: var(--coal);
+  --fg-muted: color-mix(in oklab, var(--coal) 60%, transparent);
+  --accent: var(--violet);
+}
+
+/* ── Grain texture global : SVG noise via pseudo-element fixed ── */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: var(--z-grain);
-  opacity: 0.035;
+  opacity: 0.03;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
-.reduced-motion body::before { display: none; }
 
-/* Variable font axes (wght, slnt) si supportés */
-@supports (font-variation-settings: normal) {
-  body { font-family: 'Inter Display', 'Inter var', system-ui, sans-serif; }
-}
-
-/* ── Highlight violet : adapté au mode de la scène ──
-   - Light : wash translucide (visible sur cream)
-   - Dark : soulignement plein violet (le wash translucide est invisible sur coal) */
-.hl {
-  background-color: color-mix(in oklab, var(--color-accent) 18%, transparent);
-  padding: 0 0.08em;
-  border-radius: 2px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-[data-mode="dark"] .hl {
-  background-color: transparent;
-  border-radius: 0;
-  border-bottom: 2px solid var(--accent);
-  padding: 0 0 0.05em 0;
-}
-
-/* ── Bullet violet préfixe sur tous les chapter markers ── */
-.scene-identity__marker::before,
-.scene-clients__marker::before,
-.scene-manifesto__marker::before,
-.scene-projects__marker::before,
-.scene-objections__marker::before {
-  content: '\2022';            /* puce ronde pleine */
-  color: var(--accent);
-  margin-right: 0.6em;
-  font-size: 1.2em;
-  vertical-align: -0.05em;
-}
-
-/* ── Skip-link accessible ── */
+/* ── Skip-link a11y ── */
 .skip-link {
   position: fixed;
-  top: var(--sp-2);
-  left: var(--sp-2);
+  top: var(--rhythm-tight);
+  left: var(--rhythm-tight);
   z-index: var(--z-skip);
-  padding: var(--sp-2) var(--sp-3);
+  padding: var(--rhythm-tight) var(--rhythm-default);
   background: var(--accent);
-  color: var(--color-cream);
-  font-size: var(--fs-sm);
+  color: var(--cream);
+  font-size: var(--type-small);
   text-decoration: none;
   transform: translateY(-200%);
   transition: transform var(--t-fast) var(--ease-snap);
 }
 .skip-link:focus { transform: translateY(0); }
 
-/* ── Conteneur scènes : aucune marge entre scènes ── */
-[data-scenes] { display: block; }
+/* ── Indicateur chapitre (fixed haut-gauche) ── */
+.chapter {
+  position: fixed;
+  top: var(--rhythm-default);
+  left: var(--rhythm-default);
+  z-index: var(--z-chapter);
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.2em;
+  color: var(--fg-muted);
+  pointer-events: none;
+  text-transform: uppercase;
+}
 
-/* ── Squelette d'une scène : hauteur naturelle, mode self-scoped ── */
+/* ── Barre de progression (fixed bas, full width) ── */
+.progress {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: color-mix(in oklab, var(--fg) 12%, transparent);
+  z-index: var(--z-progress);
+  pointer-events: none;
+}
+.progress__fill {
+  display: block;
+  width: 0%;
+  height: 100%;
+  background: var(--accent);
+  transition: width 80ms linear, background var(--t-base) var(--ease-out);
+}
+
+/* ══════════════════════════════════════════════
+   SCÈNES — squelette
+   Chaque scène = 100dvh par défaut, mode self-scoped.
+   Contenu spécifique ajouté au fil de la construction.
+   ══════════════════════════════════════════════ */
+
+.scenes { display: block; }
+
 [data-scene] {
   position: relative;
   display: grid;
-  /* overflow visible par défaut : laisse les descenders (g, p, q) respirer.
-     Les transitions iris ayant été retirées, plus besoin de clipper. */
+  min-height: 100dvh;
 }
 
-/* Mode self-scoped : chaque scène applique sa palette via data-mode.
-   Robuste sans JS : les couleurs sont déjà bonnes au load. */
-[data-scene][data-mode="light"] {
-  background: var(--color-cream);
-  color: var(--color-coal);
-  --bg: var(--color-cream);
-  --fg: var(--color-coal);
-  --fg-muted: color-mix(in oklab, var(--color-coal) 60%, transparent);
-  --accent: var(--color-accent);
-}
 [data-scene][data-mode="dark"] {
-  background: var(--color-coal);
-  color: var(--color-cream);
-  --bg: var(--color-coal);
-  --fg: var(--color-cream);
-  --fg-muted: color-mix(in oklab, var(--color-cream) 60%, transparent);
-  --accent: var(--color-accent-soft);
+  background: var(--coal);
+  color: var(--cream);
+  --fg: var(--cream);
+  --fg-muted: color-mix(in oklab, var(--cream) 60%, transparent);
+  --accent: var(--violet-soft);
 }
 
-/* Scènes fortes : forcent 100dvh (hero, identité, manifeste, case, cta) */
-.scene--full {
-  min-height: 100dvh;     /* dvh > vh, évite le jump iOS */
+[data-scene][data-mode="light"] {
+  background: var(--cream);
+  color: var(--coal);
+  --fg: var(--coal);
+  --fg-muted: color-mix(in oklab, var(--coal) 60%, transparent);
+  --accent: var(--violet);
 }
 
+/* ══════════════════════════════════════════════
+   ACCESSIBILITÉ — reduced motion
+   ══════════════════════════════════════════════ */
 
-/* Reduced motion : neutralise tout */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  body::before { display: none; }
+}
+
+/* Classe imposée par le JS quand reduced-motion est détecté côté script */
 .reduced-motion *,
 .reduced-motion *::before,
 .reduced-motion *::after {
   animation-duration: 0.01ms !important;
   transition-duration: 0.01ms !important;
-  scroll-behavior: auto !important;
-}
-
-/* ──────────────────────────────────────────────
-   SCÈNE 1 — HERO
-   6 mots éparpillés → convergence "sempere"
-   ────────────────────────────────────────────── */
-
-.scene-hero {
-  isolation: isolate;
-}
-
-.scene-hero__stage {
-  position: relative;
-  width: 100vw;
-  height: 100dvh;
-}
-
-.scene-hero__word {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--size);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tr-tight);
-  color: var(--fg);
-  /* Visible par défaut. JS pose opacity:0 avant stagger.
-     Sans JS / reduced-motion → mots affichés statiquement. */
-  white-space: nowrap;
-  will-change: transform, opacity;
-  transform: translate3d(0, 0, 0);
-}
-
-/* Positions curatées + tailles asymétriques (rythme éditorial) */
-.scene-hero__word:nth-child(1) { --x:  8%; --y: 14%; --size: var(--fs-3xl); }
-.scene-hero__word:nth-child(2) { --x: 62%; --y: 22%; --size: var(--fs-2xl); }
-.scene-hero__word:nth-child(3) { --x: 18%; --y: 48%; --size: var(--fs-4xl); font-style: italic; }
-.scene-hero__word:nth-child(4) { --x: 70%; --y: 60%; --size: var(--fs-3xl); }
-.scene-hero__word:nth-child(5) { --x: 10%; --y: 78%; --size: var(--fs-2xl); }
-.scene-hero__word:nth-child(6) { --x: 55%; --y: 84%; --size: var(--fs-3xl); }
-
-/* Anti-flash init : si JS prend la main, on cache avant que stagger révèle.
-   Sans .js (libs absentes) → mots visibles d'office (fallback gracieux). */
-.js .scene-hero__word { opacity: 0; }
-
-/* Phrase-promesse révélée à la fin de la convergence.
-   Cachée par défaut, JS la révèle pendant le scrub final. */
-.scene-hero__claim {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: max-content;
-  max-width: 90vw;
-  height: max-content;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2rem, 5vw, 4.5rem);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tr-tight);
-  color: var(--fg);
-  text-align: center;
-  opacity: 0;                 /* JS reveal */
-  transform: translateY(20px);
-  pointer-events: none;
-  will-change: opacity, transform;
-}
-.reduced-motion .scene-hero__claim {
-  opacity: 1;
-  transform: none;
-  position: static;
-  margin: var(--sp-5) auto 0;
-}
-
-/* Mobile : on cap les très grandes tailles pour éviter l'overflow horizontal */
-@media (max-width: 480px) {
-  .scene-hero__word:nth-child(3) { --size: var(--fs-3xl); }
-  .scene-hero__word:nth-child(1),
-  .scene-hero__word:nth-child(4),
-  .scene-hero__word:nth-child(6) { --size: var(--fs-2xl); }
-}
-
-/* ──────────────────────────────────────────────
-   SCÈNE 3 — IDENTITÉ
-   Page de titre : marker, nom massif 2 lignes, légende
-   ────────────────────────────────────────────── */
-
-.scene-identity {
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: 1fr;
-  align-items: center;
-  padding: var(--sp-5) var(--sp-4);
-  min-height: 65dvh;        /* densifié encore : moins de vide central, conserve format page-titre */
-}
-
-.scene-identity__marker {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  align-self: start;
-  will-change: transform, opacity;
-}
-
-.scene-identity__name {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--fs-5xl);    /* réduit de 6xl → 5xl pour rééquilibrer vs caption */
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tr-tight);
-  text-align: center;
-  color: var(--fg);
-}
-
-.scene-identity__row {
-  display: block;
-  will-change: transform, opacity;
-}
-
-.scene-identity__caption {
-  margin: 0;
-  align-self: end;
-  justify-self: end;       /* axe éditorial : marker top-left + caption bottom-right */
-  text-align: right;
-  font-size: var(--fs-lg);  /* augmenté de base → lg pour exister face au nom 5xl */
-  color: var(--fg-muted);
-  letter-spacing: var(--tr-loose);
-  max-width: 40ch;
-  will-change: transform, opacity;
-}
-
-/* Mobile : on cap le nom géant + caption recentrée (l'asymétrie casse en stack) */
-@media (max-width: 480px) {
-  .scene-identity { padding: var(--sp-4) var(--sp-3); }
-  .scene-identity__name { font-size: clamp(3.5rem, 14vw, 5.5rem); }
-  .scene-identity__caption {
-    justify-self: stretch;
-    text-align: center;
-    max-width: 100%;
-  }
-}
-
-/* ──────────────────────────────────────────────
-   SCÈNE — RÉFÉRENCES (mur typographique éditorial)
-   7 noms en font-display, tailles asymétriques, italique sur quelques uns.
-   Reveal clip-path stagger gauche→droite, réversible au scroll.
-   ────────────────────────────────────────────── */
-
-.scene-clients {
-  padding: var(--sp-5) var(--sp-4);
-  min-height: 50dvh;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  align-content: start;
-  gap: var(--sp-4);
-}
-
-.scene-clients__marker {
-  font-family: var(--font-mono);
-  font-size: var(--type-micro);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-}
-
-.scene-clients__list {
-  list-style: none;
-  margin: 0 auto;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--sp-3) var(--sp-4);
-  max-width: 1400px;
-  width: 100%;
-}
-
-.scene-clients__name {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--type-h2);    /* taille homogène pour les 7 noms */
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tr-tight);
-  color: var(--fg);
-  white-space: nowrap;
-  /* Clip-path étendu verticalement (-0.25em top/bottom) pour épargner les
-     descenders (g, p, j, y) que la lh tight (0.92) sortirait du bounding box. */
-  clip-path: inset(-0.25em 100% -0.25em 0);
-  will-change: clip-path;
-}
-
-.scene-clients__name--italic {
-  font-style: italic;
-  font-weight: 400;
-}
-
-/* Reduced-motion : noms visibles d'office */
-.reduced-motion .scene-clients__name { clip-path: none !important; }
-
-/* Mobile : tailles serrées */
-@media (max-width: 480px) {
-  .scene-clients { padding: var(--sp-4) var(--sp-3); }
-  .scene-clients__name { font-size: var(--fs-xl) !important; }
-}
-
-/* ──────────────────────────────────────────────
-   SCÈNE 4 — MANIFESTE (sticky, pas de pin GSAP)
-   Section haute (400dvh = 3 phases). Inner sticky reste au viewport pendant le scroll.
-   Plus de pin GSAP, plus de spacer-release, plus de répétition possible.
-   ────────────────────────────────────────────── */
-
-.scene-manifesto {
-  display: block;          /* override grid de [data-scene] */
-  min-height: 400dvh;      /* 3 phases × ~133dvh chacune */
-  padding: 0 var(--sp-4);
-}
-
-.scene-manifesto__inner {
-  position: sticky;
-  top: 0;
-  height: 100dvh;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  align-items: center;
-  padding-block: var(--sp-5);
-}
-
-.scene-manifesto__marker {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  align-self: start;
-}
-
-.scene-manifesto__stage {
-  position: relative;
-  width: 100%;
-  display: grid;
-  place-items: center;
-  min-height: 50dvh;
-}
-
-.scene-manifesto__phrase {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: max-content;
-  max-width: min(90vw, 22ch);
-  height: max-content;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 600;
-  font-size: var(--fs-4xl);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tr-tight);
-  color: var(--fg);
-  text-align: center;
-  /* Défaut CSS : phrases 2 et 3 floues + cachées. Phrase 1 nette. */
-  opacity: 0;
-  filter: blur(20px);
-  will-change: opacity, filter;
-}
-.scene-manifesto__phrase[data-step="0"] {
-  opacity: 1;
-  filter: blur(0);
-}
-
-.scene-manifesto__progress {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--sp-2);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.18em;
-  color: var(--fg-muted);
-  align-self: end;
-}
-
-.scene-manifesto__dot {
-  transition: color var(--t-fast) var(--ease-snap);
-}
-.scene-manifesto__dot.is-active {
-  color: var(--accent);
-}
-
-/* Reduced-motion : phrases empilées en flux, lisibles sans pin */
-.reduced-motion .scene-manifesto__stage {
-  display: block;
-  min-height: auto;
-}
-.reduced-motion .scene-manifesto__phrase {
-  position: static;
-  margin: var(--sp-4) auto;
-  filter: none !important;
-  opacity: 1 !important;
-}
-.reduced-motion .scene-manifesto__progress { display: none; }
-
-/* Mobile : padding + taille adaptés */
-@media (max-width: 480px) {
-  .scene-manifesto { padding: var(--sp-4) var(--sp-3); }
-  .scene-manifesto__phrase { font-size: var(--fs-3xl); }
-}
-
-/* ──────────────────────────────────────────────
-   SCÈNE 5 — CARROUSEL PROJETS
-   4 vidéos verticales 9:16, scroll horizontal snap, lazy-load.
-   ────────────────────────────────────────────── */
-
-.scene-projects {
-  grid-template-rows: auto 1fr;
-  padding: var(--sp-5) 0 var(--sp-5);
-  gap: var(--sp-4);
-}
-
-.scene-projects__head {
-  padding: 0 var(--sp-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  max-width: 1400px;
-  margin-inline: auto;
-  width: 100%;
-}
-
-.scene-projects__marker {
-  font-family: var(--font-mono);
-  font-size: var(--type-micro);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-}
-
-.scene-projects__catchline {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--type-h2);
-  line-height: var(--lh-snug);
-  letter-spacing: var(--tr-tight);
-  color: var(--fg);
-  max-width: 26ch;
-}
-
-.scene-projects__rail {
-  list-style: none;
-  margin: 0;
-  padding: 0 var(--sp-4) var(--sp-2);
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  overflow-x: auto;
-  scroll-snap-type: x proximity;   /* proximity (vs mandatory) : ne hijack pas le scroll vertical */
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-.scene-projects__rail::-webkit-scrollbar { display: none; }
-
-.scene-projects__item {
-  flex: 0 0 auto;
-  width: clamp(220px, 28vw, 380px);
-  aspect-ratio: 9 / 16;
-  scroll-snap-align: start;
-  overflow: hidden;
-  background: var(--color-coal-soft);
-  border-radius: var(--sp-2);
-}
-
-.scene-projects__video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* Indicateur dots du carousel : signale visuellement la position + la scrollabilité */
-.scene-projects__indicator {
-  display: flex;
-  justify-content: center;
-  gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-4) 0;
-}
-
-.scene-projects__dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: color-mix(in oklab, var(--fg) 25%, transparent);
-  transition: background 200ms var(--ease-snap), transform 200ms var(--ease-snap);
-}
-.scene-projects__dot.is-active {
-  background: var(--accent);
-  transform: scale(1.4);
-}
-
-@media (max-width: 768px) {
-  .scene-projects__item {
-    width: clamp(180px, 72vw, 280px);
-  }
-}
-
-/* ──────────────────────────────────────────────
-   SCÈNE 9 — TÉMOIGNAGE
-   Guillemet géant déco + citation italic + attribution
-   ────────────────────────────────────────────── */
-
-.scene-quote {
-  place-items: center;
-  padding: var(--sp-5) var(--sp-4);
-  min-height: 75dvh;       /* densifié : moins de vide central */
-}
-
-.scene-quote__container {
-  position: relative;
-  max-width: 800px;
-  text-align: center;
-}
-
-.scene-quote__mark {
-  position: absolute;
-  top: -0.45em;
-  left: -0.15em;
-  font-family: var(--font-serif);
-  font-size: 20vw;
-  line-height: 1;
-  color: rgba(26, 26, 26, 0.08);
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
-}
-
-.scene-quote__text {
-  position: relative;
-  margin: 0;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 500;
-  font-size: var(--type-h3);
-  line-height: 1.3;
-  letter-spacing: var(--tr-tight);
-  color: var(--fg);
-  z-index: 1;
-}
-
-.scene-quote__line {
-  display: block;
-  will-change: clip-path;
-}
-
-.scene-quote__attr {
-  display: block;
-  margin-top: var(--sp-4);
-  font-size: var(--type-small);
-  color: var(--fg-muted);
-  font-style: normal;
-  letter-spacing: var(--tr-loose);
-}
-/* Mini-trait violet sous l'attribution : signature visuelle subtle */
-.scene-quote__attr::after {
-  content: '';
-  display: block;
-  width: 32px;
-  height: 1.5px;
-  background: var(--accent);
-  margin: var(--sp-2) auto 0;
-}
-
-/* Reduced-motion : citation visible directement */
-.reduced-motion .scene-quote__line { clip-path: none !important; }
-
-/* Mobile : padding adapté, citation à taille proportionnelle */
-@media (max-width: 480px) {
-  .scene-quote { padding: var(--sp-4) var(--sp-3); }
-  .scene-quote__text { font-size: var(--fs-xl); }
-}
-
-/* ──────────────────────────────────────────────
-   BARRE DE PROGRESSION — fixed bottom, full width
-   Track tinté du fg actif, fill en accent (violet).
-   Couleurs auto-adaptatives via body data-mode.
-   ────────────────────────────────────────────── */
-
-.progress-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: color-mix(in oklab, var(--fg) 15%, transparent);
-  z-index: var(--z-skip);
-  pointer-events: none;
-}
-
-.progress-bar__fill {
-  display: block;
-  width: 0%;
-  height: 100%;
-  background: var(--accent);
-  transition: width 80ms linear;
-}
-
-.reduced-motion .progress-bar__fill { transition: none; }
-
-/* ──────────────────────────────────────────────
-   SCÈNE 10 — OBJECTIONS BRUTAL-HONEST
-   Flow vertical, paires Q | flèche | R, reveal one-shot + flèche scrubbed
-   ────────────────────────────────────────────── */
-
-.scene-objections {
-  display: block;
-  padding: var(--sp-5) var(--sp-4);
-  min-height: auto;
-}
-
-/* Le cap 1400px s'applique au contenu interne, pas à la scène full-bleed.
-   Sinon, sur >1400px, le body laisse apparaître des bandes de couleur. */
-.scene-objections__marker,
-.scene-objections__pair {
-  max-width: 1400px;
-  margin-inline: auto;
-}
-
-.scene-objections__marker {
-  display: block;
-  margin-bottom: var(--sp-5);
-  font-family: var(--font-mono);
-  font-size: var(--type-micro);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-}
-
-.scene-objections__pair {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: var(--sp-4);
-  min-height: 40dvh;       /* Encore densifié : 4 × 40dvh = 160dvh (vs 320 initial) */
-  padding-block: var(--sp-3);
-  opacity: 0;              /* Reveal JS */
-  transform: translateY(30px);
-  will-change: opacity, transform;
-}
-
-.scene-objections__q {
-  margin: 0;
-  justify-self: end;
-  text-align: right;
-  max-width: 30ch;
-  font-size: var(--type-h3);
-  font-style: italic;
-  font-weight: 400;
-  line-height: var(--lh-snug);
-  color: var(--fg-muted);
-}
-.scene-objections__q em { font-style: italic; }
-
-.scene-objections__arrow {
-  width: clamp(80px, 10vw, 160px);
-  height: auto;
-  stroke: var(--accent);
-  stroke-width: 1.5;
-  fill: none;
-  flex-shrink: 0;
-}
-.scene-objections__arrow path {
-  stroke-dasharray: 200;
-  stroke-dashoffset: 200; /* JS scrub → 0 */
-}
-
-.scene-objections__a {
-  margin: 0;
-  justify-self: start;
-  text-align: left;
-  max-width: 36ch;
-  font-size: var(--type-h3);
-  font-weight: 600;
-  line-height: var(--lh-snug);
-  color: var(--fg);
-}
-
-@media (max-width: 768px) {
-  .scene-objections__pair {
-    grid-template-columns: 1fr;
-    gap: var(--sp-3);
-    text-align: left;
-    min-height: auto;
-    padding-block: var(--sp-5);
-  }
-  .scene-objections__q {
-    justify-self: start;
-    text-align: left;
-    max-width: 100%;
-  }
-  .scene-objections__a { max-width: 100%; }
-  .scene-objections__arrow {
-    width: 32px;
-    transform: rotate(90deg);
-    justify-self: start;
-  }
-}
-
-.reduced-motion .scene-objections__pair {
-  opacity: 1 !important;
-  transform: none !important;
-}
-.reduced-motion .scene-objections__arrow path { stroke-dashoffset: 0 !important; }
-
-/* ──────────────────────────────────────────────
-   SCÈNE 12 — CTA FINAL
-   Hook italic XL + mailto avec flèche translate hover + contact bottom
-   ────────────────────────────────────────────── */
-
-.scene-cta {
-  place-items: center;
-  text-align: center;
-  padding: var(--sp-5) var(--sp-4);
-}
-
-.scene-cta__hook {
-  margin: 0;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 700;
-  font-size: var(--type-h1);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tr-tight);
-  color: var(--fg);
-}
-.scene-cta__hook em { font-style: italic; }
-
-.scene-cta__assertion {
-  margin: var(--sp-3) 0 0;
-  font-size: var(--type-body-l);
-  color: var(--fg-muted);
-  letter-spacing: var(--tr-loose);
-  max-width: 40ch;
-}
-
-.scene-cta__email {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  margin-top: var(--sp-4);
-  font-family: var(--font-mono);
-  font-size: var(--type-h3);
-  color: var(--fg);
-  text-decoration: none;
-  letter-spacing: 0.04em;
-}
-/* Soulignement animé tracé : 0% → 100% au hover, gauche → droite. */
-.scene-cta__email-text {
-  background-image: linear-gradient(var(--accent), var(--accent));
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 0% 2px;
-  padding-bottom: 0.18em;
-  transition: background-size 450ms var(--ease-cinematic);
-}
-.scene-cta__email:hover .scene-cta__email-text,
-.scene-cta__email:focus-visible .scene-cta__email-text {
-  background-size: 100% 2px;
-}
-.scene-cta__arrow {
-  display: inline-block;
-  transition: transform var(--t-fast) var(--ease-snap);
-}
-.scene-cta__email:hover .scene-cta__arrow,
-.scene-cta__email:focus-visible .scene-cta__arrow {
-  transform: translateX(0.4em);
-}
-
-.scene-cta__contact {
-  position: absolute;
-  bottom: var(--sp-4);
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--sp-3);
-  font-family: var(--font-mono);
-  font-size: var(--type-small);
-  color: var(--fg-muted);
-  letter-spacing: 0.04em;
-}
-.scene-cta__contact-sep { opacity: 0.5; }
-
-@media (max-width: 768px) {
-  .scene-cta__contact {
-    flex-direction: column;
-    gap: var(--sp-1);
-  }
-  .scene-cta__contact-sep { display: none; }
 }
