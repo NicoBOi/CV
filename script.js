@@ -285,14 +285,14 @@
 })();
 
 /* ──────────────────────────────────────────────
-   SCÈNE 7 — CASE STUDY
-   Lazy-load vidéo via IntersectionObserver (économie data hors viewport)
+   LAZY-LOAD VIDÉOS (générique, toute scène avec video[data-src])
+   IntersectionObserver — économie data hors viewport
    ────────────────────────────────────────────── */
 
 (() => {
   'use strict';
 
-  const videos = document.querySelectorAll('.scene-case__video[data-src]');
+  const videos = document.querySelectorAll('video[data-src]');
   if (!videos.length || !('IntersectionObserver' in window)) return;
 
   const obs = new IntersectionObserver((entries) => {

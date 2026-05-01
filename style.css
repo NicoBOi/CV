@@ -485,39 +485,27 @@ body::before {
 }
 
 /* ──────────────────────────────────────────────
-   SCÈNE 7 — CASE STUDY FOOH PHILLIPS
-   Split 50/50, vidéo gauche, copy droite. Mobile : stack vertical.
+   SCÈNE 5 — CARROUSEL PROJETS
+   4 vidéos verticales 9:16, scroll horizontal snap, lazy-load.
    ────────────────────────────────────────────── */
 
-.scene-case {
-  grid-template-columns: 1fr 1fr;
-  align-items: stretch;
-  padding: 0;
+.scene-projects {
+  grid-template-rows: auto 1fr;
+  padding: var(--sp-5) 0 var(--sp-5);
+  gap: var(--sp-4);
 }
 
-.scene-case__media {
-  position: relative;
-  overflow: hidden;
-  background: var(--color-coal-soft);
-}
-
-.scene-case__video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* source 9:16, on remplit la colonne, on rogne ce qui dépasse */
-  display: block;
-}
-
-.scene-case__copy {
+.scene-projects__head {
+  padding: 0 var(--sp-4);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: var(--sp-3);
-  padding: var(--sp-5) var(--sp-4);
-  max-width: 56ch;
+  max-width: 1400px;
+  margin-inline: auto;
+  width: 100%;
 }
 
-.scene-case__marker {
+.scene-projects__marker {
   font-family: var(--font-mono);
   font-size: var(--type-micro);
   letter-spacing: 0.18em;
@@ -525,58 +513,51 @@ body::before {
   color: var(--fg-muted);
 }
 
-.scene-case__title {
+.scene-projects__catchline {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--type-h2);
-  line-height: var(--lh-tight);
+  line-height: var(--lh-snug);
   letter-spacing: var(--tr-tight);
   color: var(--fg);
+  max-width: 26ch;
 }
 
-.scene-case__desc {
-  margin: 0;
-  max-width: 38ch;
-  font-size: var(--type-body-l);
-  line-height: var(--lh-base);
-  color: var(--fg);
-}
-
-.scene-case__pills {
+.scene-projects__rail {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 var(--sp-4) var(--sp-2);
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
+  align-items: center;
+  gap: var(--sp-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
-.scene-case__pills li {
-  padding: var(--sp-2) var(--sp-3);
-  background: color-mix(in oklab, var(--fg) 6%, transparent);
-  border: 1px solid color-mix(in oklab, var(--fg) 15%, transparent);
-  border-radius: 999px;
-  font-family: var(--font-mono);
-  font-size: var(--type-small);
-  color: var(--fg);
-  letter-spacing: 0.04em;
+.scene-projects__rail::-webkit-scrollbar { display: none; }
+
+.scene-projects__item {
+  flex: 0 0 auto;
+  width: clamp(220px, 28vw, 380px);
+  aspect-ratio: 9 / 16;
+  scroll-snap-align: start;
+  overflow: hidden;
+  background: var(--color-coal-soft);
+  border-radius: var(--sp-2);
 }
 
-.scene-case__note {
-  margin-top: var(--sp-2);
-  font-size: var(--type-small);
-  color: var(--fg-muted);
-  letter-spacing: var(--tr-loose);
+.scene-projects__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-/* Mobile : stack vertical, vidéo en haut */
 @media (max-width: 768px) {
-  .scene-case {
-    grid-template-columns: 1fr;
-    grid-template-rows: 50dvh auto;
-  }
-  .scene-case__copy {
-    padding: var(--sp-4) var(--sp-3);
+  .scene-projects__item {
+    width: clamp(180px, 72vw, 280px);
   }
 }
 
