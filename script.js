@@ -91,12 +91,15 @@
     const sr = stage.getBoundingClientRect();
     const cx = sr.left + sr.width / 2;
     const cy = sr.top + sr.height / 2;
+    console.warn('[hero] refreshPositions — stage:', { cx: cx.toFixed(1), cy: cy.toFixed(1), w: sr.width.toFixed(0), h: sr.height.toFixed(0) });
     words.forEach((w, i) => {
       const r = w.getBoundingClientRect();
       positions[i] = {
         x: cx - (r.left + r.width / 2),
         y: cy - (r.top + r.height / 2),
       };
+      w.dataset.wordIndex = i;
+      console.warn(`[hero] pos[${i}] "${w.textContent}" — Δx: ${positions[i].x.toFixed(1)}, Δy: ${positions[i].y.toFixed(1)}, rect: ${r.width.toFixed(0)}×${r.height.toFixed(0)}`);
     });
   };
 
@@ -115,6 +118,7 @@
     });
 
     // Convergence scroll-driven, pin proactif (anticipatePin)
+    let firstUpdateLogged = false;
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: scene,
@@ -124,7 +128,19 @@
         scrub: 0.8,
         anticipatePin: 1,                // engagement pin proactif (anti-saccadé)
         invalidateOnRefresh: true,
-        onRefresh: refreshPositions,
+        onRefresh: () => {
+          refreshPositions();
+          console.warn('[hero] ScrollTrigger.onRefresh fired');
+        },
+        onUpdate: (self) => {
+          if (firstUpdateLogged) return;
+          firstUpdateLogged = true;
+          console.warn('[hero] FIRST scroll update — progress:', self.progress.toFixed(3));
+          words.forEach((w, i) => {
+            const r = w.getBoundingClientRect();
+            console.warn(`  word[${i}] current rect at first update:`, r.left.toFixed(1), r.top.toFixed(1));
+          });
+        },
       },
     });
 
@@ -261,13 +277,15 @@
   gsap.set(phrases[0], { autoAlpha: 1, filter: 'blur(0px)' });
   dots[0].classList.add('is-active');
 
-  // Pas de pin GSAP : la stage est sticky en CSS. ScrollTrigger pilote juste le scrub.
+  // Trigger sur l'inner sticky : sync visuel/animation garantie
+  // (l'anim démarre quand l'inner est plaqué au top, pas quand la section entre).
+  const inner = scene.querySelector('.scene-manifesto__inner');
   const tl = gsap.timeline({
     defaults: { ease: eases.cinematic, duration: 1 },
     scrollTrigger: {
-      trigger: scene,
+      trigger: inner,                 // ← inner sticky, pas la section 400dvh
       start: 'top top',
-      end: 'bottom bottom',           // toute la hauteur de la section (400dvh)
+      end: '+=300%',                  // 300% de scroll après l'engage = 3 phases
       scrub: 0.5,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
@@ -277,21 +295,25 @@
     },
   });
 
+  // Lecture phrase 0 : pause AVANT toute transition pour laisser le visiteur lire
+  tl.to({}, { duration: 0.6 });
+
   // Phase 0 → 1
   tl.to(phrases[0], { autoAlpha: 0, filter: 'blur(20px)' })
     .to(phrases[1], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
 
-  // Pause de lecture
-  tl.to({}, { duration: 0.5 });
+  // Lecture phrase 1
+  tl.to({}, { duration: 0.6 });
 
   // Phase 1 → 2
   tl.to(phrases[1], { autoAlpha: 0, filter: 'blur(20px)' })
     .to(phrases[2], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
 
-  // Phase finale : fade-out de phrase 2 dans le dernier 1/6e du scroll
-  // → la phrase ne "traîne" pas pendant que la section sort du viewport.
-  tl.to({}, { duration: 0.3 })
-    .to(phrases[2], { autoAlpha: 0, filter: 'blur(20px)', duration: 0.3 });
+  // Lecture phrase 2
+  tl.to({}, { duration: 0.6 });
+
+  // Fade-out final de phrase 2 (évite le drag pendant le sticky release)
+  tl.to(phrases[2], { autoAlpha: 0, filter: 'blur(20px)', duration: 0.3 });
 })();
 
 /* ──────────────────────────────────────────────
