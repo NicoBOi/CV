@@ -122,6 +122,28 @@ body::before {
   body { font-family: 'Inter Display', 'Inter var', system-ui, sans-serif; }
 }
 
+/* ── Highlight violet translucide pour mots-clés stratégiques ── */
+.hl {
+  background-color: color-mix(in oklab, var(--color-accent) 18%, transparent);
+  padding: 0 0.08em;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* ── Bullet violet préfixe sur tous les chapter markers ── */
+.scene-identity__marker::before,
+.scene-clients__marker::before,
+.scene-manifesto__marker::before,
+.scene-projects__marker::before,
+.scene-objections__marker::before {
+  content: '\2022';            /* puce ronde pleine */
+  color: var(--accent);
+  margin-right: 0.6em;
+  font-size: 1.2em;
+  vertical-align: -0.05em;
+}
+
 /* ── Skip-link accessible ── */
 .skip-link {
   position: fixed;
@@ -617,6 +639,15 @@ body::before {
   font-style: normal;
   letter-spacing: var(--tr-loose);
 }
+/* Mini-trait violet sous l'attribution : signature visuelle subtle */
+.scene-quote__attr::after {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1.5px;
+  background: var(--accent);
+  margin: var(--sp-2) auto 0;
+}
 
 /* Reduced-motion : citation visible directement */
 .reduced-motion .scene-quote__line { clip-path: none !important; }
@@ -801,15 +832,18 @@ body::before {
   text-decoration: none;
   letter-spacing: 0.04em;
 }
+/* Soulignement animé tracé : 0% → 100% au hover, gauche → droite. */
 .scene-cta__email-text {
-  text-decoration: underline;
-  text-decoration-color: var(--accent);    /* soulignement violet (touche accent) */
-  text-underline-offset: 0.2em;
-  text-decoration-thickness: 1.5px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  padding-bottom: 0.18em;
+  transition: background-size 450ms var(--ease-cinematic);
 }
 .scene-cta__email:hover .scene-cta__email-text,
 .scene-cta__email:focus-visible .scene-cta__email-text {
-  text-decoration-thickness: 2px;          /* hover : épaississement subtil */
+  background-size: 100% 2px;
 }
 .scene-cta__arrow {
   display: inline-block;
