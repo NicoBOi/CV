@@ -549,6 +549,120 @@ body::before {
 .reduced-motion .conviction__progress { display: none; }
 
 /* ══════════════════════════════════════════════
+   05 — PROJETS
+   Carrousel horizontal 4 vidéos 9:16, scroll-snap proximity,
+   indicateur dots violet, méta-mention du site lui-même comme projet.
+   ══════════════════════════════════════════════ */
+
+.scene--projects {
+  grid-template-rows: auto 1fr auto auto;
+  padding: var(--rhythm-section) 0;
+  gap: var(--rhythm-block);
+  min-height: 100dvh;
+}
+
+.projects__head {
+  padding: 0 var(--rhythm-block);
+  display: flex;
+  flex-direction: column;
+  gap: var(--rhythm-default);
+  max-width: 1400px;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.projects__marker {
+  font-family: var(--font-mono);
+  font-size: var(--type-micro);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.projects__marker::before {
+  content: '\2022';
+  color: var(--accent);
+  font-size: 1.4em;
+  line-height: 0;
+}
+
+.projects__catchline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--type-h2);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg);
+  max-width: 26ch;
+}
+
+.projects__rail {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--rhythm-block) var(--rhythm-tight);
+  display: flex;
+  align-items: center;
+  gap: var(--rhythm-default);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.projects__rail::-webkit-scrollbar { display: none; }
+
+.projects__item {
+  flex: 0 0 auto;
+  width: clamp(220px, 28vw, 380px);
+  aspect-ratio: 9 / 16;
+  scroll-snap-align: start;
+  overflow: hidden;
+  background: var(--coal-soft);
+  border-radius: var(--rhythm-tight);
+}
+
+.projects__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.projects__indicator {
+  display: flex;
+  justify-content: center;
+  gap: var(--rhythm-tight);
+  padding: 0 var(--rhythm-block);
+}
+
+.projects__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--fg) 25%, transparent);
+  transition: background 200ms var(--ease-snap), transform 200ms var(--ease-snap);
+}
+.projects__dot.is-active {
+  background: var(--accent);
+  transform: scale(1.4);
+}
+
+.projects__meta {
+  margin: 0 auto;
+  padding: 0 var(--rhythm-block);
+  max-width: 60ch;
+  font-size: var(--type-small);
+  color: var(--fg-muted);
+  text-align: center;
+  line-height: var(--lh-base);
+}
+
+@media (max-width: 768px) {
+  .projects__item { width: clamp(180px, 72vw, 280px); }
+}
+
+/* ══════════════════════════════════════════════
    ACCESSIBILITÉ — reduced motion
    ══════════════════════════════════════════════ */
 
