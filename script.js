@@ -1,10 +1,7 @@
 /* ══════════════════════════════════════════════
-   sempere.studio — pipeline JS bulletproof
-   Toutes les inits ScrollTrigger sont DIFFÉRÉES jusqu'à ce que :
-   • document.fonts.ready (toutes fonts rendered)
-   • window.load (toutes ressources chargées)
-   • Double rAF + ScrollTrigger.refresh() (layout final stable)
-   Plus de race condition possible.
+   sempere.me — pipeline JS bulletproof
+   Toutes les inits ScrollTrigger DIFFÉRÉES dans Promise.all([fonts.ready, window.load])
+   + double rAF + ScrollTrigger.refresh(). Zéro race condition.
    ══════════════════════════════════════════════ */
 
 /* ──────────────────────────────────────────────
@@ -14,14 +11,12 @@
 (() => {
   'use strict';
 
-  // Au refresh : on remonte toujours en haut, jamais de scroll auto-restored
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
   window.scrollTo(0, 0);
   window.addEventListener('load', () => { window.scrollTo(0, 0); }, { once: true });
 
-  // Reduced-motion : bypass GSAP, fallback statique propre
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduced) {
     document.documentElement.classList.add('reduced-motion');
@@ -29,7 +24,6 @@
     return;
   }
 
-  // Vérification libs : sans GSAP, on garde le DOM brut
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
     console.warn('[cv] GSAP ou ScrollTrigger absent : fallback statique');
     window.__cv = { setups: [] };
@@ -41,8 +35,6 @@
   ScrollTrigger.config({ ignoreMobileResize: true });
   ScrollTrigger.defaults({ markers: false });
 
-  // API publique consommée par les futures scènes.
-  // setups[] : queue de fonctions exécutées APRÈS fonts.ready + window.load
   window.__cv = {
     gsap,
     ScrollTrigger,
@@ -56,31 +48,33 @@
 })();
 
 /* ──────────────────────────────────────────────
-   CHROME GLOBAL — chapitre + barre + mode swap
-   Pas de ScrollTrigger ici, juste rAF scroll. Init immédiat OK.
+   CHROME GLOBAL — pellicule + barre + mode swap (rAF)
+   Init immédiat (pas de ScrollTrigger).
    ────────────────────────────────────────────── */
 
 (() => {
   'use strict';
 
-  const current = document.querySelector('.chapter__current');
   const fill    = document.querySelector('.progress__fill');
+  const frames  = Array.from(document.querySelectorAll('.filmstrip__frame'));
+  const film    = document.querySelector('.filmstrip');
   const scenes  = Array.from(document.querySelectorAll('[data-scene][data-scene-num]'));
   if (!scenes.length) return;
 
   let raf = null;
-  let lastNum  = '';
-  let lastMode = '';
+  let lastFrame = -1;
+  let lastMode  = '';
+  let filmOut   = false;
 
   const update = () => {
     raf = null;
 
-    if (fill) {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      fill.style.width = (p * 100).toFixed(2) + '%';
-    }
+    // Barre de progression
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    if (fill) fill.style.width = (p * 100).toFixed(2) + '%';
 
+    // Détection scène à viewport-center
     const center = window.innerHeight / 2;
     let active = scenes[0];
     for (const s of scenes) {
@@ -88,16 +82,32 @@
       if (r.top <= center && r.bottom >= center) { active = s; break; }
     }
 
-    const num = active.dataset.sceneNum || '01';
-    if (num !== lastNum && current) {
-      lastNum = num;
-      current.textContent = String(num).padStart(2, '0');
+    const num = parseInt(active.dataset.sceneNum || '1', 10);
+
+    // Pellicule : highlight de la frame active
+    if (num !== lastFrame) {
+      lastFrame = num;
+      frames.forEach((f, i) => {
+        f.classList.toggle('is-active', i === num - 1);
+      });
     }
 
+    // Mode swap body
     const mode = active.dataset.mode;
     if (mode && mode !== lastMode) {
       lastMode = mode;
       document.body.dataset.mode = mode;
+    }
+
+    // Exit pellicule : quand le visiteur dépasse 95% du scroll global
+    if (film) {
+      if (p > 0.95 && !filmOut) {
+        filmOut = true;
+        film.classList.add('is-out');
+      } else if (p <= 0.92 && filmOut) {
+        filmOut = false;
+        film.classList.remove('is-out');
+      }
     }
   };
 
@@ -112,13 +122,8 @@
 })();
 
 /* ══════════════════════════════════════════════
-   SECTIONS — chaque IIFE PUSH son setup au queue __cv.setups
-   au lieu de créer le ScrollTrigger immédiatement.
+   01 — HERO : "Tout le monde a accès à Sora." → "Personne ne sait quoi en faire."
    ══════════════════════════════════════════════ */
-
-/* ──────────────────────────────────────────────
-   01 — HERO : 6 mots → "Vous cherchez un designer. Vraiment ?"
-   ────────────────────────────────────────────── */
 
 (() => {
   'use strict';
@@ -135,33 +140,20 @@
     const claim = scene.querySelector('.hero__claim');
     if (!stage || !words.length) return;
 
-    // État initial unique
-    gsap.set(words, { opacity: 0, x: 0, y: 0, scale: 1 });
-    if (claim) gsap.set(claim, { opacity: 0, scale: 0.92 });
+    // État initial
+    gsap.set(words, { opacity: 0, y: 12 });
+    if (claim) gsap.set(claim, { opacity: 0, scale: 0.94 });
 
-    // Cache positions cibles via offsetLeft/Top (transforms-immune)
-    const positions = new Array(words.length);
-    const refreshPositions = () => {
-      const cx = stage.offsetWidth / 2;
-      const cy = stage.offsetHeight / 2;
-      words.forEach((w, i) => {
-        positions[i] = {
-          x: cx - (w.offsetLeft + w.offsetWidth / 2),
-          y: cy - (w.offsetTop + w.offsetHeight / 2),
-        };
-      });
-    };
-    refreshPositions();
-
-    // Entry autoplay — 0.8s entre chaque mot, ordre random (~5.3s reveal)
+    // Entry autoplay : 7 mots, 0.8s entre chaque (~5.6s reveal posé)
     gsap.to(words, {
       opacity: 1,
+      y: 0,
       duration: 0.7,
-      stagger: { each: 0.8, from: 'random' },
+      stagger: { each: 0.8, from: 'start' },   // sequential left-to-right
       ease: eases.out,
     });
 
-    // Convergence scroll-driven via sticky CSS
+    // Convergence scroll-driven : sticky CSS pin, scrub timeline
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: scene,
@@ -169,43 +161,36 @@
         end: 'bottom bottom',
         scrub: 0.8,
         invalidateOnRefresh: true,
-        onRefresh: refreshPositions,
       },
     });
 
-    // Pause initiale : lecture des 6 mots dispersés
+    // Pause initiale : laisse l'utilisateur lire la phrase entière
     tl.to({}, { duration: 0.4 });
 
-    words.forEach((w, i) => {
-      tl.fromTo(w,
-        { x: 0, y: 0, scale: 1, opacity: 1 },
-        {
-          x: () => positions[i] ? positions[i].x : 0,
-          y: () => positions[i] ? positions[i].y : 0,
-          scale: 0.4,
-          opacity: 0,
-          ease: eases.out,
-          duration: 1,
-        },
-        0.4
-      );
-    });
+    // Phase 1 : blur+fade-out de la phrase complète (tous les mots ensemble)
+    tl.to(words, {
+      opacity: 0,
+      filter: 'blur(20px)',
+      y: -10,
+      stagger: 0.04,
+      ease: eases.out,
+      duration: 0.8,
+    }, 0.4);
 
+    // Phase 2 : claim émerge
     if (claim) {
       tl.fromTo(claim,
-        { opacity: 0, scale: 0.92 },
-        { opacity: 1, scale: 1, ease: eases.out, duration: 0.6 },
-        1.0
+        { opacity: 0, scale: 0.94, filter: 'blur(20px)' },
+        { opacity: 1, scale: 1, filter: 'blur(0px)', ease: eases.out, duration: 0.8 },
+        0.9
       );
     }
-
-    window.addEventListener('resize', refreshPositions);
   });
 })();
 
-/* ──────────────────────────────────────────────
+/* ══════════════════════════════════════════════
    02 — POSITION : Nicolas / Sempere rendezvous
-   ────────────────────────────────────────────── */
+   ══════════════════════════════════════════════ */
 
 (() => {
   'use strict';
@@ -217,7 +202,6 @@
     const scene = document.querySelector('.scene--position');
     if (!scene) return;
 
-    const marker = scene.querySelector('.position__marker');
     const top    = scene.querySelector('.position__row--top');
     const bottom = scene.querySelector('.position__row--bottom');
     const stack  = scene.querySelector('.position__stack');
@@ -225,7 +209,7 @@
 
     gsap.set(top,    { yPercent: -50, opacity: 0 });
     gsap.set(bottom, { yPercent:  50, opacity: 0 });
-    gsap.set([marker, stack].filter(Boolean), { opacity: 0, y: 20 });
+    if (stack) gsap.set(stack, { opacity: 0, y: 20 });
 
     gsap.timeline({
       defaults: { ease: eases.out },
@@ -237,16 +221,15 @@
         invalidateOnRefresh: true,
       },
     })
-      .to(marker, { opacity: 1, y: 0, duration: 0.5 }, 0)
-      .to(top,    { yPercent: 0, opacity: 1, duration: 1 }, 0.1)
-      .to(bottom, { yPercent: 0, opacity: 1, duration: 1 }, 0.1)
+      .to(top,    { yPercent: 0, opacity: 1, duration: 1 }, 0)
+      .to(bottom, { yPercent: 0, opacity: 1, duration: 1 }, 0)
       .to(stack,  { opacity: 1, y: 0, duration: 0.5 }, 0.7);
   });
 })();
 
-/* ──────────────────────────────────────────────
-   03 — RÉFÉRENCES : 7 noms clip-path stagger
-   ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════
+   03 — STACK : 8 outils clip-path stagger
+   ══════════════════════════════════════════════ */
 
 (() => {
   'use strict';
@@ -255,14 +238,17 @@
 
   cv.setups.push(() => {
     const { gsap, eases } = cv;
-    const scene = document.querySelector('.scene--references');
+    const scene = document.querySelector('.scene--stack');
     if (!scene) return;
 
-    const list  = scene.querySelector('.references__list');
-    const names = scene.querySelectorAll('.references__name');
-    if (!list || !names.length) return;
+    const list  = scene.querySelector('.stack__list');
+    const tools = scene.querySelectorAll('.stack__tool');
+    const lede  = scene.querySelector('.stack__lede');
+    if (!list || !tools.length) return;
 
-    gsap.timeline({
+    if (lede) gsap.set(lede, { opacity: 0, y: 20 });
+
+    const tl = gsap.timeline({
       defaults: { ease: eases.out, duration: 0.7 },
       scrollTrigger: {
         trigger: list,
@@ -270,17 +256,20 @@
         end: 'bottom 30%',
         toggleActions: 'play none play reverse',
       },
-    })
-      .to(names, {
-        clipPath: 'inset(-0.25em 0% -0.25em 0)',
-        stagger: 0.12,
-      });
+    });
+
+    if (lede) tl.to(lede, { opacity: 1, y: 0, duration: 0.6 }, 0);
+
+    tl.to(tools, {
+      clipPath: 'inset(-0.25em 0% -0.25em 0)',
+      stagger: 0.1,
+    }, 0.2);
   });
 })();
 
-/* ──────────────────────────────────────────────
+/* ══════════════════════════════════════════════
    04 — CONVICTION : 3 phrases sticky scrub
-   ────────────────────────────────────────────── */
+   ══════════════════════════════════════════════ */
 
 (() => {
   'use strict';
@@ -316,21 +305,25 @@
       },
     });
 
+    // Lecture phrase 0
     tl.to({}, { duration: 0.6 });
+    // Phase 0 → 1
     tl.to(phrases[0], { autoAlpha: 0, filter: 'blur(20px)' })
       .to(phrases[1], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
+    // Lecture phrase 1
     tl.to({}, { duration: 0.6 });
+    // Phase 1 → 2
     tl.to(phrases[1], { autoAlpha: 0, filter: 'blur(20px)' })
       .to(phrases[2], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
+    // Lecture phrase 2 + fade-out final
     tl.to({}, { duration: 0.6 })
       .to(phrases[2], { autoAlpha: 0, filter: 'blur(20px)', duration: 0.3 });
   });
 })();
 
-/* ──────────────────────────────────────────────
-   05 — PROJETS : carrousel dots indicator (rAF, pas de ScrollTrigger)
-   Init immédiat OK.
-   ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════
+   05 — PROJETS : carrousel dots indicator (rAF, init immédiat)
+   ══════════════════════════════════════════════ */
 
 (() => {
   'use strict';
@@ -361,10 +354,7 @@
   update();
 })();
 
-/* ──────────────────────────────────────────────
-   LAZY-LOAD VIDÉOS — IntersectionObserver, init immédiat OK
-   ────────────────────────────────────────────── */
-
+/* Lazy-load vidéos — IntersectionObserver, init immédiat */
 (() => {
   'use strict';
 
@@ -385,9 +375,9 @@
   videos.forEach((v) => obs.observe(v));
 })();
 
-/* ──────────────────────────────────────────────
-   06 — TÉMOIGNAGE : reveal lignes clip-path
-   ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════
+   06 — RÉFÉRENCES : 7 marques clip-path stagger
+   ══════════════════════════════════════════════ */
 
 (() => {
   'use strict';
@@ -396,80 +386,37 @@
 
   cv.setups.push(() => {
     const { gsap, eases } = cv;
-    const scene = document.querySelector('.scene--testimony');
+    const scene = document.querySelector('.scene--references');
     if (!scene) return;
 
-    const lines = scene.querySelectorAll('.testimony__line');
-    if (!lines.length) return;
+    const list  = scene.querySelector('.references__list');
+    const lede  = scene.querySelector('.references__lede');
+    const names = scene.querySelectorAll('.references__name');
+    if (!list || !names.length) return;
 
-    gsap.set(lines, { clipPath: 'inset(0 100% 0 0)' });
+    if (lede) gsap.set(lede, { opacity: 0, y: 20 });
 
-    gsap.timeline({
-      defaults: { ease: eases.out, duration: 0.9 },
+    const tl = gsap.timeline({
+      defaults: { ease: eases.out, duration: 0.7 },
       scrollTrigger: {
-        trigger: scene,
-        start: 'top 70%',
+        trigger: list,
+        start: 'top 80%',
         end: 'bottom 30%',
         toggleActions: 'play none play reverse',
       },
-    })
-      .to(lines, {
-        clipPath: 'inset(0 0% 0 0)',
-        stagger: 0.15,
-      });
-  });
-})();
-
-/* ──────────────────────────────────────────────
-   07 — OBJECTIONS : reveal pair par pair + arrow scrubbed
-   ────────────────────────────────────────────── */
-
-(() => {
-  'use strict';
-  const cv = window.__cv;
-  if (!cv || cv.reduced || !cv.setups) return;
-
-  cv.setups.push(() => {
-    const { gsap, eases } = cv;
-    const scene = document.querySelector('.scene--objections');
-    if (!scene) return;
-
-    scene.querySelectorAll('.objections__pair').forEach((pair) => {
-      gsap.timeline({
-        defaults: { ease: eases.out },
-        scrollTrigger: {
-          trigger: pair,
-          start: 'top 75%',
-          end: 'bottom 25%',
-          toggleActions: 'play none play reverse',
-        },
-      })
-        .to(pair, { opacity: 1, y: 0, duration: 0.8 });
-
-      const path = pair.querySelector('.objections__arrow path');
-      if (path) {
-        gsap.fromTo(path,
-          { strokeDashoffset: 200 },
-          {
-            strokeDashoffset: 0,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: pair,
-              start: 'top 70%',
-              end: 'top 30%',
-              scrub: 0.5,
-            },
-          }
-        );
-      }
     });
+
+    if (lede) tl.to(lede, { opacity: 1, y: 0, duration: 0.6 }, 0);
+
+    tl.to(names, {
+      clipPath: 'inset(-0.25em 0% -0.25em 0)',
+      stagger: 0.12,
+    }, 0.2);
   });
 })();
 
 /* ══════════════════════════════════════════════
    ORCHESTRATEUR — exécute tous les setups APRÈS fonts.ready + window.load
-   Garantit que les positions DOM sont stables avant toute mesure.
-   Double rAF + ScrollTrigger.refresh() pour layout final.
    ══════════════════════════════════════════════ */
 
 (() => {
@@ -486,12 +433,9 @@
     : new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
 
   Promise.all([fontsReady, windowLoaded]).then(() => {
-    // Exécute toutes les inscriptions de scènes
     cv.setups.forEach(fn => {
       try { fn(); } catch (e) { console.warn('[cv] setup error', e); }
     });
-    // Layout final : double rAF garantit que le browser a appliqué tous les styles,
-    // puis ScrollTrigger.refresh() recalcule toutes les positions.
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         cv.ScrollTrigger.refresh();

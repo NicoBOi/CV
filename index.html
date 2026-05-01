@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
-  <title>Nicolas Sempere — sempere.studio</title>
-  <meta name="description" content="Brand engineer hybride. DA, motion, 3D, no-code. Six ans, trente projets. Bordeaux, France.">
+  <title>Nicolas Sempere — AI Creative Producer</title>
+  <meta name="description" content="AI Creative Producer. Vidéo, motion, photo. Maîtrise stack IA générative : Sora, Veo, Kling, Runway, Claude Code. Bordeaux.">
 
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 
-  <!-- Inter Display variable -->
+  <!-- Fonts : Fraunces (serif display) + Inter Display (corps) + JetBrains Mono (techniques) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://rsms.me" crossorigin>
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
@@ -23,12 +26,20 @@
 <body data-mode="dark">
   <a class="skip-link" href="#main">Aller au contenu</a>
 
-  <!-- Indicateur de chapitre — fixed haut-gauche -->
-  <div class="chapter" aria-hidden="true">
-    <span class="chapter__current">01</span>
-    <span class="chapter__sep">—</span>
-    <span class="chapter__total">08</span>
-  </div>
+  <!-- Pellicule 35mm — fil d'Ariane signature, fixed left, 7 frames -->
+  <aside class="filmstrip" aria-hidden="true">
+    <div class="filmstrip__perfo filmstrip__perfo--left"></div>
+    <ol class="filmstrip__frames">
+      <li class="filmstrip__frame" data-frame="1"><span class="filmstrip__num">01</span></li>
+      <li class="filmstrip__frame" data-frame="2"><span class="filmstrip__num">02</span></li>
+      <li class="filmstrip__frame" data-frame="3"><span class="filmstrip__num">03</span></li>
+      <li class="filmstrip__frame" data-frame="4"><span class="filmstrip__num">04</span></li>
+      <li class="filmstrip__frame" data-frame="5"><span class="filmstrip__num">05</span></li>
+      <li class="filmstrip__frame" data-frame="6"><span class="filmstrip__num">06</span></li>
+      <li class="filmstrip__frame" data-frame="7"><span class="filmstrip__num">07</span></li>
+    </ol>
+    <div class="filmstrip__perfo filmstrip__perfo--right"></div>
+  </aside>
 
   <!-- Barre de progression — fixed bas, full width -->
   <div class="progress" aria-hidden="true">
@@ -40,28 +51,25 @@
     <section class="scene scene--hero" data-scene data-scene-num="1" data-mode="dark" aria-label="01 — Hero">
       <div class="hero__sticky">
         <div class="hero__stage">
-          <span class="hero__word" data-word="0">designer</span>
-          <span class="hero__word" data-word="1">motion</span>
-          <span class="hero__word" data-word="2">brand</span>
-          <span class="hero__word" data-word="3">no-code</span>
-          <span class="hero__word" data-word="4">vidéaste</span>
-          <span class="hero__word" data-word="5">stratège</span>
-          <h1 class="hero__claim">
-            Vous cherchez un&nbsp;designer.<br>
-            <em class="hero__question">Vraiment&nbsp;?</em>
-          </h1>
+          <span class="hero__word" data-word="0">Tout</span>
+          <span class="hero__word" data-word="1">le</span>
+          <span class="hero__word" data-word="2">monde</span>
+          <span class="hero__word" data-word="3">a</span>
+          <span class="hero__word" data-word="4">accès</span>
+          <span class="hero__word" data-word="5">à</span>
+          <span class="hero__word" data-word="6">Sora.</span>
+          <h1 class="hero__claim"><em>Personne ne sait quoi en&nbsp;faire.</em></h1>
         </div>
       </div>
     </section>
 
     <section class="scene scene--position" data-scene data-scene-num="2" data-mode="light" aria-label="02 — Position">
-      <span class="position__marker" aria-hidden="true">01 — Position</span>
       <h2 class="position__name">
         <span class="position__row position__row--top">Nicolas</span>
         <span class="position__row position__row--bottom">Sempere</span>
       </h2>
       <div class="position__stack">
-        <span>Brand engineer hybride</span>
+        <span>AI Creative Producer</span>
         <span class="position__sep">·</span>
         <span>Bordeaux</span>
         <span class="position__sep">·</span>
@@ -69,37 +77,36 @@
       </div>
     </section>
 
-    <section class="scene scene--references" data-scene data-scene-num="3" data-mode="light" aria-label="03 — Références">
-      <span class="references__marker" aria-hidden="true">02 — Références</span>
-      <ul class="references__list">
-        <li class="references__name">Sephora</li>
-        <li class="references__name references__name--italic">Phillips</li>
-        <li class="references__name">Betclic Group</li>
-        <li class="references__name">Showroom Privé</li>
-        <li class="references__name references__name--italic">A Better Feeling</li>
-        <li class="references__name">Smart Brain</li>
-        <li class="references__name">Double Salto</li>
+    <section class="scene scene--stack" data-scene data-scene-num="3" data-mode="dark" aria-label="03 — Stack">
+      <p class="stack__lede">Les outils ne sont pas le talent.<br>Voici ceux que je tiens en main.</p>
+      <ul class="stack__list">
+        <li class="stack__tool">Sora</li>
+        <li class="stack__tool stack__tool--italic">Veo</li>
+        <li class="stack__tool">Kling</li>
+        <li class="stack__tool">Nano Banana</li>
+        <li class="stack__tool stack__tool--italic">Freepik</li>
+        <li class="stack__tool">Runway</li>
+        <li class="stack__tool">ElevenLabs</li>
+        <li class="stack__tool stack__tool--italic">Claude Code</li>
       </ul>
     </section>
 
-    <section class="scene scene--conviction" data-scene data-scene-num="4" data-mode="dark" aria-label="04 — Conviction">
+    <section class="scene scene--conviction" data-scene data-scene-num="4" data-mode="light" aria-label="04 — Conviction">
       <div class="conviction__inner">
-        <span class="conviction__marker" aria-hidden="true">03 — Conviction</span>
-
         <div class="conviction__stage">
           <p class="conviction__phrase" data-step="0">
-            Tout ce qu'une IA peut faire,<br>
-            elle le fera mieux que vous.
+            L'IA fait.<br>
+            Vous le savez déjà.
           </p>
           <p class="conviction__phrase" data-step="1">
-            Sauf <span class="hl">trancher</span>.
+            Mais elle ne <span class="hl">trie</span> pas.<br>
+            Elle ne <span class="hl">décide</span> pas.
           </p>
           <p class="conviction__phrase" data-step="2">
             Mon métier n'est pas de produire.<br>
-            C'est de <span class="hl">choisir</span> ce qui mérite de l'être.
+            C'est de choisir ce qui mérite&nbsp;de&nbsp;l'être.
           </p>
         </div>
-
         <div class="conviction__progress" aria-hidden="true">
           <span class="conviction__dot" data-step="0">01</span>
           <span class="conviction__sep">—</span>
@@ -110,11 +117,10 @@
       </div>
     </section>
 
-    <section class="scene scene--projects" data-scene data-scene-num="5" data-mode="dark" aria-label="05 — Projets">
+    <section class="scene scene--projects" data-scene data-scene-num="5" data-mode="dark" aria-label="05 — Travaux">
       <div class="projects__head">
-        <span class="projects__marker" aria-hidden="true">04 — Travaux</span>
         <h3 class="projects__catchline">Le site que vous regardez<br>est aussi un projet.</h3>
-        <p class="projects__sub">Conçu et codé en quelques jours, seul, avec Claude Code. Voici quatre&nbsp;autres.</p>
+        <p class="projects__sub">Conçu et codé en quelques jours, seul, avec Claude Code. En voici quatre&nbsp;autres.</p>
       </div>
 
       <ol class="projects__rail" aria-label="Projets récents">
@@ -150,77 +156,25 @@
         <span class="projects__dot"></span>
         <span class="projects__dot"></span>
       </div>
-
     </section>
 
-    <section class="scene scene--testimony" data-scene data-scene-num="6" data-mode="light" aria-label="06 — Témoignage">
-      <div class="testimony__container">
-        <span class="testimony__mark" aria-hidden="true">&#8220;</span>
-        <blockquote class="testimony__text">
-          <span class="testimony__line">Nicolas a livré en trois semaines</span>
-          <span class="testimony__line">ce qu'une agence nous chiffrait</span>
-          <span class="testimony__line">à quatre mois et 60K€.</span>
-          <span class="testimony__line">C'était meilleur.</span>
-        </blockquote>
-        <cite class="testimony__attr">— Sarah M., Head of Brand,<br>fintech parisienne, 2025</cite>
-      </div>
+    <section class="scene scene--references" data-scene data-scene-num="6" data-mode="light" aria-label="06 — Références">
+      <p class="references__lede">Ils m'ont déjà passé&nbsp;la commande.</p>
+      <ul class="references__list">
+        <li class="references__name">Sephora</li>
+        <li class="references__name references__name--italic">Phillips</li>
+        <li class="references__name">Betclic Group</li>
+        <li class="references__name">Showroom Privé</li>
+        <li class="references__name references__name--italic">A Better Feeling</li>
+        <li class="references__name">Smart Brain</li>
+        <li class="references__name">Double Salto</li>
+      </ul>
     </section>
 
-    <section class="scene scene--objections" data-scene data-scene-num="7" data-mode="light" aria-label="07 — Objections">
-      <span class="objections__marker" aria-hidden="true">05 — Doutes</span>
-
-      <div class="objections__pair">
-        <p class="objections__q">«&nbsp;On a déjà un designer, un motion, un dev.&nbsp;»</p>
-        <svg class="objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
-          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
-        </svg>
-        <p class="objections__a">
-          Vous avez aussi le trou entre les trois.<br>
-          Je viens combler ça.
-        </p>
-      </div>
-
-      <div class="objections__pair">
-        <p class="objections__q">«&nbsp;On est plutôt B2B, pas une marque lifestyle.&nbsp;»</p>
-        <svg class="objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
-          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
-        </svg>
-        <p class="objections__a">
-          Le B2B est l'endroit où le brand<br>
-          est le moins bien fait.<br>
-          C'est mon terrain depuis six ans.
-        </p>
-      </div>
-
-      <div class="objections__pair">
-        <p class="objections__q">«&nbsp;On est à Lyon, Paris, ailleurs.&nbsp;»</p>
-        <svg class="objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
-          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
-        </svg>
-        <p class="objections__a">
-          Je suis à Bordeaux.<br>
-          Le remote n'est plus un sujet.
-        </p>
-      </div>
-
-      <div class="objections__pair">
-        <p class="objections__q">«&nbsp;On cherche un designer, pas un freelance.&nbsp;»</p>
-        <svg class="objections__arrow" viewBox="0 0 100 20" aria-hidden="true">
-          <path d="M0 10 L92 10 M85 4 L92 10 L85 16" />
-        </svg>
-        <p class="objections__a">
-          Je cherche un CDI.<br>
-          Vous cherchez quelqu'un qui fait<br>
-          le travail de plusieurs.<br>
-          On peut s'entendre.
-        </p>
-      </div>
-    </section>
-
-    <section class="scene scene--cta" data-scene data-scene-num="8" data-mode="dark" aria-label="08 — Contact">
+    <section class="scene scene--cta" data-scene data-scene-num="7" data-mode="dark" aria-label="07 — Contact">
       <h2 class="cta__hook"><em>Vous êtes encore là.</em></h2>
       <p class="cta__assertion">C'est que ça fonctionne.</p>
-      <p class="cta__resolution">Ce que vous cherchiez ne s'appelle plus designer.</p>
+      <p class="cta__resolution">Maintenant vous savez<br>quoi faire de&nbsp;Sora.</p>
       <a class="cta__email" href="mailto:nicosmp.pro@gmail.com">
         <span class="cta__email-text">nicosmp.pro@gmail.com</span>
         <span class="cta__arrow" aria-hidden="true">→</span>
