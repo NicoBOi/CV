@@ -7,6 +7,13 @@
 (() => {
   'use strict';
 
+  // Force le scroll à zéro au refresh (évite la restauration auto qui démarre mi-scène).
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+  window.addEventListener('load', () => { window.scrollTo(0, 0); }, { once: true });
+
   // Bypass total si l'utilisateur préfère réduire le mouvement
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduced) {
@@ -72,19 +79,10 @@
   const words = scene.querySelectorAll('.scene-hero__word');
   const claim = scene.querySelector('.scene-hero__claim');
 
-  /* 1) Entrée : on cache d'abord (CSS visible par défaut → fallback no-JS),
-        puis stagger un par un, ordre aléatoire, rythme rapide mais discernable. */
+  // État initial : tous les mots cachés (CSS visible par défaut → fallback no-JS).
   gsap.set(words, { opacity: 0 });
-  gsap.timeline({ defaults: { ease: eases.cinematic } })
-    .to(words, {
-      opacity: 1,
-      duration: 0.45,
-      stagger: { each: 0.3, from: 'random' },    // 300ms entre chaque
-    });
 
-  /* 2) Convergence scrubbed : pin de la scène, scroll → mots vers centre.
-        Positions cibles cachées (recalculées sur load + resize + ScrollTrigger.refresh)
-        pour éviter le bug "premier mot bloqué" causé par getBoundingClientRect prématuré. */
+  // Cache positions cibles, recalculées après fonts.ready / resize / ST.refresh.
   const positions = new Array(words.length);
   const refreshPositions = () => {
     const sr = stage.getBoundingClientRect();
@@ -99,55 +97,63 @@
     });
   };
 
-  // Première mesure APRÈS que toutes les fonts soient pleinement rendues
-  // (regular + italic + tous les axes/poids variables). Évite le bug du mot bloqué
-  // qui venait du font-swap arrivant après une mesure prématurée.
-  const onFontsReady = () => {
+  // Setup convergence : créé UNIQUEMENT après la fin de l'entry.
+  // Une seule timeline animant les mots à la fois → plus de race condition.
+  const setupConvergence = () => {
     refreshPositions();
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: scene,
+        start: 'top top',
+        end: '+=70%',
+        pin: true,
+        scrub: 0.8,
+        invalidateOnRefresh: true,
+        onRefresh: refreshPositions,
+      },
+    });
+
+    words.forEach((w, i) => {
+      tl.fromTo(w,
+        { x: 0, y: 0, scale: 1, opacity: 1 },
+        {
+          x: () => positions[i] ? positions[i].x : 0,
+          y: () => positions[i] ? positions[i].y : 0,
+          scale: 0.35,
+          opacity: 0,
+          ease: eases.cinematic,
+        },
+      0);
+    });
+
+    if (claim) {
+      tl.fromTo(claim,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, ease: eases.cinematic },
+      0.5);
+    }
+
     ScrollTrigger.refresh();
   };
 
-  if ('fonts' in document && document.fonts.ready) {
-    document.fonts.ready.then(onFontsReady);
-  } else if (document.readyState === 'complete') {
-    onFontsReady();
-  } else {
-    window.addEventListener('load', onFontsReady, { once: true });
-  }
+  /* PHASE 1 — Entry stagger posé (~5.5s total). Joue seul, puis chaîne convergence. */
+  const entryTl = gsap.timeline({ defaults: { ease: eases.cinematic } });
+  entryTl.to(words, {
+    opacity: 1,
+    duration: 0.7,
+    stagger: { each: 0.8, from: 'random' },   // 800ms entre chaque, posé
+  });
+  entryTl.add(() => {
+    // PHASE 2 — Convergence créée APRÈS entry + APRÈS fonts ready.
+    if ('fonts' in document && document.fonts.ready) {
+      document.fonts.ready.then(setupConvergence);
+    } else {
+      setupConvergence();
+    }
+  });
+
   window.addEventListener('resize', refreshPositions);
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: scene,
-      start: 'top top',
-      end: '+=70%',
-      pin: true,
-      scrub: 0.8,
-      invalidateOnRefresh: true,
-      onRefresh: refreshPositions,   // recalcul aussi à chaque ScrollTrigger.refresh
-    },
-  });
-
-  words.forEach((w, i) => {
-    tl.fromTo(w,
-      { x: 0, y: 0, scale: 1, opacity: 1 },
-      {
-        x: () => positions[i] ? positions[i].x : 0,
-        y: () => positions[i] ? positions[i].y : 0,
-        scale: 0.35,
-        opacity: 0,
-        ease: eases.cinematic,
-      },
-    0);
-  });
-
-  // Phrase-promesse révélée pendant la 2e moitié de la convergence
-  if (claim) {
-    tl.fromTo(claim,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, ease: eases.cinematic },
-    0.5);
-  }
 })();
 
 /* ──────────────────────────────────────────────
@@ -178,7 +184,7 @@
     },
   })
     .to(names, {
-      clipPath: 'inset(0 0% 0 0)',
+      clipPath: 'inset(-0.25em 0% -0.25em 0)',   // marge top/bottom contre cut descenders
       stagger: 0.12,
     });
 })();

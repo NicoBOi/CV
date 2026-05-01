@@ -294,7 +294,7 @@ body::before {
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--fs-6xl);
+  font-size: var(--fs-5xl);    /* réduit de 6xl → 5xl pour rééquilibrer vs caption */
   line-height: var(--lh-tight);
   letter-spacing: var(--tr-tight);
   text-align: center;
@@ -311,7 +311,7 @@ body::before {
   align-self: end;
   justify-self: end;       /* axe éditorial : marker top-left + caption bottom-right */
   text-align: right;
-  font-size: var(--fs-base);
+  font-size: var(--fs-lg);  /* augmenté de base → lg pour exister face au nom 5xl */
   color: var(--fg-muted);
   letter-spacing: var(--tr-loose);
   max-width: 40ch;
@@ -372,8 +372,9 @@ body::before {
   letter-spacing: var(--tr-tight);
   color: var(--fg);
   white-space: nowrap;
-  /* Reveal via clip-path. JS anime ; sans JS → noms visibles via fallback. */
-  clip-path: inset(0 100% 0 0);
+  /* Clip-path étendu verticalement (-0.25em top/bottom) pour épargner les
+     descenders (g, p, j, y) que la lh tight (0.92) sortirait du bounding box. */
+  clip-path: inset(-0.25em 100% -0.25em 0);
   will-change: clip-path;
 }
 
