@@ -259,3 +259,101 @@
     .to(bottom, { yPercent: 0, opacity: 1, duration: 1 }, 0.1)
     .to(stack,  { opacity: 1, y: 0, duration: 0.5 }, 0.7);
 })();
+
+/* ──────────────────────────────────────────────
+   03 — RÉFÉRENCES
+   Reveal stagger des 7 noms via clip-path inset (gauche → droite).
+   Trigger sur la liste (où les noms vivent) — pas sur la section.
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cv = window.__cv;
+  if (!cv || cv.reduced) return;
+
+  const { gsap, eases } = cv;
+
+  const scene = document.querySelector('.scene--references');
+  if (!scene) return;
+
+  const list  = scene.querySelector('.references__list');
+  const names = scene.querySelectorAll('.references__name');
+  if (!list || !names.length) return;
+
+  gsap.timeline({
+    defaults: { ease: eases.out, duration: 0.7 },
+    scrollTrigger: {
+      trigger: list,
+      start: 'top 80%',
+      end: 'bottom 30%',
+      toggleActions: 'play none play reverse',
+    },
+  })
+    .to(names, {
+      clipPath: 'inset(-0.25em 0% -0.25em 0)',
+      stagger: 0.12,
+    });
+})();
+
+/* ──────────────────────────────────────────────
+   04 — CONVICTION
+   Manifeste 3 phrases pinnées via CSS sticky (zéro pin GSAP).
+   Trigger sur l'inner sticky → sync visuel/animation.
+   Reading pauses entre transitions, fade-out final.
+   ────────────────────────────────────────────── */
+
+(() => {
+  'use strict';
+
+  const cv = window.__cv;
+  if (!cv || cv.reduced) return;
+
+  const { gsap, eases } = cv;
+
+  const scene = document.querySelector('.scene--conviction');
+  if (!scene) return;
+
+  const inner   = scene.querySelector('.conviction__inner');
+  const phrases = scene.querySelectorAll('.conviction__phrase');
+  const dots    = scene.querySelectorAll('.conviction__dot');
+  if (!inner || phrases.length !== 3) return;
+
+  // État initial : phrase 0 nette, phrases 1 et 2 floues + cachées
+  gsap.set(phrases, { autoAlpha: 0, filter: 'blur(20px)' });
+  gsap.set(phrases[0], { autoAlpha: 1, filter: 'blur(0px)' });
+  if (dots[0]) dots[0].classList.add('is-active');
+
+  const tl = gsap.timeline({
+    defaults: { ease: eases.out, duration: 1 },
+    scrollTrigger: {
+      trigger: inner,
+      start: 'top top',
+      end: '+=300%',
+      scrub: 0.5,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        const idx = Math.min(2, Math.floor(self.progress * 3));
+        dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+      },
+    },
+  });
+
+  // Lecture phrase 0
+  tl.to({}, { duration: 0.6 });
+
+  // Phase 0 → 1
+  tl.to(phrases[0], { autoAlpha: 0, filter: 'blur(20px)' })
+    .to(phrases[1], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
+
+  // Lecture phrase 1
+  tl.to({}, { duration: 0.6 });
+
+  // Phase 1 → 2
+  tl.to(phrases[1], { autoAlpha: 0, filter: 'blur(20px)' })
+    .to(phrases[2], { autoAlpha: 1, filter: 'blur(0px)' }, '<0.15');
+
+  // Lecture phrase 2 + fade-out final (évite drag pendant sticky release)
+  tl.to({}, { duration: 0.6 })
+    .to(phrases[2], { autoAlpha: 0, filter: 'blur(20px)', duration: 0.3 });
+})();
