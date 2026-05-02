@@ -69,48 +69,36 @@ Le thème (paper / ink) bascule automatiquement au scroll via ScrollTrigger.
 
 ## L'élément signature : le pixel pet
 
-Petit monstre 8-bit (16×16 pixels, sprite SVG inline ~12 KB) qui **voyage entre les stations** de la page — il ne reste pas sticky sur le côté, il marche vers les éléments importants et réagit avec une animation contextuelle.
-
-### 10 animations
-
-| Frame | Rôle |
-|---|---|
-| `idle1` / `idle2` | Respiration (alternance 700ms quand le pet est posé) |
-| `blink` | Clignement aléatoire (~12% des cycles idle) |
-| `walk1` / `walk2` | Pattes alternées pendant la marche (cycle 180ms) |
-| `wave` | Bras levé — accueil sur une nouvelle section |
-| `jump` | Saut — moments énergiques (CTA, IA) |
-| `surprise` | `!` au-dessus de la tête — révélations (citation IA, Smart Brain) |
-| `clap1` / `clap2` | Applaudissement (alternance 160ms) — fin de showreel, closer |
-
-### Stations
-
-Toute balise annotée `data-pet-station` devient une étape du parcours. Attributs :
-
-- `data-pet-action="idle|wave|jump|surprise|clap"` — animation jouée à l'arrivée
-- `data-pet-anchor="right|left|below|above|below-right"` — où le pet se pose par rapport à l'élément
-
-12 stations placées : hero, showreel caption, pitch d'approche, travail h2, 3 cases titles, production quote, production CTA, parcours h2, closer, sla closer.
+Petit monstre 8-bit (16×16 pixels, sprite SVG inline ~12 KB) **scroll-bound** : sa position est directement liée à la progression du scroll, comme un personnage de Game Boy qui marche au rythme de la lecture du visiteur. Il ne saute pas, il ne se téléporte pas — il marche.
 
 ### Comportement
 
-- À chaque frame (`requestAnimationFrame`), la station la plus proche du centre du viewport devient active.
-- Le pet calcule sa cible (en coords viewport) et marche vers elle (max ~5.5 px/frame, easing 18%).
-- Il se retourne (`scaleX(-1)`) selon la direction du déplacement.
-- À l'arrivée, il déclenche l'animation contextuelle pendant 1.2s, puis revient en idle.
-- Idle ailleurs : respire, cligne, attend que tu scrolles.
+- Position calculée chaque frame depuis `window.scrollY / scrollMax` (progression de 0 à 1).
+- **Path serpentine** : Y linéaire (haut viewport au début → bas viewport à la fin), X cosinusoïdal 1.5 cycles (droite → centre → gauche → centre → droite). Le pet zigzague à travers la mise en page.
+- **Vitesse de marche = vitesse de scroll** : scroll rapide → marche rapide (frame swap fréquent), scroll lent → marche lente.
+- **Scroll vers le haut** : le pet fait demi-tour (sprite horizontalement flippé).
+- **Scroll arrêté > 300 ms** : passage en idle (respiration alternée 700 ms, clignement aléatoire ~12%, petit hochement de tête ~6%).
+- Mouvement avec easing léger (lerp 0.16) pour pas être trop sec, pixels arrondis pour la crispness 8-bit.
+
+### 10 frames disponibles
+
+| Frame | État courant |
+|---|---|
+| `idle1` / `idle2` | Idle (respiration) |
+| `blink` | Idle clignement (140 ms) |
+| `walk1` / `walk2` | Marche (cycle = 1 swap toutes les 8 px parcourus) |
+| `wave` / `jump` / `surprise` / `clap1` / `clap2` | Réservées (sprite préparé pour usages futurs — animations contextuelles, easter eggs, etc.) |
 
 ### Modifier le pet
 
-Le sprite et la logique sont dans :
-- **`index.html`** — sprite inline (rechercher `pet__f--idle1`) + tags `data-pet-station` sur les ancres.
-- **`script.js`** — classe `PixelPet`, méthodes `pickStation`, `computeTarget`, `tick`, `startAction`.
+- **`index.html`** — sprite inline (rechercher `pet__f--idle1`).
+- **`script.js`** — classe `PixelPet`, méthodes `pathFromProgress`, `tick`.
 - **`style.css`** — bloc `/* PIXEL PET */`, règles `.pet[data-pet-frame="<name>"]`.
 
-Pour ajouter une station : annoter un élément avec `data-pet-station data-pet-action="..." data-pet-anchor="..."`. Le pet la détectera automatiquement au load.
-
-Pour modifier les pixels d'une frame : éditer la grille ASCII dans le commit qui a généré le sprite (script Python, cf. git log) et regénérer le SVG.
-
+Pour changer la trajectoire : éditer `pathFromProgress(p)` dans `script.js`.
+Pour changer la vitesse de la marche : éditer le seuil `8` dans `if (this.distAccum >= 8)`.
+Pour changer l'easing : éditer `const lerp = 0.16`.
+Pour modifier les pixels d'une frame : éditer la grille ASCII dans le commit qui a généré le sprite (script Python, cf. git log) et régénérer.
 Pour désactiver totalement : retirer le `<div class="pet">` dans `index.html`.
 
 **Mobile (< 640px)** : caché. **A11y** : `aria-hidden="true"`, `pointer-events: none`, frame statique en `prefers-reduced-motion`.

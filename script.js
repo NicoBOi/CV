@@ -45,94 +45,54 @@
   window.addEventListener('scroll', updateProgress, { passive: true });
 
   /* ============================================================
-     PIXEL PET — station-based companion
+     PIXEL PET — scroll-bound 8-bit walker
+     Position is bound directly to scrollY progress on a serpentine
+     path. Walk cycle plays while scroll velocity > 0; switches to
+     idle (breath / blink / occasional nod) after ~300ms inactivity.
+     Sprite flips horizontally when scroll direction reverses.
      ============================================================ */
   class PixelPet {
     constructor(el) {
       this.el = el;
       this.size = 36;
-      this.x = window.innerWidth - 60;
-      this.y = window.innerHeight * 0.3;
+      const init = this.pathFromProgress(this.currentProgress());
+      this.x = init.x - this.size / 2;
+      this.y = init.y - this.size / 2;
       this.tx = this.x;
       this.ty = this.y;
-      this.flip = 1;          /* 1 = facing right, -1 = facing left */
+      this.flip = 1;
       this.frame = 'idle1';
-      this.state = 'idle';    /* idle | walking | acting */
-      this.action = null;     /* action being performed at destination */
-      this.actionStart = 0;
+      this.distAccum = 0;        /* px walked since last frame swap */
       this.idleTick = 0;
-      this.walkTick = 0;
-      this.idlePhase = 0;     /* 0 = idle1, 1 = idle2 */
+      this.idlePhase = 0;
       this.lastBlink = 0;
-      this.activeStation = null;
-      this.stations = this.scanStations();
-      this.applyTransform();
+      this.lastScrollY = window.scrollY;
+      this.lastMoveAt = performance.now();
+      this.nodStart = 0;
       this.tick = this.tick.bind(this);
+      this.applyTransform();
+      this.el.dataset.petFrame = this.frame;
       requestAnimationFrame(this.tick);
-      window.addEventListener('resize', () => this.invalidate(), { passive: true });
     }
 
-    scanStations() {
-      return Array.from(document.querySelectorAll('[data-pet-station]')).map((node) => ({
-        node,
-        action: node.dataset.petAction || 'idle',
-        anchor: node.dataset.petAnchor || 'right',
-      }));
+    currentProgress() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
     }
 
-    invalidate() {
-      /* Force a station re-pick on next frame */
-      this.activeStation = null;
-    }
-
-    pickStation() {
-      /* Find station whose center is closest to viewport center */
-      const vh = window.innerHeight;
-      const center = vh * 0.5;
-      let best = null, bestD = Infinity;
-      for (const s of this.stations) {
-        const r = s.node.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > vh) continue;   /* offscreen */
-        const stationY = r.top + r.height * 0.5;
-        const d = Math.abs(stationY - center);
-        if (d < bestD) { bestD = d; best = s; }
-      }
-      return best;
-    }
-
-    computeTarget(station) {
-      const r = station.node.getBoundingClientRect();
+    /* Serpentine path through viewport, parametrized by scroll progress.
+       X uses a cosine wave (1.5 cycles across full scroll) so the pet
+       weaves between margins. Y is linear: top of viewport at start,
+       bottom of viewport at end. */
+    pathFromProgress(p) {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const padX = 14;
-      const topbarH = 80;
-      const half = this.size / 2;
-      let x, y;
-      switch (station.anchor) {
-        case 'left':
-          x = r.left - this.size - 18;
-          y = r.top + Math.min(28, r.height * 0.18);
-          break;
-        case 'below':
-          x = r.left + r.width * 0.5 - half;
-          y = r.bottom + 14;
-          break;
-        case 'above':
-          x = r.left + r.width * 0.5 - half;
-          y = r.top - this.size - 14;
-          break;
-        case 'below-right':
-          x = r.right - this.size - 4;
-          y = r.bottom + 14;
-          break;
-        case 'right':
-        default:
-          x = r.right + 18;
-          y = r.top + Math.min(28, r.height * 0.18);
-      }
-      /* Bound inside viewport (account for topbar + edges) */
-      x = Math.max(padX, Math.min(x, vw - this.size - padX));
-      y = Math.max(topbarH, Math.min(y, vh - this.size - 24));
+      const yMin = 90;
+      const yMax = vh - 60;
+      const y = yMin + p * (yMax - yMin);
+      const xCenter = vw * 0.5;
+      const xRange = Math.min(vw * 0.42, vw / 2 - 30);
+      const x = xCenter + Math.cos(p * Math.PI * 3) * xRange;
       return { x, y };
     }
 
@@ -143,109 +103,82 @@
     }
 
     applyTransform() {
-      this.el.style.setProperty('--pet-x', this.x.toFixed(1) + 'px');
-      this.el.style.setProperty('--pet-y', this.y.toFixed(1) + 'px');
+      const px = Math.round(this.x);
+      const py = Math.round(this.y + this.nodOffset());
+      this.el.style.setProperty('--pet-x', px + 'px');
+      this.el.style.setProperty('--pet-y', py + 'px');
       this.el.style.setProperty('--pet-flip', String(this.flip));
     }
 
-    startAction(action) {
-      this.state = 'acting';
-      this.action = action;
-      this.actionStart = performance.now();
-      switch (action) {
-        case 'wave':     this.setFrame('wave');     break;
-        case 'jump':     this.setFrame('jump');     break;
-        case 'surprise': this.setFrame('surprise'); break;
-        case 'clap':     this.setFrame('clap1');    break;
-        default:         this.setFrame('idle1');    this.state = 'idle'; this.action = null;
-      }
+    nodOffset() {
+      if (!this.nodStart) return 0;
+      const t = (performance.now() - this.nodStart) / 280;
+      if (t >= 1) { this.nodStart = 0; return 0; }
+      /* small dip then return: sin pulse */
+      return Math.sin(t * Math.PI) * 1.6;
     }
 
     tick(now) {
-      const dt = 16; /* fixed virtual step for stability */
+      const scrollY = window.scrollY;
+      const progress = this.currentProgress();
+      const target = this.pathFromProgress(progress);
+      this.tx = target.x - this.size / 2;
+      this.ty = target.y - this.size / 2;
 
-      /* 1. Pick the closest station; if it changed, set a new target */
-      const station = this.pickStation();
-      if (station && station !== this.activeStation) {
-        this.activeStation = station;
+      /* Scroll direction → sprite flip (down = right, up = left) */
+      const sdy = scrollY - this.lastScrollY;
+      if (Math.abs(sdy) > 0.4) {
+        this.flip = sdy > 0 ? 1 : -1;
+        this.lastMoveAt = now;
       }
-      if (this.activeStation) {
-        const t = this.computeTarget(this.activeStation);
-        this.tx = t.x;
-        this.ty = t.y;
-      }
+      this.lastScrollY = scrollY;
 
-      /* 2. Move toward target if not yet there */
+      /* Lerp toward target — light easing so movement isn't sharp */
       const dx = this.tx - this.x;
       const dy = this.ty - this.y;
       const dist = Math.hypot(dx, dy);
-      const arriveThreshold = 1.5;
 
-      if (dist > arriveThreshold) {
-        /* Walking */
-        this.state = 'walking';
-        const maxStep = 5.5;          /* px per frame */
-        const step = Math.min(maxStep, dist * 0.18);
-        const nx = step / dist;
-        this.x += dx * nx;
-        this.y += dy * nx;
-        if (Math.abs(dx) > 0.5) this.flip = dx >= 0 ? 1 : -1;
-        /* Cycle walk frames every ~180ms */
-        this.walkTick += dt;
-        if (this.walkTick >= 180) {
+      if (dist > 0.5) {
+        const lerp = 0.16;
+        const stepX = dx * lerp;
+        const stepY = dy * lerp;
+        this.x += stepX;
+        this.y += stepY;
+        const stepDist = Math.hypot(stepX, stepY);
+        this.distAccum += stepDist;
+
+        /* Walk-cycle frame swap every 8 px walked — tile-step feel */
+        if (this.distAccum >= 8) {
+          this.distAccum = 0;
           this.setFrame(this.frame === 'walk1' ? 'walk2' : 'walk1');
-          this.walkTick = 0;
-        }
-        if (this.frame !== 'walk1' && this.frame !== 'walk2') {
+        } else if (this.frame !== 'walk1' && this.frame !== 'walk2') {
           this.setFrame('walk1');
         }
-        this.action = null;          /* will trigger on arrival */
+        this.idleTick = 0;
+        this.lastMoveAt = now;
       } else {
-        /* Arrived */
-        this.x = this.tx; this.y = this.ty;
-        const targetAction = this.activeStation ? this.activeStation.action : 'idle';
-
-        if (this.state === 'walking') {
-          /* Trigger contextual action ONCE on arrival */
-          if (targetAction && targetAction !== 'idle') {
-            this.startAction(targetAction);
-          } else {
-            this.state = 'idle';
-            this.action = null;
-            this.setFrame('idle1');
-            this.idleTick = 0;
-          }
-        } else if (this.state === 'acting') {
-          /* Run the action animation for ~1100ms then return to idle */
-          const elapsed = now - this.actionStart;
-          if (this.action === 'clap') {
-            /* Alternate clap1/clap2 every 160ms */
-            const phase = Math.floor(elapsed / 160) % 2;
-            this.setFrame(phase === 0 ? 'clap1' : 'clap2');
-          }
-          if (elapsed > 1200) {
-            this.state = 'idle';
-            this.action = null;
-            this.setFrame('idle1');
-            this.idleTick = 0;
-          }
-        } else {
-          /* Idle: breath cycle + occasional blink */
-          this.idleTick += dt;
+        /* Idle: breath cycle + occasional blink + rare head nod */
+        const idleSince = now - this.lastMoveAt;
+        if (idleSince > 300) {
+          this.idleTick += 16;
           if (this.idleTick >= 700) {
-            this.idlePhase = this.idlePhase === 0 ? 1 : 0;
-            this.setFrame(this.idlePhase === 0 ? 'idle1' : 'idle2');
-            this.idleTick = 0;
-            /* random blink ~12% of cycles */
+            this.idlePhase ^= 1;
+            const baseFrame = this.idlePhase ? 'idle2' : 'idle1';
+            /* ~12% chance per cycle to blink (140ms) */
             if (Math.random() < 0.12 && now - this.lastBlink > 2400) {
               this.lastBlink = now;
               this.setFrame('blink');
               setTimeout(() => {
-                if (this.state === 'idle') {
-                  this.setFrame(this.idlePhase === 0 ? 'idle1' : 'idle2');
-                }
-              }, 160);
+                if (this.frame === 'blink') this.setFrame(baseFrame);
+              }, 140);
+            } else {
+              this.setFrame(baseFrame);
             }
+            /* ~6% chance per cycle to do a small head nod */
+            if (!this.nodStart && Math.random() < 0.06) {
+              this.nodStart = now;
+            }
+            this.idleTick = 0;
           }
         }
       }
