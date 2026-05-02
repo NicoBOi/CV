@@ -344,17 +344,21 @@
     }
 
     updateProximity(petCX, petCY) {
-      const R = 56;
-      const R2 = R * R;
+      /* Rayons distincts : chars plus généreux pour que le passage du pet
+         le long d'une ligne fasse danser plusieurs lettres ; zones plus
+         serrées pour que CTAs / médias ne réagissent qu'au contact. */
+      const R_CHAR = 130;
+      const R_CHAR2 = R_CHAR * R_CHAR;
+      const R_ZONE = 64;
+      const R_ZONE2 = R_ZONE * R_ZONE;
 
-      /* Letters within radius — use proximity as intensity 0..1. */
       for (let i = 0; i < this.chars.length; i++) {
         const c = this.chars[i];
         const dx = c.docX - petCX;
         const dy = c.docY - petCY;
         const d2 = dx * dx + dy * dy;
-        if (d2 < R2) {
-          const intensity = 1 - Math.sqrt(d2) / R;
+        if (d2 < R_CHAR2) {
+          const intensity = 1 - Math.sqrt(d2) / R_CHAR;
           c.el.style.setProperty('--char-near', intensity.toFixed(3));
           if (!c.el.classList.contains('is-near')) c.el.classList.add('is-near');
         } else if (c.el.classList.contains('is-near')) {
@@ -363,13 +367,12 @@
         }
       }
 
-      /* Zones — distance to closest point on rect, single class toggle. */
       for (let i = 0; i < this.zones.length; i++) {
         const z = this.zones[i];
         const dx = Math.max(z.l - petCX, 0, petCX - z.r);
         const dy = Math.max(z.t - petCY, 0, petCY - z.b);
         const d2 = dx * dx + dy * dy;
-        const inside = d2 < R2;
+        const inside = d2 < R_ZONE2;
         const was = this.zoneState.get(z.el) === true;
         if (inside && !was) {
           z.el.classList.add('is-pet-near');
@@ -397,9 +400,28 @@
   const hasGSAP  = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
   const hasLenis = typeof window.Lenis !== 'undefined';
 
+  /* Theme swap — scroll-driven, robuste au refresh + scroll inverse.
+     Initialisé AVANT la sortie anticipée pour fonctionner même en
+     reduced-motion / sans GSAP. */
+  const themedSections = Array.from(document.querySelectorAll('.section[data-section-theme]'));
+  function syncTheme() {
+    if (!themedSections.length) return;
+    const center = window.scrollY + window.innerHeight / 2;
+    let active = themedSections[0];
+    for (const s of themedSections) {
+      const top = s.offsetTop;
+      const bot = top + s.offsetHeight;
+      if (center >= top && center < bot) { active = s; break; }
+    }
+    const t = active.dataset.sectionTheme;
+    if (document.body.dataset.theme !== t) document.body.dataset.theme = t;
+  }
+  syncTheme();
+  window.addEventListener('scroll', syncTheme, { passive: true });
+  window.addEventListener('resize', syncTheme, { passive: true });
+
   if (reduced || !hasGSAP) {
     document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-revealed'));
-    setupThemeFallback();
     return;
   }
 
@@ -412,7 +434,7 @@
     });
     function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
     requestAnimationFrame(raf);
-    lenis.on('scroll', () => { ScrollTrigger.update(); updateProgress(); });
+    lenis.on('scroll', () => { ScrollTrigger.update(); updateProgress(); syncTheme(); });
   }
 
   gsap.registerPlugin(ScrollTrigger);
@@ -448,32 +470,8 @@
     });
   }
 
-  /* Theme swap per section */
-  gsap.utils.toArray('.section[data-section-theme]').forEach((sec) => {
-    const t = sec.dataset.sectionTheme;
-    ScrollTrigger.create({
-      trigger: sec,
-      start: 'top 50%',
-      end: 'bottom 50%',
-      onEnter:     () => setTheme(t),
-      onEnterBack: () => setTheme(t),
-    });
-  });
-  function setTheme(t) {
-    if (document.body.dataset.theme !== t) document.body.dataset.theme = t;
-  }
-
-  function setupThemeFallback() {
-    if (!('IntersectionObserver' in window)) return;
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting && e.target.dataset.sectionTheme) {
-          document.body.dataset.theme = e.target.dataset.sectionTheme;
-        }
-      });
-    }, { threshold: 0.4 });
-    document.querySelectorAll('.section[data-section-theme]').forEach((s) => io.observe(s));
-  }
+  /* Theme : voir bloc syncTheme remonté avant l'early return.
+     Lenis aussi appelle syncTheme dans son hook 'scroll' plus haut. */
 
   /* ============================================================
      PHASE 2 — caret, scramble, typewriter, stagger, rail nav
