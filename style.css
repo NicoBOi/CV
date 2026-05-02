@@ -243,39 +243,27 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .pet {
   position: fixed;
   left: 0; top: 0;
-  width: 36px; height: 36px;
+  width: 32px; height: 32px;
   z-index: 40;
   pointer-events: none;
-  color: var(--fg);
-  /* JS sets --pet-x and --pet-y in pixels, --pet-flip is 1 or -1 */
+  background: url('/assets/pet-light.svg') 0 0 / 128px 32px no-repeat;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
   transform: translate3d(var(--pet-x, 0px), var(--pet-y, 30vh), 0) scaleX(var(--pet-flip, 1));
-  /* Smooth out micro jitter without slowing real motion */
-  transition: opacity var(--dur) var(--ease);
   will-change: transform;
 }
-.pet__svg {
-  width: 100%; height: 100%;
-  shape-rendering: crispEdges;
-  image-rendering: pixelated;
-}
-.pet__pixel { fill: currentColor; }
-.pet__eye   { fill: var(--accent); }
+[data-theme="ink"] .pet { background-image: url('/assets/pet-dark.svg'); }
 
-/* Hide all frames by default; show one based on data-pet-frame */
-.pet__f { display: none; }
-.pet[data-pet-frame="idle1"]    .pet__f--idle1    { display: block; }
-.pet[data-pet-frame="idle2"]    .pet__f--idle2    { display: block; }
-.pet[data-pet-frame="blink"]    .pet__f--blink    { display: block; }
-.pet[data-pet-frame="walk1"]    .pet__f--walk1    { display: block; }
-.pet[data-pet-frame="walk2"]    .pet__f--walk2    { display: block; }
-.pet[data-pet-frame="wave"]     .pet__f--wave     { display: block; }
-.pet[data-pet-frame="jump"]     .pet__f--jump     { display: block; }
-.pet[data-pet-frame="surprise"] .pet__f--surprise { display: block; }
-.pet[data-pet-frame="clap1"]    .pet__f--clap1    { display: block; }
-.pet[data-pet-frame="clap2"]    .pet__f--clap2    { display: block; }
+.pet[data-pet-frame="idle1"] { background-position: 0     0; }
+.pet[data-pet-frame="idle2"] { background-position: -32px 0; }
+.pet[data-pet-frame="walk1"] { background-position: -64px 0; }
+.pet[data-pet-frame="walk2"] { background-position: -96px 0; }
+/* turn frames reuse idle sprites (per spec) */
+.pet[data-pet-frame="turn1"] { background-position: 0     0; }
+.pet[data-pet-frame="turn2"] { background-position: -32px 0; }
 
-/* Mobile: hide pet (too small to read pixels and would crowd content) */
-@media (max-width: 640px) {
+/* Mobile: hide pet (per spec — < 768px) */
+@media (max-width: 768px) {
   .pet { display: none; }
 }
 

@@ -44,24 +44,36 @@ Distribution des thèmes : Hero/Approche/Travail/Parcours en `paper`, Showreel/P
 
 ## Pixel pet (élément signature)
 
-Petit monstre 8-bit (16×16 grid, sprite SVG inline ~12 KB, 10 frames) **scroll-bound** : sa position est directement liée à la progression du scroll, comme un personnage de Game Boy qui marche sur le bord de la page de bas en haut au rythme de la lecture.
+Petit monstre 8-bit (16×16 grid) qui guide le regard du lecteur entre les éléments importants du site, comme un PNJ Zelda/Pokémon Game Boy. **Mouvements strictement orthogonaux (en L)**, jamais en diagonale, snap aux ancres, pivot 100ms aux changements d'axe.
 
-**Architecture** (classe `PixelPet` dans `script.js`) :
-- Position : `fixed`, contrôlée via `transform: translate3d(var(--pet-x), var(--pet-y), 0) scaleX(var(--pet-flip))` — JS écrit ces variables CSS chaque frame via `requestAnimationFrame`.
-- **Path serpentine** : à chaque frame, calcul de `(x, y) = pathFromProgress(scrollY/max)`.
-  - `y` linéaire entre `90px` (sous topbar) et `vh - 60` (bas viewport) — le pet descend visuellement à mesure qu'on scrolle.
-  - `x` cosinusoïde 1.5 cycles : `vw/2 + cos(p · 3π) · vw·0.42` — le pet serpente entre les marges droite, centre, gauche, centre, droite.
-- **Easing léger** : lerp 0.16 vers la cible chaque frame, pixels arrondis (`Math.round`) pour le rendu tile-based.
-- **Walk cycle** : `walk1` ↔ `walk2` swap chaque 8 px parcourus — cadence proportionnelle à la vélocité de scroll. Scroll vite = pet marche vite. Scroll doucement = pet marche doucement.
-- **Flip** : `flip = sign(sdy)` où `sdy = scrollY - lastScrollY`. Scroll down → face droite, scroll up → fait demi-tour (sprite flippé).
-- **Idle** : après 300 ms sans mouvement, alternance `idle1`/`idle2` toutes les 700 ms (respiration), avec ~12% de chance de `blink` (140 ms) et ~6% de chance de petit hochement de tête (`nodOffset`, sin pulse 280 ms, amplitude 1.6 px).
-- Aucun trigger sur sections, aucune téléportation : tout est continu.
+**Sprite sheet** : 2 fichiers SVG (4 frames horizontales chacun, viewBox 64×16) :
+- `assets/pet-light.svg` — pixels en `#181614` (corps) + `#B43329` (œil), pour les sections paper.
+- `assets/pet-dark.svg` — pixels en `#F4F1EC` + `#B43329`, pour les sections ink.
+- Swap CSS via `[data-theme="ink"] .pet { background-image: url(.../pet-dark.svg); }`.
+- Le pet est un `<div>` simple avec `background-image: url(...) 0 0 / 128px 32px`. Pas d'inline SVG.
 
-**10 frames** : `idle1` / `idle2` / `blink` / `walk1` / `walk2` / `wave` / `jump` / `surprise` / `clap1` / `clap2`. Toutes contrôlées par CSS via `[data-pet-frame="<name>"]`. Les frames `wave`, `jump`, `surprise`, `clap*` ne sont plus utilisées par la logique courante mais restent dans le sprite pour réutilisation ultérieure (animations contextuelles, etc.).
+**Frames** (4 + 2 alias) : `idle1` / `idle2` / `walk1` / `walk2`, avec `turn1` = `idle1` et `turn2` = `idle2` (background-position dupliqué). États `data-pet-frame="<name>"` pilotés par JS.
 
-**Couleur** : corps en `currentColor` (s'inverse avec le thème), œil en `var(--accent)`.
-**Mobile (< 640px)** : `display: none` (trop petit pour bien lire la pixellisation).
-**A11y** : `aria-hidden="true"`, `pointer-events: none`, frame statique `idle1` en `prefers-reduced-motion`.
+**Algorithme** (classe `PixelPet` dans `script.js`) :
+- **Ancres au mount** : 14 selectors CSS dans `PET_ANCHOR_SELECTORS` triés par scrollY croissant après `getBoundingClientRect()`. Chaque ancre = `(docX, docY)` placé à gauche de l'élément cible (-32px - 14px gap).
+- **À chaque frame** :
+  1. `ref = scrollY + vh * 0.4` (Y de référence du regard du lecteur)
+  2. Trouver les ancres encadrantes `a` (avant) et `b` (après)
+  3. `t = (ref - a.docY) / (b.docY - a.docY)`, clamp [0, 1]
+  4. **Mouvement en L** : si `|dy| ≥ |dx|`, axe long Y d'abord → `t<0.5` Y bouge / `t≥0.5` X bouge. Sinon X d'abord.
+  5. **Snap** : si position à <4px d'une ancre, position = ancre exacte.
+- **Détection d'axe** : `phase ∈ {'X', 'Y'}` ; si `phase` change, déclenche `turnUntil = now + 100ms`.
+- **Frame state** : `turn1`/`turn2` pendant les 100ms de pivot, sinon `walk1↔walk2` (swap 130ms) pendant le mouvement, sinon `idle1↔idle2` (swap 700ms) après 200ms d'inactivité.
+- **Flip** : `scaleX = sign(dx_pet)` selon la direction de marche horizontale.
+- **Resize** : recompute des ancres avec debounce 200ms.
+
+**Liste des ancres** (dans l'ordre du scroll) :
+`#hero-title` → `.hero__tag` → `.reel__frame` → `.reel__caption` → `.pitch__lede` → `.travail__title` → 3× `.case__title` → `.production__quote` → `.production__cta` → `.parcours__title` → `.closer` → `.closer__sla`.
+
+**Mobile (< 768px)** : `display: none` (per spec).
+**A11y** : `aria-hidden="true"`, `pointer-events: none`, statique en `prefers-reduced-motion` (rAF skipped).
+
+**Note** : les attributs `data-pet-station` / `data-pet-action` / `data-pet-anchor` présents dans le HTML sont des hooks dormants d'une version précédente, non lus par le runtime courant. À ignorer.
 
 ## Conventions code
 
