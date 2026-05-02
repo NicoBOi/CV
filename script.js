@@ -344,7 +344,7 @@
     }
 
     updateProximity(petCX, petCY) {
-      const R = 80;
+      const R = 56;
       const R2 = R * R;
 
       /* Letters within radius — use proximity as intensity 0..1. */
@@ -476,7 +476,7 @@
   }
 
   /* ============================================================
-     PHASE 2 — caret, scramble, typewriter, stagger, cursor
+     PHASE 2 — caret, scramble, typewriter, stagger, rail nav
      ============================================================ */
 
   /* Caret violet à la fin des citations clés. */
@@ -587,31 +587,26 @@
     });
   }
 
-  /* Custom cursor desktop — point violet avec lag, scale au hover. */
-  const cursor = document.querySelector('[data-cursor]');
-  const isFinePointer = window.matchMedia('(pointer: fine)').matches && window.matchMedia('(hover: hover)').matches;
-  if (cursor && isFinePointer && !reduced) {
-    let mx = -100, my = -100, cx = -100, cy = -100;
-    let active = false;
-    const onMove = (e) => {
-      mx = e.clientX; my = e.clientY;
-      if (!active) { active = true; cursor.classList.add('is-active'); }
-    };
-    window.addEventListener('mousemove', onMove, { passive: true });
-    window.addEventListener('mouseleave', () => { active = false; cursor.classList.remove('is-active'); });
-
-    function tickCursor() {
-      cx += (mx - cx) * 0.22;
-      cy += (my - cy) * 0.22;
-      cursor.style.transform = `translate3d(${cx - 4}px, ${cy - 4}px, 0)`;
-      requestAnimationFrame(tickCursor);
-    }
-    requestAnimationFrame(tickCursor);
-
-    const HOVER_SEL = 'a, button, [role="button"], .cta, .reel__frame, .case__media';
-    document.querySelectorAll(HOVER_SEL).forEach((el) => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('is-hover'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('is-hover'));
+  /* Rail nav — état actif synchro avec la section visible. */
+  const railLinks = document.querySelectorAll('.rail a[href^="#"]');
+  if (railLinks.length && 'IntersectionObserver' in window) {
+    const map = new Map();
+    railLinks.forEach((a) => {
+      const id = a.getAttribute('href').slice(1);
+      const sec = document.getElementById(id);
+      if (sec) map.set(sec, a);
     });
+    const railIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        const a = map.get(e.target);
+        if (!a) return;
+        if (e.isIntersecting && e.intersectionRatio > 0.45) {
+          railLinks.forEach((x) => x.classList.remove('is-active'));
+          a.classList.add('is-active');
+        }
+      });
+    }, { threshold: [0.45, 0.55] });
+    map.forEach((_, sec) => railIO.observe(sec));
+    /* Scroll smooth via Lenis ou natif (la page fournit déjà smooth). */
   }
 })();

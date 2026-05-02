@@ -24,7 +24,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Instrument+Serif:ital@1&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,16..72,400;0,16..72,500;1,16..72,400;1,16..72,500&display=swap">
 
   <link rel="stylesheet" href="/style.css">
 
@@ -46,8 +46,16 @@
   <!-- Pixel pet — scroll companion -->
   <div class="pet" data-pet data-pet-frame="idle1" aria-hidden="true"></div>
 
-  <!-- Custom cursor (desktop only) -->
-  <div class="cursor" data-cursor aria-hidden="true"></div>
+  <!-- Rail nav (desktop) — accès rapide aux sections sans topbar -->
+  <nav class="rail" aria-label="Sections" data-rail>
+    <a href="#hero"      data-rail-num="01"><span class="rail__label">Hero</span></a>
+    <a href="#showreel"  data-rail-num="02"><span class="rail__label">Showreel</span></a>
+    <a href="#approche"  data-rail-num="03"><span class="rail__label">Approche</span></a>
+    <a href="#travail"   data-rail-num="04"><span class="rail__label">Travail</span></a>
+    <a href="#production" data-rail-num="05"><span class="rail__label">Production</span></a>
+    <a href="#parcours"  data-rail-num="06"><span class="rail__label">Parcours</span></a>
+    <a href="#contact"   data-rail-num="07"><span class="rail__label">Contact</span></a>
+  </nav>
 
   <main id="main">
 
@@ -70,7 +78,7 @@
           </p>
 
           <div class="hero__actions" data-reveal>
-            <p class="hero__tag" data-caret>
+            <p class="hero__tag">
               <em>Je fais bouger les marques.<br>Au sens propre comme au figuré.</em>
             </p>
             <a class="cta cta--primary" href="#travail">
@@ -246,7 +254,7 @@
 
       <p class="production__kicker" data-reveal>Ce qui me distingue&nbsp;:</p>
 
-      <blockquote class="production__quote" data-reveal data-caret data-pet-station data-pet-action="surprise" data-pet-anchor="below">
+      <blockquote class="production__quote" data-reveal data-pet-station data-pet-action="surprise" data-pet-anchor="below">
         <p>
           <strong>L'IA ne remplace pas mon travail.</strong>
           <em>Elle enlève ce qui le ralentit.</em>
@@ -332,7 +340,7 @@
 
       <div class="closer__ctas" data-reveal>
         <!-- Brancher l'URL Calendly réelle ici (voir README) -->
-        <a class="cta cta--invert" href="https://calendly.com/PLACEHOLDER" target="_blank" rel="noopener" data-cta="calendly">
+        <a class="cta cta--invert" href="https://calendly.com/nicosmp-pro/new-meeting" target="_blank" rel="noopener" data-cta="calendly">
           <span>Échanger 20 min</span>
           <svg class="cta__arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
