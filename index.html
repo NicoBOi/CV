@@ -86,22 +86,13 @@
 
       <figure class="reel">
         <div class="reel__frame" data-reveal>
-          <video
+          <iframe
             class="reel__video"
-            poster="/assets/showreel-poster.svg"
-            preload="none"
-            playsinline
-            muted
-            controls
-            data-showreel
-            aria-label="Showreel Nicolas Sempere">
-            <!-- Décommenter et brancher quand le mp4 sera prêt — voir README -->
-            <!-- <source src="/assets/showreel.mp4" type="video/mp4"> -->
-          </video>
-          <button class="reel__play" type="button" aria-label="Lancer le showreel" data-reel-play>
-            <svg class="reel__play-icon" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="39" fill="none" stroke="currentColor" stroke-width="0.8"/><path d="M33 27 L55 40 L33 53 Z" fill="currentColor"/></svg>
-            <span class="reel__play-label">Showreel</span>
-          </button>
+            src="https://player.vimeo.com/video/1175061669?title=0&byline=0&portrait=0&dnt=1"
+            title="Showreel Nicolas Sempere"
+            loading="lazy"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen></iframe>
         </div>
         <figcaption class="reel__caption" data-reveal data-pet-station data-pet-action="clap" data-pet-anchor="below">
           <em>6 ans. 4 industries. Le même soin sur chaque image.</em>
