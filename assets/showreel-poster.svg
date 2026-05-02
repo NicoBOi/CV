@@ -1,39 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Showreel placeholder">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1B1A17"/>
-      <stop offset="100%" stop-color="#0E0E0C"/>
+      <stop offset="0%" stop-color="#1A1816"/>
+      <stop offset="100%" stop-color="#0F0E0C"/>
     </linearGradient>
     <filter id="grain">
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
-      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.04 0"/>
     </filter>
   </defs>
   <rect width="1920" height="1080" fill="url(#bg)"/>
-  <rect width="1920" height="1080" fill="black" filter="url(#grain)" opacity="0.6"/>
+  <rect width="1920" height="1080" fill="black" filter="url(#grain)" opacity="0.5"/>
 
-  <!-- Crop marks -->
-  <g stroke="#F2EFEA" stroke-width="1.5" opacity="0.35" fill="none">
-    <path d="M40 40 L80 40 M40 40 L40 80"/>
-    <path d="M1880 40 L1840 40 M1880 40 L1880 80"/>
-    <path d="M40 1040 L80 1040 M40 1040 L40 1000"/>
-    <path d="M1880 1040 L1840 1040 M1880 1040 L1880 1000"/>
+  <!-- crop marks -->
+  <g stroke="#F4F1EC" stroke-width="1.2" opacity="0.32" fill="none">
+    <path d="M48 48 L96 48 M48 48 L48 96"/>
+    <path d="M1872 48 L1824 48 M1872 48 L1872 96"/>
+    <path d="M48 1032 L96 1032 M48 1032 L48 984"/>
+    <path d="M1872 1032 L1824 1032 M1872 1032 L1872 984"/>
   </g>
 
-  <!-- Center dot -->
-  <circle cx="960" cy="540" r="2" fill="#D4582A"/>
+  <circle cx="960" cy="540" r="2.5" fill="#B43329"/>
 
-  <!-- Bottom strip -->
-  <g font-family="JetBrains Mono, monospace" fill="#F2EFEA" opacity="0.7" font-size="24" letter-spacing="3">
-    <text x="60" y="1010">SHOWREEL · 2024 · NICOLAS SEMPERE</text>
-    <text x="1860" y="1010" text-anchor="end">02:14</text>
+  <g font-family="JetBrains Mono, monospace" fill="#F4F1EC" opacity="0.7" font-size="22" letter-spacing="3">
+    <text x="60" y="1010">SHOWREEL · NICOLAS SEMPERE · 2026</text>
+    <text x="1860" y="1010" text-anchor="end">— · —</text>
   </g>
 
-  <!-- Side ticks -->
-  <g stroke="#F2EFEA" stroke-width="1" opacity="0.2">
-    <line x1="60" y1="540" x2="100" y2="540"/>
-    <line x1="1820" y1="540" x2="1860" y2="540"/>
-    <line x1="960" y1="60" x2="960" y2="100"/>
-    <line x1="960" y1="980" x2="960" y2="1020"/>
+  <g stroke="#F4F1EC" stroke-width="1" opacity="0.18">
+    <line x1="60" y1="540" x2="120" y2="540"/>
+    <line x1="1800" y1="540" x2="1860" y2="540"/>
+    <line x1="960" y1="60" x2="960" y2="120"/>
+    <line x1="960" y1="960" x2="960" y2="1020"/>
   </g>
 </svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A Better Feeling — placeholder">
+  <defs>
+    <linearGradient id="abf-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F4F1EC"/>
+      <stop offset="100%" stop-color="#EAE5DC"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#abf-bg)"/>
+
+  <!-- a pair of stylised eyewear (lunettes) -->
+  <g transform="translate(800 480)" stroke="#0F0E0C" stroke-width="3" fill="none" opacity="0.85">
+    <circle cx="-180" cy="0" r="140"/>
+    <circle cx="180" cy="0" r="140"/>
+    <line x1="-40" y1="0" x2="40" y2="0"/>
+    <line x1="-320" y1="0" x2="-380" y2="-30"/>
+    <line x1="320" y1="0" x2="380" y2="-30"/>
+  </g>
+
+  <!-- accent fill on left lens -->
+  <circle cx="620" cy="480" r="138" fill="#B43329" opacity="0.92"/>
+
+  <!-- meta strip -->
+  <g font-family="JetBrains Mono, monospace" fill="#0F0E0C" font-size="13" letter-spacing="2.4" opacity="0.7">
+    <text x="48" y="56">CASE 01 · A BETTER FEELING</text>
+    <text x="48" y="960">Lunettes · London · Motion · 3D · DA</text>
+    <text x="1552" y="56" text-anchor="end">depuis 2020</text>
+  </g>
+</svg>
