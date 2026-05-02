@@ -69,31 +69,51 @@ Le thème (paper / ink) bascule automatiquement au scroll via ScrollTrigger.
 
 ## L'élément signature : le pixel pet
 
-Petit monstre 8-bit (16×16 pixels, sprite SVG inline) qui suit le scroll comme un compagnon de lecture. Il a 5 états :
+Petit monstre 8-bit (16×16 pixels, sprite SVG inline ~12 KB) qui **voyage entre les stations** de la page — il ne reste pas sticky sur le côté, il marche vers les éléments importants et réagit avec une animation contextuelle.
 
-| State | Trigger |
+### 10 animations
+
+| Frame | Rôle |
 |---|---|
-| `idle` (frame 1 ↔ 2) | Scroll arrêté > 280ms — animation de respiration |
-| `walk` (frame 1 ↔ 2) | Pendant que tu scrolles — pattes alternées |
-| `wave` | Quand un titre de section ou la citation IA entre dans le viewport (60%) |
+| `idle1` / `idle2` | Respiration (alternance 700ms quand le pet est posé) |
+| `blink` | Clignement aléatoire (~12% des cycles idle) |
+| `walk1` / `walk2` | Pattes alternées pendant la marche (cycle 180ms) |
+| `wave` | Bras levé — accueil sur une nouvelle section |
+| `jump` | Saut — moments énergiques (CTA, IA) |
+| `surprise` | `!` au-dessus de la tête — révélations (citation IA, Smart Brain) |
+| `clap1` / `clap2` | Applaudissement (alternance 160ms) — fin de showreel, closer |
 
-**Position** : `position: fixed`, marge droite. Y vertical lié à la progression de scroll (de `18vh` à `78vh`, smoothing 600ms via CSS transition).
+### Stations
 
-**Couleur** : corps en `currentColor` (s'inverse avec le thème), œil en `var(--accent)` oxblood.
+Toute balise annotée `data-pet-station` devient une étape du parcours. Attributs :
 
-**Mobile (< 640px)** : caché (trop petit pour la pixellisation).
+- `data-pet-action="idle|wave|jump|surprise|clap"` — animation jouée à l'arrivée
+- `data-pet-anchor="right|left|below|above|below-right"` — où le pet se pose par rapport à l'élément
 
-**A11y** : `aria-hidden="true"`, `pointer-events: none`, statique en `prefers-reduced-motion`.
+12 stations placées : hero, showreel caption, pitch d'approche, travail h2, 3 cases titles, production quote, production CTA, parcours h2, closer, sla closer.
 
-### Modifier le pixel pet
+### Comportement
 
-Le sprite est inline dans `index.html` (~6 KB). Pour modifier :
+- À chaque frame (`requestAnimationFrame`), la station la plus proche du centre du viewport devient active.
+- Le pet calcule sa cible (en coords viewport) et marche vers elle (max ~5.5 px/frame, easing 18%).
+- Il se retourne (`scaleX(-1)`) selon la direction du déplacement.
+- À l'arrivée, il déclenche l'animation contextuelle pendant 1.2s, puis revient en idle.
+- Idle ailleurs : respire, cligne, attend que tu scrolles.
 
-1. Éditer la grille ASCII dans le commentaire de `index.html` (recherche : `pet__f--idle1`).
-2. Régénérer si besoin via le script Python que j'ai utilisé (cf. historique git, commit du build).
-3. Changer la position de repos : `style.css` → `.pet { top: 30vh }`.
-4. Changer la plage de scroll : `script.js` → `updatePetPosition()` → constantes `18` et `60`.
-5. Pour désactiver totalement : retirer le `<div class="pet">` dans `index.html`.
+### Modifier le pet
+
+Le sprite et la logique sont dans :
+- **`index.html`** — sprite inline (rechercher `pet__f--idle1`) + tags `data-pet-station` sur les ancres.
+- **`script.js`** — classe `PixelPet`, méthodes `pickStation`, `computeTarget`, `tick`, `startAction`.
+- **`style.css`** — bloc `/* PIXEL PET */`, règles `.pet[data-pet-frame="<name>"]`.
+
+Pour ajouter une station : annoter un élément avec `data-pet-station data-pet-action="..." data-pet-anchor="..."`. Le pet la détectera automatiquement au load.
+
+Pour modifier les pixels d'une frame : éditer la grille ASCII dans le commit qui a généré le sprite (script Python, cf. git log) et regénérer le SVG.
+
+Pour désactiver totalement : retirer le `<div class="pet">` dans `index.html`.
+
+**Mobile (< 640px)** : caché. **A11y** : `aria-hidden="true"`, `pointer-events: none`, frame statique en `prefers-reduced-motion`.
 
 ---
 

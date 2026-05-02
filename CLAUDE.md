@@ -44,15 +44,22 @@ Distribution des thèmes : Hero/Approche/Travail/Parcours en `paper`, Showreel/P
 
 ## Pixel pet (élément signature)
 
-Petit monstre 8-bit (16×16 grid, sprite SVG inline ~6 KB) qui suit le scroll comme un compagnon de lecture.
+Petit monstre 8-bit (16×16 grid, sprite SVG inline ~12 KB, 10 frames) qui voyage entre les stations de la page comme un compagnon de visite — il ne reste pas sticky sur le côté, il marche réellement vers les éléments importants et réagit avec une animation contextuelle.
 
-- Position : `fixed` à droite, Y lié à la progression de scroll (de `18vh` à `78vh`).
-- 5 frames : `idle1` / `idle2` (respiration), `walk1` / `walk2` (pattes alternées), `wave` (bras levé).
-- States contrôlés par JS via `data-pet-state` + `data-pet-frame` — basculés via CSS visibility.
-- `idle` quand scroll arrêté > 280ms · `walk` pendant scroll actif · `wave` quand un titre / citation entre dans le 60% viewport (700ms).
-- Couleur : corps en `currentColor` (s'inverse avec le thème), œil en `var(--accent)`.
-- Mobile (< 640px) : `display: none` (trop petit pour la pixellisation).
-- A11y : `aria-hidden="true"`, `pointer-events: none`, statique en `prefers-reduced-motion`.
+**Architecture** (classe `PixelPet` dans `script.js`) :
+- Position : `fixed`, contrôlée via `transform: translate3d(var(--pet-x), var(--pet-y), 0) scaleX(var(--pet-flip))` — JS écrit ces variables CSS chaque frame via `requestAnimationFrame`.
+- Stations : tout élément annoté `data-pet-station` est candidat. Attributs : `data-pet-action` (`idle` | `wave` | `jump` | `surprise` | `clap`) et `data-pet-anchor` (`right` | `left` | `below` | `above` | `below-right`).
+- Logique : à chaque frame, la station la plus proche du centre du viewport devient active ; le pet calcule sa position cible (en coords viewport) et marche vers elle (max ~5.5 px/frame avec easing). Le pet se retourne (`flip`) selon la direction de marche.
+- Arrivée : déclenche l'animation contextuelle (`startAction`) — `wave` 1.2s, `jump` 1.2s, `surprise` 1.2s, `clap` alterne `clap1`/`clap2` toutes les 160ms pendant 1.2s.
+- Idle : alterne `idle1`/`idle2` toutes les 700ms (respiration), avec ~12% de chance de `blink` (140ms) à chaque cycle.
+
+**10 frames** : `idle1` / `idle2` / `blink` / `walk1` / `walk2` / `wave` / `jump` / `surprise` / `clap1` / `clap2`. Toutes contrôlées par CSS via `[data-pet-frame="<name>"]`.
+
+**Stations placées** (12) : hero h1, showreel caption, pitch lede, travail h2, 3 case titles, production quote, production CTA, parcours h2, closer, closer SLA.
+
+**Couleur** : corps en `currentColor` (s'inverse avec le thème), œil en `var(--accent)`.
+**Mobile (< 640px)** : `display: none` (trop petit pour bien lire la pixellisation).
+**A11y** : `aria-hidden="true"`, `pointer-events: none`, frame statique `idle1` en `prefers-reduced-motion`.
 
 ## Conventions code
 
