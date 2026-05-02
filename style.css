@@ -18,7 +18,7 @@
 
   /* Typo */
   --font-display: 'Archivo Black', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-body:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-body:    'Newsreader', 'Iowan Old Style', 'Georgia', serif;
   --font-ui:      'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --font-quote:   'Instrument Serif', 'Iowan Old Style', 'Georgia', serif;
@@ -311,10 +311,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 .hero__sub {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: clamp(13px, 0.95vw, 15px);
-  line-height: 1.7;
-  letter-spacing: 0.01em;
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.05vw, 18px);
+  line-height: 1.6;
+  letter-spacing: 0;
   color: var(--ink);
   max-width: 56ch;
 }
@@ -428,10 +428,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   .pitch { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; }
 }
 .pitch__lede {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: clamp(18px, 1.5vw, 24px);
-  line-height: 1.45;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(22px, 1.9vw, 30px);
+  line-height: 1.4;
   letter-spacing: 0;
   margin: 0;
   max-width: 38ch;
@@ -444,11 +444,11 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   color: var(--ink);
 }
 .pitch__body {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(16px, 1.1vw, 19px);
-  line-height: 1.55;
+  font-size: clamp(18px, 1.3vw, 22px);
+  line-height: 1.5;
   color: var(--ink);
   margin: 0;
   max-width: 40ch;
@@ -497,8 +497,8 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .pilier__desc {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: var(--fs-body);
+  font-family: var(--font-body);
+  font-size: clamp(16px, 1.1vw, 19px);
   line-height: 1.55;
   max-width: 32ch;
   color: var(--ink);
@@ -554,7 +554,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .travail__lead {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-style: italic;
   font-size: var(--fs-lede);
   line-height: 1.5;
@@ -593,7 +593,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   color: var(--ink);
 }
 .case__sub {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-style: italic;
   font-weight: 400;
   font-size: var(--fs-lede);
@@ -637,10 +637,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .case__story dd {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: 14px;
+  font-family: var(--font-body);
+  font-size: 16px;
   line-height: 1.6;
-  letter-spacing: 0.005em;
+  letter-spacing: 0;
   max-width: 36ch;
   color: var(--ink);
 }
@@ -649,7 +649,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   margin-top: clamp(20px, 3vw, 40px);
   padding-top: clamp(24px, 3vw, 40px);
   border-top: 1px solid var(--rule);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-style: italic;
   font-size: var(--fs-lede);
   color: var(--ink);
@@ -715,7 +715,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   margin-right: 0;
 }
 .production__body p {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: var(--fs-lede);
   font-weight: 400;
   line-height: 1.55;
@@ -732,10 +732,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   border-top: 1px solid var(--rule);
 }
 .production__cta em {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-style: italic;
-  font-weight: 500;
-  font-size: clamp(18px, 1.5vw, 24px);
+  font-weight: 400;
+  font-size: clamp(20px, 1.7vw, 28px);
   color: var(--ink);
   display: block;
   max-width: 40ch;
@@ -808,8 +808,8 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .timeline__detail {
   color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: var(--fs-body);
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1vw, 18px);
   line-height: 1.55;
   opacity: 0.78;
 }
@@ -853,12 +853,12 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 .closer__pitch {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: var(--fs-lede);
+  font-family: var(--font-body);
+  font-size: clamp(20px, 1.5vw, 26px);
   font-weight: 400;
   color: var(--ink);
   max-width: 56ch;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 .closer__pitch em {
   color: var(--ink);
@@ -976,17 +976,16 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    PHASE 2 — micro-interactions et réactivité du pet
    ============================================================ */
 
-/* ---------- CHARS (titres splittés pour réactivité pet) ---------- */
+/* ---------- CHARS (titres splittés pour réactivité pet) ----------
+   Pas de violet sur les lettres : juste un soulèvement subtil
+   proportionnel à la proximité du pet. La couleur reste --ink. */
 .char {
   display: inline-block;
-  transition:
-    transform 320ms var(--ease),
-    color 320ms var(--ease);
-  will-change: transform, color;
+  transition: transform 360ms var(--ease);
+  will-change: transform;
 }
 .char.is-near {
-  color: var(--accent);
-  transform: translateY(calc(-3px * var(--char-near, 1)));
+  transform: translateY(calc(-4px * var(--char-near, 1)));
 }
 
 /* ---------- ZONES RÉACTIVES AU PASSAGE DU PET ---------- */
@@ -1000,22 +999,22 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   100% { transform: translateX(0); }
 }
 
-/* Ripple pixel (outline accent qui s'efface) sur les médias. */
+/* Médias : flash d'outline accent court quand le pet les frôle.
+   Pas de scale, juste une bordure qui apparaît et s'efface. */
 .case__media,
 .reel__frame { isolation: isolate; }
 .case__media.is-pet-near::before,
 .reel__frame.is-pet-near::before {
   content: '';
   position: absolute; inset: 0;
-  border: 2px solid var(--accent);
+  border: 1px solid var(--accent);
   pointer-events: none;
-  animation: pet-ripple 520ms var(--ease) forwards;
+  animation: pet-flash 420ms var(--ease) forwards;
   z-index: 2;
 }
-@keyframes pet-ripple {
-  0%   { opacity: 0.9; transform: translate(0, 0) scale(1); }
-  60%  { opacity: 0.4; }
-  100% { opacity: 0;   transform: translate(0, 0) scale(1.025); }
+@keyframes pet-flash {
+  0%   { opacity: 0.9; }
+  100% { opacity: 0; }
 }
 
 /* Filets / bordures qui vibrent (case study + timeline rows). */
@@ -1096,23 +1095,66 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   transform: none;
 }
 
-/* ---------- CURSOR PERSO (DESKTOP) ---------- */
-.cursor {
+/* ---------- RAIL NAV (DESKTOP) ----------
+   Discret, à droite, vertical. Chaque section = un trait court ;
+   l'actif s'allonge et passe en accent. Label apparaît au hover. */
+.rail {
   position: fixed;
-  top: 0; left: 0;
-  width: 8px; height: 8px;
-  background: var(--accent);
-  pointer-events: none;
-  z-index: 9999;
+  right: clamp(14px, 2vw, 28px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   mix-blend-mode: difference;
-  transform: translate3d(-100px, -100px, 0);
-  transition: width 220ms var(--ease), height 220ms var(--ease);
-  opacity: 0;
+  pointer-events: auto;
 }
-.cursor.is-active { opacity: 1; }
-.cursor.is-hover { width: 22px; height: 22px; }
-@media (max-width: 800px), (pointer: coarse), (hover: none) {
-  .cursor { display: none; }
+.rail a {
+  position: relative;
+  display: flex; align-items: center;
+  justify-content: flex-end;
+  height: 14px;
+  padding-right: 0;
+  text-decoration: none;
+}
+.rail a::before {
+  content: '';
+  display: block;
+  width: 14px; height: 1px;
+  background: #EDE9DF;
+  opacity: 0.45;
+  transition: width 240ms var(--ease), opacity 240ms var(--ease), background-color 240ms var(--ease);
+}
+.rail a.is-active::before {
+  width: 26px;
+  opacity: 1;
+  background: var(--accent);
+}
+.rail a:hover::before { width: 26px; opacity: 1; }
+.rail__label {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #EDE9DF;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 240ms var(--ease), transform 240ms var(--ease);
+  pointer-events: none;
+}
+.rail a:hover .rail__label,
+.rail a:focus-visible .rail__label {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+@media (max-width: 800px), (pointer: coarse) {
+  .rail { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1121,6 +1163,5 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   .pet { transition: none !important; }
   .char.is-near { transform: none !important; }
   .caret { animation: none !important; opacity: 1 !important; }
-  .cursor { display: none; }
   html { scroll-behavior: auto; }
 }
