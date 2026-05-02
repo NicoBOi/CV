@@ -44,18 +44,20 @@ Distribution des thèmes : Hero/Approche/Travail/Parcours en `paper`, Showreel/P
 
 ## Pixel pet (élément signature)
 
-Petit monstre 8-bit (16×16 grid, sprite SVG inline ~12 KB, 10 frames) qui voyage entre les stations de la page comme un compagnon de visite — il ne reste pas sticky sur le côté, il marche réellement vers les éléments importants et réagit avec une animation contextuelle.
+Petit monstre 8-bit (16×16 grid, sprite SVG inline ~12 KB, 10 frames) **scroll-bound** : sa position est directement liée à la progression du scroll, comme un personnage de Game Boy qui marche sur le bord de la page de bas en haut au rythme de la lecture.
 
 **Architecture** (classe `PixelPet` dans `script.js`) :
 - Position : `fixed`, contrôlée via `transform: translate3d(var(--pet-x), var(--pet-y), 0) scaleX(var(--pet-flip))` — JS écrit ces variables CSS chaque frame via `requestAnimationFrame`.
-- Stations : tout élément annoté `data-pet-station` est candidat. Attributs : `data-pet-action` (`idle` | `wave` | `jump` | `surprise` | `clap`) et `data-pet-anchor` (`right` | `left` | `below` | `above` | `below-right`).
-- Logique : à chaque frame, la station la plus proche du centre du viewport devient active ; le pet calcule sa position cible (en coords viewport) et marche vers elle (max ~5.5 px/frame avec easing). Le pet se retourne (`flip`) selon la direction de marche.
-- Arrivée : déclenche l'animation contextuelle (`startAction`) — `wave` 1.2s, `jump` 1.2s, `surprise` 1.2s, `clap` alterne `clap1`/`clap2` toutes les 160ms pendant 1.2s.
-- Idle : alterne `idle1`/`idle2` toutes les 700ms (respiration), avec ~12% de chance de `blink` (140ms) à chaque cycle.
+- **Path serpentine** : à chaque frame, calcul de `(x, y) = pathFromProgress(scrollY/max)`.
+  - `y` linéaire entre `90px` (sous topbar) et `vh - 60` (bas viewport) — le pet descend visuellement à mesure qu'on scrolle.
+  - `x` cosinusoïde 1.5 cycles : `vw/2 + cos(p · 3π) · vw·0.42` — le pet serpente entre les marges droite, centre, gauche, centre, droite.
+- **Easing léger** : lerp 0.16 vers la cible chaque frame, pixels arrondis (`Math.round`) pour le rendu tile-based.
+- **Walk cycle** : `walk1` ↔ `walk2` swap chaque 8 px parcourus — cadence proportionnelle à la vélocité de scroll. Scroll vite = pet marche vite. Scroll doucement = pet marche doucement.
+- **Flip** : `flip = sign(sdy)` où `sdy = scrollY - lastScrollY`. Scroll down → face droite, scroll up → fait demi-tour (sprite flippé).
+- **Idle** : après 300 ms sans mouvement, alternance `idle1`/`idle2` toutes les 700 ms (respiration), avec ~12% de chance de `blink` (140 ms) et ~6% de chance de petit hochement de tête (`nodOffset`, sin pulse 280 ms, amplitude 1.6 px).
+- Aucun trigger sur sections, aucune téléportation : tout est continu.
 
-**10 frames** : `idle1` / `idle2` / `blink` / `walk1` / `walk2` / `wave` / `jump` / `surprise` / `clap1` / `clap2`. Toutes contrôlées par CSS via `[data-pet-frame="<name>"]`.
-
-**Stations placées** (12) : hero h1, showreel caption, pitch lede, travail h2, 3 case titles, production quote, production CTA, parcours h2, closer, closer SLA.
+**10 frames** : `idle1` / `idle2` / `blink` / `walk1` / `walk2` / `wave` / `jump` / `surprise` / `clap1` / `clap2`. Toutes contrôlées par CSS via `[data-pet-frame="<name>"]`. Les frames `wave`, `jump`, `surprise`, `clap*` ne sont plus utilisées par la logique courante mais restent dans le sprite pour réutilisation ultérieure (animations contextuelles, etc.).
 
 **Couleur** : corps en `currentColor` (s'inverse avec le thème), œil en `var(--accent)`.
 **Mobile (< 640px)** : `display: none` (trop petit pour bien lire la pixellisation).
