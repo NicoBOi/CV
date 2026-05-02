@@ -23,19 +23,19 @@
   --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --font-quote:   'Instrument Serif', 'Iowan Old Style', 'Georgia', serif;
 
-  /* Échelle */
+  /* Échelle — mins abaissées pour le mobile, maxes inchangées. */
   --fs-mono:      11px;
   --fs-ui:        13px;
   --fs-body:      clamp(15px, 0.95vw, 17px);
-  --fs-lede:      clamp(18px, 1.4vw, 22px);
-  --fs-h3:        clamp(28px, 2.6vw, 44px);
-  --fs-h2:        clamp(48px, 6.4vw, 96px);
-  --fs-quote:     clamp(36px, 5vw, 76px);
-  --fs-hero:      clamp(56px, 9.2vw, 144px);
+  --fs-lede:      clamp(17px, 1.4vw, 22px);
+  --fs-h3:        clamp(24px, 2.6vw, 44px);
+  --fs-h2:        clamp(36px, 6.6vw, 96px);
+  --fs-quote:     clamp(28px, 5.2vw, 76px);
+  --fs-hero:      clamp(40px, 9.4vw, 144px);
 
-  /* Spacing */
-  --gutter:       clamp(20px, 4vw, 80px);
-  --section-y:    clamp(120px, 14vw, 220px);
+  /* Spacing — section-y plus compact sur mobile. */
+  --gutter:       clamp(18px, 4vw, 80px);
+  --section-y:    clamp(80px, 14vw, 220px);
   --max:          1320px;
 
   /* Motion */
@@ -609,12 +609,13 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .case__title {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(44px, 5.4vw, 88px);
+  font-size: clamp(32px, 5.4vw, 88px);
   line-height: 0.88;
   letter-spacing: -0.04em;
   text-transform: uppercase;
   margin: 0;
   color: var(--ink);
+  word-break: break-word;
 }
 .case__sub {
   font-family: var(--font-body);
@@ -798,9 +799,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .timeline__row {
   display: grid;
-  grid-template-columns: 90px minmax(0, 1fr);
-  gap: 24px;
-  padding: clamp(28px, 3vw, 44px) 0;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: clamp(22px, 3vw, 44px) 0;
   border-bottom: 1px solid var(--rule);
   align-items: baseline;
   font-family: var(--font-mono);
@@ -857,8 +858,8 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   font-family: var(--font-quote);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(36px, 4.8vw, 64px);
-  line-height: 1.1;
+  font-size: clamp(28px, 4.8vw, 64px);
+  line-height: 1.15;
   letter-spacing: 0;
   max-width: 28ch;
   color: var(--ink);
@@ -1000,21 +1001,17 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    PHASE 2 — micro-interactions et réactivité du pet
    ============================================================ */
 
-/* ---------- CHARS (titres splittés pour réactivité pet) ----------
-   Pas de violet : juste un saut + scale subtil quand le pet est proche,
-   intensité proportionnelle à la proximité (--char-near 0..1). */
+/* ---------- CHARS (textes splittés pour réactivité pet) ----------
+   Highlight violet sur toutes les lettres frôlées par le pet.
+   Pas de mouvement : juste un swap de couleur. Léger fade-out quand
+   le pet s'éloigne (transition color). */
 .char {
-  display: inline-block;
-  transition:
-    transform 380ms var(--ease),
-    opacity 380ms var(--ease);
-  transform-origin: center bottom;
-  will-change: transform;
+  display: inline;
+  transition: color 280ms var(--ease);
+  will-change: color;
 }
 .char.is-near {
-  transform:
-    translateY(calc(-9px * var(--char-near, 1)))
-    scale(calc(1 + 0.14 * var(--char-near, 1)));
+  color: var(--accent);
 }
 
 /* ---------- ZONES RÉACTIVES AU PASSAGE DU PET ---------- */
@@ -1182,15 +1179,89 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   opacity: 1;
   transform: translateY(-50%) translateX(0);
 }
+/* Mobile / touch : rail bascule en bandeau horizontal en bas. */
 @media (max-width: 800px), (pointer: coarse) {
-  .rail { display: none; }
+  .rail {
+    top: auto;
+    right: auto;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 12px;
+    padding: 8px 14px;
+  }
+  .rail a { height: 14px; width: 14px; }
+  .rail a::before {
+    width: 14px;
+    height: 1px;
+  }
+  .rail a.is-active::before { width: 18px; }
+  .rail__label { display: none; }
+}
+
+/* ============================================================
+   RESPONSIVE — réglages fins mobile / tablet
+   ============================================================ */
+@media (max-width: 720px) {
+  /* Hero : laisser respirer en évitant le titre tronqué. */
+  .hero__title { letter-spacing: -0.035em; max-width: 100%; }
+  .hero__line--italic { font-size: 0.55em; }
+  .hero__bottom {
+    margin-top: clamp(32px, 6vw, 64px);
+    padding-top: 24px;
+    gap: 28px;
+  }
+  .hero__sub { font-size: 15px; }
+
+  /* Sections : labels plus compacts. */
+  .section__label { margin-bottom: clamp(40px, 9vw, 72px); }
+
+  /* Cases : padding interne réduit. */
+  .case { padding: clamp(40px, 8vw, 64px) 0; gap: 28px; }
+  .case__story { gap: 20px; }
+  .case__story dd { font-size: 15px; }
+
+  /* Travail more / pitch body : tailles serrées. */
+  .pitch__body { font-size: 16px; }
+  .travail__more { font-size: 16px; }
+
+  /* Production : quote + CTAs compacts. */
+  .production__body p { font-size: 17px; }
+  .production__cta em { font-size: 18px; }
+
+  /* Closer : pitch + CTAs compacts. */
+  .closer__pitch { font-size: 18px; }
+  .closer__ctas { gap: 10px; }
+  .closer__ctas .cta { width: 100%; justify-content: space-between; }
+
+  /* Brand pills : wrap proprement. */
+  .brand { font-size: 12px; padding: 3px 10px 3px 6px; }
+  .brand__mark { width: 14px; height: 14px; }
+
+  /* Footer : padding mobile. */
+  .footer { padding: 24px 18px; }
+
+  /* Rail : laisser de l'espace pour le bandeau bottom. */
+  main { padding-bottom: 0; }
+  .section--contact { padding-bottom: clamp(80px, 14vw, 140px); }
+}
+
+@media (max-width: 480px) {
+  /* Très petit écran : compresser un peu plus. */
+  .hero__title { letter-spacing: -0.03em; }
+  .case__title { font-size: clamp(28px, 8vw, 44px); }
+  .pilier__title { font-size: clamp(22px, 6vw, 32px); }
+  .section--hero { min-height: 100svh; padding-top: clamp(40px, 8vh, 80px); }
+  .closer { font-size: clamp(26px, 7vw, 40px); }
+  .production__quote { font-size: clamp(26px, 8vw, 56px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
   [data-reveal-stagger] > * { opacity: 1 !important; transform: none !important; }
   .pet { transition: none !important; }
-  .char.is-near { transform: none !important; }
+  .char.is-near { color: inherit !important; }
   .caret { animation: none !important; opacity: 1 !important; }
   html { scroll-behavior: auto; }
 }
