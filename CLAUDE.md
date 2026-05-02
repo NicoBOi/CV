@@ -20,9 +20,9 @@ Branche feature actuelle : `claude/setup-repo-check-skills-1kb25`.
 Statique, **zéro build** :
 
 - **HTML/CSS/JS vanilla**, defer-loaded.
-- **Lenis 1.0.42** (smooth scroll) + **GSAP 3.12 / ScrollTrigger** (reveals, theme swap, counter) — tous les trois en CDN.
-- Polices via **Fontshare** : `Boska` (display serif, italic accents), `Switzer` (body sans), `JetBrains Mono` (labels, numéros, navigation).
-- Tokens CSS : palette `paper #F2EFEA` / `ink #0E0E0C` (off-black, jamais pur) / accent unique `ember #D4582A`. Theme `paper` (light) ↔ `ink` (dark) via `body[data-theme]`, swap automatique au scroll.
+- **Lenis 1.0.42** (smooth scroll) + **GSAP 3.12 / ScrollTrigger** (reveals, theme swap) — tous les trois en CDN.
+- Polices via **Fontshare** : `Sentient` (display + body, serif humaniste avec italique), `Switzer` (UI / status pill), `JetBrains Mono` (labels, numéros, mono).
+- Tokens CSS : palette `paper #F4F1EC` / `ink #0F0E0C` (off-black, jamais pur) / accent unique `oxblood #B43329` (référence Bordeaux) / dispo `#5C8067` (vert atelier désaturé). Theme `paper` (light) ↔ `ink` (dark) via `body[data-theme]`, swap automatique au scroll.
 - Aucune API JS globale exposée. Tout encapsulé dans une IIFE en tête de `script.js`.
 
 Polices interdites : **Inter** (banni par le skill `design-taste-frontend`). Couleurs interdites : pur noir `#000`, purple gradients, glow neon (anti-AI-slop).
@@ -31,13 +31,28 @@ Polices interdites : **Inter** (banni par le skill `design-taste-frontend`). Cou
 
 7 sections numérotées, ordre verrouillé. Chaque `<section>` porte :
 
-- `id="<slug-en>"` — slug stable pour deep-link et i18n (`#hero`, `#showreel`, `#approche`, `#cases`, `#production`, `#parcours`, `#contact`).
-- `data-section-num="0X"` — alimente le compteur `01/07` en haut à droite.
+- `id="<slug-en>"` — slug stable pour deep-link et i18n (`#hero`, `#showreel`, `#approche`, `#travail`, `#production`, `#parcours`, `#contact`).
+- `data-section-num="0X"` — meta utilisée par les labels éditoriaux et le scroll.
 - `data-section-theme="paper|ink"` — déclenche le swap de thème via ScrollTrigger.
 - `aria-labelledby="<id>-title"` — a11y.
-- `<span class="section__label">` éditorial en marge gauche (`01 — Hero`).
+- `<span class="section__label">` éditorial en marge (`01 — Hero`).
 
-Distribution des thèmes : Hero/Approche/Cases/Parcours en `paper`, Showreel/Production-IA/Contact en `ink`.
+Distribution des thèmes : Hero/Approche/Travail/Parcours en `paper`, Showreel/Production-IA/Contact en `ink`.
+
+**Topbar fixe** : Nom (gauche) · Nav 4 liens (centre) · status pill `● Disponible · CDI` (droite, dot vert pulse).
+**Scroll progress bar** : 2px en haut d'écran, remplie en accent oxblood au scroll (élément `[data-progress]`).
+
+## Pixel pet (élément signature)
+
+Petit monstre 8-bit (16×16 grid, sprite SVG inline ~6 KB) qui suit le scroll comme un compagnon de lecture.
+
+- Position : `fixed` à droite, Y lié à la progression de scroll (de `18vh` à `78vh`).
+- 5 frames : `idle1` / `idle2` (respiration), `walk1` / `walk2` (pattes alternées), `wave` (bras levé).
+- States contrôlés par JS via `data-pet-state` + `data-pet-frame` — basculés via CSS visibility.
+- `idle` quand scroll arrêté > 280ms · `walk` pendant scroll actif · `wave` quand un titre / citation entre dans le 60% viewport (700ms).
+- Couleur : corps en `currentColor` (s'inverse avec le thème), œil en `var(--accent)`.
+- Mobile (< 640px) : `display: none` (trop petit pour la pixellisation).
+- A11y : `aria-hidden="true"`, `pointer-events: none`, statique en `prefers-reduced-motion`.
 
 ## Conventions code
 
@@ -60,7 +75,7 @@ Tous les visuels actuels sont des **SVG placeholders** (pellicule / contact-shee
 |---|---|---|
 | `assets/showreel-poster.svg` | 02 | JPG/WebP 1920×1080 |
 | (à créer) `assets/showreel.mp4` | 02 | MP4 H.264 1080p ≤ 12 Mo |
-| `assets/case-{smartbrain,betclic,freelance}.svg` | 04 | JPG/WebP 4:3 |
+| `assets/case-{abf,smartbrain,betclic}.svg` | 04 | JPG/WebP ratio 8:5 (1600×1000) |
 | `cv-nicolas-sempere.pdf` | 07 | PDF du vrai CV (placeholder de 587 octets actuellement) |
 
 Calendly : `index.html` → remplacer `https://calendly.com/PLACEHOLDER` par l'URL réelle.

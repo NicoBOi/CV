@@ -4,14 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#F4F1EC">
   <title>Nicolas Sempere — Motion designer & directeur artistique</title>
-  <meta name="description" content="Nicolas Sempere — motion designer et directeur artistique. 6 ans d'expérience. Sephora, Betclic, Phillips, A Better Feeling. Bordeaux, disponible en CDI.">
+  <meta name="description" content="Motion designer & directeur artistique. 2D, 3D, image de marque. 6 ans d'expérience. A Better Feeling, Betclic, Phillips, Double Salto. Bordeaux, disponible en CDI.">
   <link rel="canonical" href="https://nicolassempere.com/">
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nicolassempere.com/">
   <meta property="og:title" content="Nicolas Sempere — Motion designer & directeur artistique">
-  <meta property="og:description" content="6 ans d'expérience. Sephora, Betclic, Phillips, A Better Feeling. Bordeaux, disponible en CDI.">
+  <meta property="og:description" content="6 ans. 4 industries. Le même soin sur chaque image. Bordeaux — disponible en CDI.">
   <meta property="og:image" content="https://nicolassempere.com/assets/og-image.png">
   <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +24,7 @@
 
   <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=boska@400,500,600,400i,500i&f[]=switzer@300,400,500,600,400i&f[]=jetbrains-mono@400,500&display=swap">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@300,400,500,400i,500i&f[]=switzer@400,500&f[]=jetbrains-mono@400,500&display=swap">
 
   <link rel="stylesheet" href="/style.css">
 
@@ -33,25 +34,39 @@
   <script defer src="/script.js"></script>
 </head>
 <body data-theme="paper">
+
+  <!-- Fixed scroll progress bar -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar" data-progress></span></div>
+
+  <!-- Grain overlay for tactile finish -->
   <div class="grain" aria-hidden="true"></div>
 
   <a class="skip-link" href="#main">Aller au contenu</a>
 
+  <!-- Topbar -->
   <header class="topbar" role="banner">
-    <a class="topbar__mark" href="#hero" aria-label="Nicolas Sempere — accueil">
-      <span class="topbar__name">Nicolas Sempere</span>
+    <a class="topbar__name" href="#hero" aria-label="Nicolas Sempere — accueil">
+      <span>Nicolas Sempere</span>
       <span class="topbar__alias">— Climax.exe</span>
     </a>
+
     <nav class="topbar__nav" aria-label="Navigation principale">
       <a href="#approche">Approche</a>
-      <a href="#cases">Travail</a>
+      <a href="#travail">Travail</a>
       <a href="#production">IA</a>
-      <a href="#contact" class="topbar__cta">Contact</a>
+      <a href="#contact">Contact</a>
     </nav>
-    <span class="topbar__counter" aria-hidden="true">
-      <span data-counter-current>01</span><span class="topbar__counter-sep">/</span><span>07</span>
-    </span>
+
+    <p class="status" data-status>
+      <span class="status__dot" aria-hidden="true"></span>
+      Disponible <span class="status__sep">·</span> CDI
+    </p>
   </header>
+
+  <!-- Pixel pet — scroll companion -->
+  <div class="pet" data-pet data-pet-state="idle" data-pet-frame="0" aria-hidden="true">
+    <svg class="pet__svg" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><g class="pet__f pet__f--idle1"><rect class="pet__pixel" x="5" y="2" width="6" height="1"/><rect class="pet__pixel" x="4" y="3" width="8" height="1"/><rect class="pet__pixel" x="3" y="4" width="10" height="1"/><rect class="pet__pixel" x="3" y="5" width="2" height="1"/><rect class="pet__pixel" x="11" y="5" width="2" height="1"/><rect class="pet__pixel" x="3" y="6" width="2" height="1"/><rect class="pet__pixel" x="11" y="6" width="2" height="1"/><rect class="pet__pixel" x="3" y="7" width="10" height="1"/><rect class="pet__pixel" x="3" y="8" width="10" height="1"/><rect class="pet__pixel" x="4" y="9" width="8" height="1"/><rect class="pet__pixel" x="4" y="10" width="8" height="1"/><rect class="pet__pixel" x="5" y="11" width="6" height="1"/><rect class="pet__pixel" x="4" y="12" width="2" height="1"/><rect class="pet__pixel" x="10" y="12" width="2" height="1"/><rect class="pet__pixel" x="4" y="13" width="2" height="1"/><rect class="pet__pixel" x="10" y="13" width="2" height="1"/><rect class="pet__eye" x="5" y="5" width="2" height="1"/><rect class="pet__eye" x="9" y="5" width="2" height="1"/><rect class="pet__eye" x="5" y="6" width="2" height="1"/><rect class="pet__eye" x="9" y="6" width="2" height="1"/></g><g class="pet__f pet__f--idle2"><rect class="pet__pixel" x="5" y="1" width="6" height="1"/><rect class="pet__pixel" x="4" y="2" width="8" height="1"/><rect class="pet__pixel" x="3" y="3" width="10" height="1"/><rect class="pet__pixel" x="3" y="4" width="2" height="1"/><rect class="pet__pixel" x="11" y="4" width="2" height="1"/><rect class="pet__pixel" x="3" y="5" width="2" height="1"/><rect class="pet__pixel" x="11" y="5" width="2" height="1"/><rect class="pet__pixel" x="3" y="6" width="10" height="1"/><rect class="pet__pixel" x="3" y="7" width="10" height="1"/><rect class="pet__pixel" x="4" y="8" width="8" height="1"/><rect class="pet__pixel" x="4" y="9" width="8" height="1"/><rect class="pet__pixel" x="4" y="10" width="8" height="1"/><rect class="pet__pixel" x="5" y="11" width="6" height="1"/><rect class="pet__pixel" x="4" y="12" width="2" height="1"/><rect class="pet__pixel" x="10" y="12" width="2" height="1"/><rect class="pet__pixel" x="4" y="13" width="2" height="1"/><rect class="pet__pixel" x="10" y="13" width="2" height="1"/><rect class="pet__eye" x="5" y="4" width="2" height="1"/><rect class="pet__eye" x="9" y="4" width="2" height="1"/><rect class="pet__eye" x="5" y="5" width="2" height="1"/><rect class="pet__eye" x="9" y="5" width="2" height="1"/></g><g class="pet__f pet__f--walk1"><rect class="pet__pixel" x="5" y="2" width="6" height="1"/><rect class="pet__pixel" x="4" y="3" width="8" height="1"/><rect class="pet__pixel" x="3" y="4" width="10" height="1"/><rect class="pet__pixel" x="3" y="5" width="2" height="1"/><rect class="pet__pixel" x="11" y="5" width="2" height="1"/><rect class="pet__pixel" x="3" y="6" width="2" height="1"/><rect class="pet__pixel" x="11" y="6" width="2" height="1"/><rect class="pet__pixel" x="3" y="7" width="10" height="1"/><rect class="pet__pixel" x="3" y="8" width="10" height="1"/><rect class="pet__pixel" x="4" y="9" width="8" height="1"/><rect class="pet__pixel" x="4" y="10" width="8" height="1"/><rect class="pet__pixel" x="5" y="11" width="6" height="1"/><rect class="pet__pixel" x="4" y="12" width="2" height="1"/><rect class="pet__pixel" x="10" y="12" width="2" height="1"/><rect class="pet__pixel" x="5" y="13" width="1" height="1"/><rect class="pet__pixel" x="10" y="13" width="2" height="1"/><rect class="pet__eye" x="5" y="5" width="2" height="1"/><rect class="pet__eye" x="9" y="5" width="2" height="1"/><rect class="pet__eye" x="5" y="6" width="2" height="1"/><rect class="pet__eye" x="9" y="6" width="2" height="1"/></g><g class="pet__f pet__f--walk2"><rect class="pet__pixel" x="5" y="2" width="6" height="1"/><rect class="pet__pixel" x="4" y="3" width="8" height="1"/><rect class="pet__pixel" x="3" y="4" width="10" height="1"/><rect class="pet__pixel" x="3" y="5" width="2" height="1"/><rect class="pet__pixel" x="11" y="5" width="2" height="1"/><rect class="pet__pixel" x="3" y="6" width="2" height="1"/><rect class="pet__pixel" x="11" y="6" width="2" height="1"/><rect class="pet__pixel" x="3" y="7" width="10" height="1"/><rect class="pet__pixel" x="3" y="8" width="10" height="1"/><rect class="pet__pixel" x="4" y="9" width="8" height="1"/><rect class="pet__pixel" x="4" y="10" width="8" height="1"/><rect class="pet__pixel" x="5" y="11" width="6" height="1"/><rect class="pet__pixel" x="4" y="12" width="2" height="1"/><rect class="pet__pixel" x="10" y="12" width="2" height="1"/><rect class="pet__pixel" x="4" y="13" width="2" height="1"/><rect class="pet__pixel" x="10" y="13" width="1" height="1"/><rect class="pet__eye" x="5" y="5" width="2" height="1"/><rect class="pet__eye" x="9" y="5" width="2" height="1"/><rect class="pet__eye" x="5" y="6" width="2" height="1"/><rect class="pet__eye" x="9" y="6" width="2" height="1"/></g><g class="pet__f pet__f--wave"><rect class="pet__pixel" x="8" y="0" width="2" height="1"/><rect class="pet__pixel" x="8" y="1" width="2" height="1"/><rect class="pet__pixel" x="5" y="2" width="6" height="1"/><rect class="pet__pixel" x="4" y="3" width="8" height="1"/><rect class="pet__pixel" x="3" y="4" width="10" height="1"/><rect class="pet__pixel" x="3" y="5" width="2" height="1"/><rect class="pet__pixel" x="11" y="5" width="2" height="1"/><rect class="pet__pixel" x="3" y="6" width="2" height="1"/><rect class="pet__pixel" x="11" y="6" width="2" height="1"/><rect class="pet__pixel" x="3" y="7" width="10" height="1"/><rect class="pet__pixel" x="3" y="8" width="10" height="1"/><rect class="pet__pixel" x="4" y="9" width="8" height="1"/><rect class="pet__pixel" x="4" y="10" width="8" height="1"/><rect class="pet__pixel" x="5" y="11" width="6" height="1"/><rect class="pet__pixel" x="4" y="12" width="2" height="1"/><rect class="pet__pixel" x="10" y="12" width="2" height="1"/><rect class="pet__pixel" x="4" y="13" width="2" height="1"/><rect class="pet__pixel" x="10" y="13" width="2" height="1"/><rect class="pet__eye" x="5" y="5" width="2" height="1"/><rect class="pet__eye" x="9" y="5" width="2" height="1"/><rect class="pet__eye" x="5" y="6" width="2" height="1"/><rect class="pet__eye" x="9" y="6" width="2" height="1"/></g></svg>
+  </div>
 
   <main id="main">
 
@@ -59,40 +74,30 @@
     <section id="hero" class="section section--hero" data-section-theme="paper" data-section-num="01" aria-labelledby="hero-title">
       <span class="section__label" aria-hidden="true">01 — Hero</span>
 
-      <div class="hero__grid">
-        <div class="hero__lead">
-          <h1 id="hero-title" class="hero__title">
-            <span class="hero__line" data-reveal>Nicolas</span>
-            <span class="hero__line hero__line--italic" data-reveal>Sempere<span class="hero__period">.</span></span>
-          </h1>
+      <div class="hero">
+        <h1 id="hero-title" class="hero__title">
+          <span class="hero__line" data-reveal>Motion designer</span>
+          <span class="hero__line hero__line--soft" data-reveal>&amp; directeur artistique<span class="hero__period">.</span></span>
+          <span class="hero__line hero__line--italic" data-reveal>2D, 3D, image de marque<span class="hero__period">.</span></span>
+        </h1>
 
-          <p class="hero__role" data-reveal>
-            Motion designer &amp; directeur artistique. <br>
-            <span class="hero__role-soft">2D, 3D, image de marque.</span>
+        <div class="hero__bottom">
+          <p class="hero__sub" data-reveal>
+            6 ans d'expérience.
+            <span class="hero__clients">A Better Feeling, Betclic, Phillips, Double Salto.</span>
+            <span class="hero__loc">Bordeaux — disponible en CDI.</span>
           </p>
+
+          <div class="hero__actions" data-reveal>
+            <p class="hero__tag">
+              <em>Je fais bouger les marques.<br>Au sens propre comme au figuré.</em>
+            </p>
+            <a class="cta cta--primary" href="#travail">
+              <span>Voir le travail</span>
+              <svg class="cta__arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
         </div>
-
-        <aside class="hero__meta">
-          <p class="hero__credits" data-reveal>
-            6 ans d'expérience. <br>
-            Sephora, Betclic, Phillips, A&nbsp;Better&nbsp;Feeling.
-          </p>
-          <p class="hero__avail" data-reveal>
-            <span class="dot dot--live" aria-hidden="true"></span>
-            Bordeaux — disponible en CDI.
-          </p>
-        </aside>
-      </div>
-
-      <div class="hero__bottom">
-        <p class="hero__tag" data-reveal>
-          Je fais bouger les marques. <em>Au sens propre comme au figuré.</em>
-        </p>
-
-        <a class="cta cta--primary" href="#cases" data-reveal>
-          <span>Voir le travail</span>
-          <svg class="cta__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
       </div>
     </section>
 
@@ -103,7 +108,6 @@
 
       <figure class="reel">
         <div class="reel__frame" data-reveal>
-          <!-- Replace src below with the final showreel mp4 (see README) -->
           <video
             class="reel__video"
             poster="/assets/showreel-poster.svg"
@@ -112,12 +116,13 @@
             muted
             controls
             data-showreel
-            aria-label="Showreel Nicolas Sempere — 2024">
+            aria-label="Showreel Nicolas Sempere">
+            <!-- Décommenter et brancher quand le mp4 sera prêt — voir README -->
             <!-- <source src="/assets/showreel.mp4" type="video/mp4"> -->
           </video>
           <button class="reel__play" type="button" aria-label="Lancer le showreel" data-reel-play>
-            <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><circle cx="32" cy="32" r="31" fill="none" stroke="currentColor" stroke-width="1"/><path d="M26 22 L44 32 L26 42 Z" fill="currentColor"/></svg>
-            <span class="reel__play-label">Showreel · 2024</span>
+            <svg class="reel__play-icon" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="39" fill="none" stroke="currentColor" stroke-width="0.8"/><path d="M33 27 L55 40 L33 53 Z" fill="currentColor"/></svg>
+            <span class="reel__play-label">Showreel</span>
           </button>
         </div>
         <figcaption class="reel__caption" data-reveal>
@@ -129,174 +134,167 @@
     <!-- 03 — APPROCHE -->
     <section id="approche" class="section section--approche" data-section-theme="paper" data-section-num="03" aria-labelledby="approche-title">
       <span class="section__label" aria-hidden="true">03 — Approche</span>
+      <h2 id="approche-title" class="visually-hidden">Approche</h2>
 
-      <div class="approche__grid">
-        <header class="approche__head">
-          <h2 id="approche-title" class="section__title" data-reveal>
-            Une idée. <br>
-            Une image. <em>Qui bouge.</em>
-          </h2>
-        </header>
+      <div class="pitch">
+        <p class="pitch__lede" data-reveal>
+          Je transforme une idée en image qui bouge. <br>
+          Parfois c'est une pub pour <span class="pitch__highlight">une marque de lunettes londoniennes</span>.
+          Parfois c'est <span class="pitch__highlight">un écran que touche un magicien</span> sur scène.
+          Parfois c'est <span class="pitch__highlight">un logo qui se déplie en 3D</span>.
+        </p>
 
-        <div class="approche__intro">
-          <p data-reveal>
-            Je transforme une idée en image qui bouge. Parfois c'est une pub Sephora.
-            Parfois c'est un écran que touche un magicien sur scène. Parfois c'est un logo qui se déplie en 3D.
-          </p>
-          <p data-reveal>
-            Le boulot reste le même&nbsp;: <strong>capter l'œil, tenir l'attention, faire passer le message.</strong>
-            Et le faire dans les délais, sans drame, en équipe.
-          </p>
-        </div>
-
-        <ol class="capabilities" role="list">
-          <li class="capability" data-reveal>
-            <span class="capability__num">01</span>
-            <h3 class="capability__title">Motion 2D &amp; 3D</h3>
-            <p>Pubs, films de marque, contenus social.</p>
-            <p class="capability__stack">After Effects · Cinema 4D · DaVinci Resolve</p>
-          </li>
-          <li class="capability" data-reveal>
-            <span class="capability__num">02</span>
-            <h3 class="capability__title">Direction artistique</h3>
-            <p>Du brief à la livraison. Je tiens le fil quand le projet grossit, je travaille bien avec les équipes marketing et produit.</p>
-          </li>
-          <li class="capability" data-reveal>
-            <span class="capability__num">03</span>
-            <h3 class="capability__title">Production intelligente</h3>
-            <p>Je conçois des workflows qui automatisent les tâches répétitives. Plus de temps sur la création, moins sur la logistique.</p>
-          </li>
-        </ol>
+        <p class="pitch__body" data-reveal>
+          Le boulot reste le même&nbsp;: <em>capter l'œil, tenir l'attention, faire passer le message.</em>
+          Et le faire <strong>dans les délais, sans drame, en équipe.</strong>
+        </p>
       </div>
+
+      <ol class="piliers" role="list">
+        <li class="pilier" data-reveal>
+          <span class="pilier__num">01</span>
+          <h3 class="pilier__title">Motion 2D &amp; 3D</h3>
+          <p class="pilier__desc">Pubs, films de marque, contenus social.</p>
+          <p class="pilier__stack">After Effects · Cinema 4D · DaVinci Resolve</p>
+        </li>
+        <li class="pilier" data-reveal>
+          <span class="pilier__num">02</span>
+          <h3 class="pilier__title">Direction artistique</h3>
+          <p class="pilier__desc">Du brief à la livraison. Je tiens le fil quand le projet grossit, je travaille bien avec les équipes marketing et produit.</p>
+        </li>
+        <li class="pilier" data-reveal>
+          <span class="pilier__num">03</span>
+          <h3 class="pilier__title">Production intelligente</h3>
+          <p class="pilier__desc">Je conçois des workflows qui automatisent les tâches répétitives. Plus de temps sur la création, moins sur la logistique.</p>
+        </li>
+      </ol>
     </section>
 
-    <!-- 04 — CASES -->
-    <section id="cases" class="section section--cases" data-section-theme="paper" data-section-num="04" aria-labelledby="cases-title">
-      <span class="section__label" aria-hidden="true">04 — Études de cas</span>
+    <!-- 04 — TRAVAIL -->
+    <section id="travail" class="section section--travail" data-section-theme="paper" data-section-num="04" aria-labelledby="travail-title">
+      <span class="section__label" aria-hidden="true">04 — Travail</span>
 
-      <header class="cases__head">
-        <h2 id="cases-title" class="section__title" data-reveal>
+      <header class="travail__head">
+        <h2 id="travail-title" class="travail__title" data-reveal>
           Trois projets. <em>Trois angles.</em>
         </h2>
-        <p class="cases__lead" data-reveal>
-          Format <strong>contexte · rôle · résultat</strong>. Lisible en 15 secondes.
+        <p class="travail__lead" data-reveal>
+          Lisible en 15 secondes — <span class="kbd">contexte</span> · <span class="kbd">rôle</span> · <span class="kbd">résultat</span>.
         </p>
       </header>
 
       <article class="case" data-reveal>
-        <div class="case__media" aria-hidden="true">
-          <!-- Replace with final visual: assets/case-smartbrain.{jpg|webm} -->
-          <img src="/assets/case-smartbrain.svg" alt="" loading="lazy" width="1200" height="900">
+        <div class="case__meta">
+          <p class="case__period">Depuis 2020</p>
+          <p class="case__role">Motion · 3D · DA · Freelance senior</p>
         </div>
-        <div class="case__body">
-          <header class="case__head">
-            <p class="case__meta">2023–2024 · DA · Motion · Live</p>
-            <h3 class="case__title">Smart Brain</h3>
-            <p class="case__sub">Magie scénique &amp; technologie temps réel</p>
-          </header>
-          <dl class="case__details">
-            <div>
-              <dt>Contexte</dt>
-              <dd>Une société qui produit des shows scéniques mêlant magie et technologie. Pendant que le magicien parle, des écrans interactifs réagissent à ses gestes en direct. Un format encore très rare sur le marché français.</dd>
-            </div>
-            <div>
-              <dt>Mon rôle</dt>
-              <dd>Direction artistique du show, conception et animation de toute l'interface visuelle. After Effects pour les assets, Unity pour la synchro live.</dd>
-            </div>
-            <div>
-              <dt>Résultat</dt>
-              <dd>Dispositif joué en événements pour des marques clientes — chiffres et logos disponibles en entretien.</dd>
-            </div>
-          </dl>
+        <h3 class="case__title">A Better Feeling</h3>
+        <p class="case__sub">Marque de lunettes londoniennes — collaboration depuis le lancement de mon activité.</p>
+        <div class="case__media">
+          <img src="/assets/case-abf.svg" alt="" loading="lazy" width="1600" height="1000">
         </div>
+        <dl class="case__story">
+          <div>
+            <dt>Contexte</dt>
+            <dd>A Better Feeling est une marque de lunettes londoniennes qui sort des collections en continu et a besoin d'une identité visuelle forte sur les réseaux et le e-commerce.</dd>
+          </div>
+          <div>
+            <dt>Mon rôle</dt>
+            <dd>Production de contenus motion et 3D, direction artistique selon les briefs. Souvent de bout en bout&nbsp;: concept, animation, post-production.</dd>
+          </div>
+          <div>
+            <dt>Résultat</dt>
+            <dd>Collaboration qui dure depuis le lancement de mon activité. Visuels et campagnes disponibles sur demande.</dd>
+          </div>
+        </dl>
       </article>
 
-      <article class="case case--reverse" data-reveal>
-        <div class="case__media" aria-hidden="true">
-          <img src="/assets/case-betclic.svg" alt="" loading="lazy" width="1200" height="900">
+      <article class="case case--alt" data-reveal>
+        <div class="case__meta">
+          <p class="case__period">2023 — 2024</p>
+          <p class="case__role">DA · Motion · Live</p>
         </div>
-        <div class="case__body">
-          <header class="case__head">
-            <p class="case__meta">2021–2022 · Motion designer 2D/3D · In-house</p>
-            <h3 class="case__title">Betclic Group</h3>
-            <p class="case__sub">Studio interne · 6 marchés européens</p>
-          </header>
-          <dl class="case__details">
-            <div>
-              <dt>Contexte</dt>
-              <dd>Équipe marketing in-house qui produit des dizaines de pubs par semaine, sur 6 marchés européens, avec une charte stricte.</dd>
-            </div>
-            <div>
-              <dt>Mon rôle</dt>
-              <dd>Motion designer 2D/3D au sein du studio interne. Production de campagnes paid social, et conception de templates motion modulables pour les déclinaisons multi-marchés.</dd>
-            </div>
-            <div>
-              <dt>Résultat</dt>
-              <dd>Délais de déclinaison réduits significativement sur les campagnes multi-marchés. Chiffrage précis disponible en entretien.</dd>
-            </div>
-          </dl>
+        <h3 class="case__title">Smart Brain</h3>
+        <p class="case__sub">Magie scénique &amp; technologie temps réel — un format encore très rare en France.</p>
+        <div class="case__media">
+          <img src="/assets/case-smartbrain.svg" alt="" loading="lazy" width="1600" height="1000">
         </div>
+        <dl class="case__story">
+          <div>
+            <dt>Contexte</dt>
+            <dd>Une société qui produit des shows scéniques mêlant magie et technologie. Pendant que le magicien parle, des écrans interactifs réagissent à ses gestes en direct.</dd>
+          </div>
+          <div>
+            <dt>Mon rôle</dt>
+            <dd>Direction artistique du show, conception et animation de toute l'interface visuelle. After Effects pour les assets, Unity pour la synchro live.</dd>
+          </div>
+          <div>
+            <dt>Résultat</dt>
+            <dd>Dispositif joué en événements pour des marques clientes — chiffres et logos disponibles en entretien.</dd>
+          </div>
+        </dl>
       </article>
 
       <article class="case" data-reveal>
-        <div class="case__media" aria-hidden="true">
-          <img src="/assets/case-freelance.svg" alt="" loading="lazy" width="1200" height="900">
+        <div class="case__meta">
+          <p class="case__period">2021 — 2022</p>
+          <p class="case__role">Motion designer 2D/3D · In-house</p>
         </div>
-        <div class="case__body">
-          <header class="case__head">
-            <p class="case__meta">depuis 2020 · Freelance senior</p>
-            <h3 class="case__title">A Better Feeling · Sephora · Phillips · Double Salto</h3>
-            <p class="case__sub">Marques qui sortent du contenu en continu</p>
-          </header>
-          <dl class="case__details">
-            <div>
-              <dt>Contexte</dt>
-              <dd>Ces marques sortent du contenu en continu. Elles cherchent des freelances capables de comprendre vite, livrer propre, et revenir.</dd>
-            </div>
-            <div>
-              <dt>Mon rôle</dt>
-              <dd>Motion, 3D, direction artistique selon les briefs. Souvent de bout en bout&nbsp;: concept, animation, post-production.</dd>
-            </div>
-            <div>
-              <dt>Résultat</dt>
-              <dd>Collaborations qui durent depuis 2020. Une part importante des missions actuelles vient de recommandations directes entre directeurs créatifs.</dd>
-            </div>
-          </dl>
+        <h3 class="case__title">Betclic Group</h3>
+        <p class="case__sub">Studio interne, 6 marchés européens, charte stricte, dizaines de pubs par semaine.</p>
+        <div class="case__media">
+          <img src="/assets/case-betclic.svg" alt="" loading="lazy" width="1600" height="1000">
         </div>
+        <dl class="case__story">
+          <div>
+            <dt>Contexte</dt>
+            <dd>Équipe marketing in-house qui produit des dizaines de pubs par semaine, sur 6 marchés européens, avec une charte stricte.</dd>
+          </div>
+          <div>
+            <dt>Mon rôle</dt>
+            <dd>Motion designer 2D/3D au sein du studio interne. Production de campagnes paid social, et conception de templates motion modulables pour les déclinaisons multi-marchés.</dd>
+          </div>
+          <div>
+            <dt>Résultat</dt>
+            <dd>Délais de déclinaison réduits significativement sur les campagnes multi-marchés. Chiffrage précis disponible en entretien.</dd>
+          </div>
+        </dl>
       </article>
+
+      <p class="travail__more" data-reveal>
+        <span class="travail__more-label">Aussi&nbsp;:</span>
+        Phillips · Double Salto · Open Zone · Showroom Privé.
+      </p>
     </section>
 
     <!-- 05 — PRODUCTION INTELLIGENTE -->
     <section id="production" class="section section--production" data-section-theme="ink" data-section-num="05" aria-labelledby="production-title">
       <span class="section__label" aria-hidden="true">05 — Production intelligente</span>
+      <h2 id="production-title" class="visually-hidden">Production intelligente</h2>
 
-      <div class="production__grid">
-        <header class="production__head">
-          <p class="production__kicker" data-reveal>Ce qui me distingue&nbsp;:</p>
-          <blockquote class="production__quote" data-reveal>
-            <p>
-              <strong>L'IA ne remplace pas mon travail.</strong>
-              <em>Elle enlève ce qui le ralentit.</em>
-            </p>
-          </blockquote>
-        </header>
+      <p class="production__kicker" data-reveal>Ce qui me distingue&nbsp;:</p>
 
-        <h2 id="production-title" class="visually-hidden">Production intelligente</h2>
+      <blockquote class="production__quote" data-reveal>
+        <p>
+          <strong>L'IA ne remplace pas mon travail.</strong>
+          <em>Elle enlève ce qui le ralentit.</em>
+        </p>
+      </blockquote>
 
-        <div class="production__body">
-          <p data-reveal>
-            Sur les tâches répétitives, je construis des systèmes qui réduisent les délais, fiabilisent les process et libèrent du temps créatif pour les équipes.
-          </p>
-          <p data-reveal>
-            Concrètement&nbsp;: automatiser des déclinaisons d'assets multi-formats, trier et router des briefs entrants, générer des variantes de copy testables. Les outils tournent avec
-            <span class="tag">n8n</span>
-            <span class="tag">API Anthropic</span>.
-          </p>
-          <p class="production__cta" data-reveal>
-            <em>Je peux montrer comment ça marche en 10 minutes si ça vous intéresse.</em>
-          </p>
-        </div>
+      <div class="production__body">
+        <p data-reveal>
+          Sur les tâches répétitives, je construis des systèmes qui réduisent les délais, fiabilisent les process et libèrent du temps créatif pour les équipes.
+        </p>
+        <p data-reveal>
+          Concrètement&nbsp;: automatiser des déclinaisons d'assets multi-formats, trier et router des briefs entrants, générer des variantes de copy testables. Les outils tournent avec
+          <span class="tag">n8n</span>
+          <span class="tag">API Anthropic</span>.
+        </p>
       </div>
+
+      <p class="production__cta" data-reveal>
+        <em>Je peux montrer comment ça marche en 10 minutes si ça vous intéresse.</em>
+      </p>
     </section>
 
     <!-- 06 — PARCOURS -->
@@ -304,40 +302,40 @@
       <span class="section__label" aria-hidden="true">06 — Parcours</span>
 
       <header class="parcours__head">
-        <h2 id="parcours-title" class="section__title" data-reveal>
+        <h2 id="parcours-title" class="parcours__title" data-reveal>
           Six ans. <em>Six lignes.</em>
         </h2>
       </header>
 
       <ol class="timeline" role="list">
-        <li class="timeline__item" data-reveal>
+        <li class="timeline__row" data-reveal>
           <span class="timeline__year">2026</span>
-          <span class="timeline__role">Builder.</span>
-          <span class="timeline__detail">Outils AI pour créatifs et petites entreprises.</span>
+          <span class="timeline__role">Builder</span>
+          <span class="timeline__detail">Outils d'automatisation IA pour créatifs et artisans.</span>
         </li>
-        <li class="timeline__item" data-reveal>
+        <li class="timeline__row" data-reveal>
           <span class="timeline__year">2024</span>
-          <span class="timeline__role">Freelance senior.</span>
-          <span class="timeline__detail">A Better Feeling, Sephora, Phillips, Double Salto.</span>
+          <span class="timeline__role">Freelance senior</span>
+          <span class="timeline__detail">A Better Feeling, Phillips, Double Salto.</span>
         </li>
-        <li class="timeline__item" data-reveal>
+        <li class="timeline__row" data-reveal>
           <span class="timeline__year">2023</span>
-          <span class="timeline__role">Smart Brain.</span>
+          <span class="timeline__role">Smart Brain</span>
           <span class="timeline__detail">DA + motion, dispositif scénique live.</span>
         </li>
-        <li class="timeline__item" data-reveal>
+        <li class="timeline__row" data-reveal>
           <span class="timeline__year">2022</span>
-          <span class="timeline__role">Open Zone.</span>
+          <span class="timeline__role">Open Zone</span>
           <span class="timeline__detail">DA + 3D Artist.</span>
         </li>
-        <li class="timeline__item" data-reveal>
+        <li class="timeline__row" data-reveal>
           <span class="timeline__year">2021</span>
-          <span class="timeline__role">Betclic Group.</span>
+          <span class="timeline__role">Betclic Group</span>
           <span class="timeline__detail">Motion designer 2D/3D in-house.</span>
         </li>
-        <li class="timeline__item" data-reveal>
+        <li class="timeline__row" data-reveal>
           <span class="timeline__year">2020</span>
-          <span class="timeline__role">Lancement en freelance.</span>
+          <span class="timeline__role">Lancement en freelance</span>
           <span class="timeline__detail"></span>
         </li>
       </ol>
@@ -346,58 +344,55 @@
     <!-- 07 — CONTACT -->
     <section id="contact" class="section section--contact" data-section-theme="ink" data-section-num="07" aria-labelledby="contact-title">
       <span class="section__label" aria-hidden="true">07 — Contact</span>
+      <h2 id="contact-title" class="visually-hidden">Contact</h2>
 
-      <div class="contact__grid">
-        <blockquote class="contact__filter">
-          <p data-reveal>
-            <strong>Si vous cherchez quelqu'un pour exécuter sans réfléchir, je ne suis sans doute pas le bon profil.</strong>
-            <em>J'apporte le plus quand je comprends le sens du projet.</em>
-          </p>
-        </blockquote>
-
-        <h2 id="contact-title" class="visually-hidden">Contact</h2>
-
-        <p class="contact__pitch" data-reveal>
-          Si vous cherchez un motion designer senior pour rejoindre une équipe en CDI,
-          et que ce que vous avez vu vous parle — écrivez-moi.
+      <blockquote class="closer" data-reveal>
+        <p>
+          <strong>Si vous cherchez quelqu'un pour exécuter sans réfléchir, je ne suis sans doute pas le bon profil.</strong>
+          <em>J'apporte le plus quand je comprends le sens du projet.</em>
         </p>
+      </blockquote>
 
-        <div class="contact__ctas" data-reveal>
-          <!-- Replace href with real Calendly URL (see README) -->
-          <a class="cta cta--primary cta--invert" href="https://calendly.com/PLACEHOLDER" target="_blank" rel="noopener" data-cta="calendly">
-            <span>Échanger 20 min</span>
-            <svg class="cta__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-          <!-- Replace target file at /cv-nicolas-sempere.pdf -->
-          <a class="cta cta--ghost" href="/cv-nicolas-sempere.pdf" download data-cta="cv">
-            <span>Télécharger le CV</span>
-            <svg class="cta__arrow cta__arrow--down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
+      <p class="closer__pitch" data-reveal>
+        Si vous cherchez un motion designer senior pour rejoindre une équipe en CDI,
+        et que ce que vous avez vu vous parle — <em>écrivez-moi.</em>
+      </p>
 
-        <dl class="contact__info" data-reveal>
-          <div>
-            <dt>Email</dt>
-            <dd><a href="mailto:nicosmp.pro@gmail.com">nicosmp.pro@gmail.com</a></dd>
-          </div>
-          <div>
-            <dt>Téléphone</dt>
-            <dd><a href="tel:+33668499504">06 68 49 95 04</a></dd>
-          </div>
-          <div>
-            <dt>GitHub</dt>
-            <dd><a href="https://github.com/NicoBOi" target="_blank" rel="noopener">@NicoBOi</a></dd>
-          </div>
-          <div>
-            <dt>Localisation</dt>
-            <dd>Bordeaux, France</dd>
-          </div>
-        </dl>
-
-        <p class="contact__sla" data-reveal>
-          <em>Réponse sous 24h. Disponible immédiatement.</em>
-        </p>
+      <div class="closer__ctas" data-reveal>
+        <!-- Brancher l'URL Calendly réelle ici (voir README) -->
+        <a class="cta cta--invert" href="https://calendly.com/PLACEHOLDER" target="_blank" rel="noopener" data-cta="calendly">
+          <span>Échanger 20 min</span>
+          <svg class="cta__arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <!-- Remplacer le PDF à la racine par le vrai CV -->
+        <a class="cta cta--ghost" href="/cv-nicolas-sempere.pdf" download data-cta="cv">
+          <span>Télécharger le CV</span>
+          <svg class="cta__arr cta__arr--down" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
       </div>
+
+      <dl class="closer__info" data-reveal>
+        <div>
+          <dt>Email</dt>
+          <dd><a href="mailto:nicosmp.pro@gmail.com">nicosmp.pro@gmail.com</a></dd>
+        </div>
+        <div>
+          <dt>Téléphone</dt>
+          <dd><a href="tel:+33668499504">06 68 49 95 04</a></dd>
+        </div>
+        <div>
+          <dt>GitHub</dt>
+          <dd><a href="https://github.com/NicoBOi" target="_blank" rel="noopener">@NicoBOi</a></dd>
+        </div>
+        <div>
+          <dt>Bordeaux</dt>
+          <dd>France · disponible partout en CDI</dd>
+        </div>
+      </dl>
+
+      <p class="closer__sla" data-reveal>
+        <em>Réponse sous 24h. Disponible immédiatement.</em>
+      </p>
     </section>
 
   </main>

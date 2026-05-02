@@ -6,66 +6,108 @@ Site CV — Nicolas Sempere. Motion designer & directeur artistique. Bordeaux.
 
 ## Stack
 
-Statique, sans build : **HTML / CSS / JS vanilla**.
-Libs front (CDN) : GSAP 3.12 + ScrollTrigger, Lenis 1.0 (smooth scroll).
-Polices : Boska + Switzer + JetBrains Mono via [Fontshare](https://www.fontshare.com).
-Hébergement : Vercel (déploiement direct, zero config — `vercel.json` inclus pour cache & headers).
+Statique, **zéro build** : HTML / CSS / JS vanilla.
 
-Le site est intégralement statique. Aucune dépendance npm, aucun bundler. Servir le dossier racine suffit.
+Libs front (CDN) : GSAP 3.12 + ScrollTrigger, Lenis 1.0 (smooth scroll).
+Polices via [Fontshare](https://www.fontshare.com) : **Sentient** (display + body), **Switzer** (UI), **JetBrains Mono** (mono).
+Hébergement : Vercel (`vercel.json` à la racine — cleanUrls + cache 1 an immutable + headers sécurité).
+
+Aucune dépendance npm. Aucun bundler. Servir le dossier racine suffit.
 
 ---
 
 ## Lancer en local
 
-N'importe quel serveur statique fait l'affaire :
-
 ```bash
 # Python (présent partout)
 python3 -m http.server 8000
 
-# ou Node (npx, pas d'install)
+# ou Node
 npx serve .
 
-# ou Vercel CLI (preview locale)
+# ou Vercel CLI
 npx vercel dev
 ```
 
 Puis ouvrir http://localhost:8000.
 
-> Important : les chemins commencent par `/` (ex. `/style.css`). Ne pas ouvrir `index.html` en `file://`, certains liens casseront.
+> Important : ne pas ouvrir `index.html` en `file://` — les chemins absolus (`/style.css`, `/assets/...`) cassent.
 
 ---
 
 ## Déploiement Vercel
 
-```bash
-# Première fois
-npx vercel       # preview
-npx vercel --prod  # production
+Repo `NicoBOi/CV` connecté. Push sur `main` = deploy production auto.
+
+Pour brancher le domaine `nicolassempere.com` :
+**Vercel → Project → Settings → Domains → Add `nicolassempere.com`**, puis suivre les DNS instructions chez le registrar.
+
+Si la prod renvoie 403 → **Settings → Deployment Protection** (souvent activé par défaut sur Hobby ; à désactiver pour exposition publique).
+
+---
+
+## Architecture
+
+7 sections numérotées, ordre verrouillé :
+
+```
+01 — Hero            (paper)   #hero
+02 — Showreel        (ink)     #showreel
+03 — Approche        (paper)   #approche
+04 — Travail         (paper)   #travail   (3 cases : ABF, Smart Brain, Betclic)
+05 — Production IA   (ink)     #production
+06 — Parcours        (paper)   #parcours
+07 — Contact         (ink)     #contact
 ```
 
-Ou simplement connecter le repo GitHub `NicoBOi/CV` à Vercel : push sur `main` = deploy auto.
+Le thème (paper / ink) bascule automatiquement au scroll via ScrollTrigger.
 
-Le `vercel.json` à la racine gère :
-- `cleanUrls: true` (URLs propres)
-- Cache long (1 an, immutable) pour `*.css|js|svg|png|webp|woff2|pdf`
-- Headers sécurité (`X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`)
+**Topbar fixe** : Nom (gauche) · Nav 4 liens (centre) · **Status pill `● Disponible · CDI`** dot vert qui pulse (droite).
+**Scroll progress bar** : barre fine de 2px en haut d'écran, qui se remplit en accent oxblood à mesure du scroll.
 
-Pour brancher le domaine `nicolassempere.com` : Vercel → Project → Settings → Domains.
+---
+
+## L'élément signature : le pixel pet
+
+Petit monstre 8-bit (16×16 pixels, sprite SVG inline) qui suit le scroll comme un compagnon de lecture. Il a 5 états :
+
+| State | Trigger |
+|---|---|
+| `idle` (frame 1 ↔ 2) | Scroll arrêté > 280ms — animation de respiration |
+| `walk` (frame 1 ↔ 2) | Pendant que tu scrolles — pattes alternées |
+| `wave` | Quand un titre de section ou la citation IA entre dans le viewport (60%) |
+
+**Position** : `position: fixed`, marge droite. Y vertical lié à la progression de scroll (de `18vh` à `78vh`, smoothing 600ms via CSS transition).
+
+**Couleur** : corps en `currentColor` (s'inverse avec le thème), œil en `var(--accent)` oxblood.
+
+**Mobile (< 640px)** : caché (trop petit pour la pixellisation).
+
+**A11y** : `aria-hidden="true"`, `pointer-events: none`, statique en `prefers-reduced-motion`.
+
+### Modifier le pixel pet
+
+Le sprite est inline dans `index.html` (~6 KB). Pour modifier :
+
+1. Éditer la grille ASCII dans le commentaire de `index.html` (recherche : `pet__f--idle1`).
+2. Régénérer si besoin via le script Python que j'ai utilisé (cf. historique git, commit du build).
+3. Changer la position de repos : `style.css` → `.pet { top: 30vh }`.
+4. Changer la plage de scroll : `script.js` → `updatePetPosition()` → constantes `18` et `60`.
+5. Pour désactiver totalement : retirer le `<div class="pet">` dans `index.html`.
 
 ---
 
 ## Où remplacer les médias placeholders
 
-Tous les visuels actuels sont des **SVG placeholders** intentionnellement neutres. À substituer dans `/assets/`.
+Tous les visuels actuels sont des **SVG placeholders** sobres. À substituer dans `/assets/`.
 
 | Placeholder | Section | Format à fournir |
 |---|---|---|
 | `assets/showreel-poster.svg` | 02 — Showreel (poster) | JPG ou WebP, 1920×1080, ~150 Ko |
 | (à créer) `assets/showreel.mp4` | 02 — Showreel (vidéo) | MP4 H.264, 1080p, ≤ 12 Mo, muet par défaut |
-| `assets/case-smartbrain.svg` | 04 — Case 1 | JPG/WebP, ratio 4:3 (1200×900), ou WebM bouclé |
-| `assets/case-betclic.svg` | 04 — Case 2 | idem |
-| `assets/case-freelance.svg` | 04 — Case 3 | idem |
+| `assets/case-abf.svg` | 04 — A Better Feeling | JPG/WebP ratio 8:5 (1600×1000) |
+| `assets/case-smartbrain.svg` | 04 — Smart Brain | idem |
+| `assets/case-betclic.svg` | 04 — Betclic Group | idem |
 | `assets/og-image.png` | OG / Twitter | 1200×630, conservé tel quel |
 | `assets/favicon.svg` | Favicon | conservé tel quel |
 
@@ -79,15 +121,17 @@ Dans `index.html`, section 02, décommenter et compléter la balise `<source>` :
 </video>
 ```
 
+Le bouton play se masquera automatiquement quand la vidéo démarrera.
+
 ### Pour les visuels de case studies
 
 Remplacer les fichiers `.svg` par des `.jpg` ou `.webp`, puis dans `index.html` mettre à jour les `src=` :
 
 ```html
-<img src="/assets/case-smartbrain.jpg" alt="Smart Brain — show scénique" loading="lazy" width="1200" height="900">
+<img src="/assets/case-abf.jpg" alt="A Better Feeling — pub eyewear" loading="lazy" width="1600" height="1000">
 ```
 
-> **À ne pas oublier** : remplir `alt=""` (actuellement vide car les visuels sont décoratifs). Quand un vrai visuel est mis, il faut un `alt` descriptif (1 phrase, contexte du projet).
+> **Important** : remplir l'attribut `alt=""` (actuellement vide car les visuels sont décoratifs). Quand un vrai visuel est en place, il faut un `alt` descriptif (1 phrase, contexte du projet).
 
 ---
 
@@ -95,14 +139,14 @@ Remplacer les fichiers `.svg` par des `.jpg` ou `.webp`, puis dans `index.html` 
 
 ### Calendly
 
-Dans `index.html`, section 07 — Contact, remplacer l'URL placeholder :
+`index.html` → section 07 — Contact. Remplacer l'URL placeholder :
 
 ```html
 <!-- AVANT -->
-<a class="cta cta--primary cta--invert" href="https://calendly.com/PLACEHOLDER" ...>
+<a class="cta cta--invert" href="https://calendly.com/PLACEHOLDER" ...>
 
 <!-- APRÈS -->
-<a class="cta cta--primary cta--invert" href="https://calendly.com/nicolassempere/20min" ...>
+<a class="cta cta--invert" href="https://calendly.com/nicolassempere/20min" ...>
 ```
 
 ### CV PDF
@@ -112,61 +156,44 @@ Le fichier `cv-nicolas-sempere.pdf` à la racine est un placeholder de 587 octet
 
 ---
 
-## Architecture du contenu
-
-7 sections numérotées, ordre verrouillé :
-
-```
-01 — Hero            (paper)   #hero
-02 — Showreel        (ink)     #showreel
-03 — Approche        (paper)   #approche
-04 — Études de cas   (paper)   #cases
-05 — Production IA   (ink)     #production
-06 — Parcours        (paper)   #parcours
-07 — Contact         (ink)     #contact
-```
-
-Le thème (paper / ink) bascule automatiquement au scroll via ScrollTrigger.
-
----
-
 ## i18n (anglais — plus tard)
 
-Le site est prêt pour une version anglaise sans réarchitecture. Deux options recommandées :
+Le site est prêt pour une version anglaise sans réarchitecture. Deux options :
 
 **Option A — duplication** (la plus simple)
-Créer `/en/index.html` avec la même structure. Vercel gère le routing automatiquement.
-Ajouter un sélecteur de langue dans la topbar (`FR / EN`).
+Créer `/en/index.html` avec la même structure, copy traduit. Vercel gère le routing automatiquement. Ajouter un sélecteur `FR / EN` dans la topbar.
 
-**Option B — JSON dictionnaire** (plus tard, si beaucoup de pages)
-Annoter chaque texte avec `data-i18n="key"`, charger un dico JSON, swap au runtime.
+**Option B — JSON dictionnaire**
+Annoter chaque texte avec `data-i18n="key"`, charger un dico JSON, swap au runtime. Recommandé seulement si plusieurs pages.
 
-Pour l'instant, FR par défaut, `<html lang="fr">`, `<meta property="og:locale" content="fr_FR">`.
+Pour l'instant, FR par défaut, `<html lang="fr">`, `<meta property="og:locale" content="fr_FR">`. IDs des sections en anglais (`#hero`, `#travail`, etc.) pour stabilité des URLs cross-locale.
 
 ---
 
 ## Accessibilité
 
 - Skip link vers `#main`
-- Hiérarchie de titres correcte (h1 unique, h2 par section, h3 sub)
+- Hiérarchie h1→h2→h3 propre (h1 unique pour le hero)
 - `aria-labelledby` sur chaque `<section>`
-- `prefers-reduced-motion` respecté : toutes les animations GSAP/Lenis sont désactivées, les reveals sont rendus statiques, le `pulse` du dot disponibilité est coupé
-- Focus visible (outline ember 2px)
-- Contrast ratio ≥ 4.5:1 sur tous les textes (vérifié avec WebAIM Contrast Checker)
-- Touch targets ≥ 44px (CTA, nav)
+- `prefers-reduced-motion` respecté : reveals statiques, animations coupées, pet figé sur idle1, scroll natif
+- Focus visible (outline accent oxblood, 2px, offset 3px)
+- Contraste ≥ 4.5:1 (vérifié WebAIM)
+- Touch targets ≥ 44px sur tous les CTA + nav
+- Pet `aria-hidden="true"` (décoratif)
 
 ---
 
 ## Performance
 
 - Statique → TTFB minimal
-- Polices via Fontshare CDN (`display=swap`)
-- GSAP/Lenis chargés en `defer`
-- Aucune image bitmap au-dessus du fold (hero = type only)
-- `loading="lazy"` sur tous les visuels de case studies
-- Cache 1 an immutable sur tous les assets
+- Polices Fontshare via `display=swap`
+- GSAP / Lenis chargés en `defer`
+- Aucune image bitmap au-dessus du fold
+- `loading="lazy"` sur tous les visuels case studies
+- Cache 1 an immutable sur tous les assets via `vercel.json`
+- Sprite pet inline (~6 KB) — pas de requête supplémentaire
 
-Cible Lighthouse : 100 / 100 / 100 / 100 (avant ajout des vidéos).
+Cible Lighthouse : 100/100/100/100 (avant ajout des vraies vidéos).
 
 ---
 
@@ -184,13 +211,22 @@ Cible Lighthouse : 100 / 100 / 100 / 100 (avant ajout des vidéos).
 │   ├── og-image.png
 │   ├── grain.svg                (overlay noise — ne pas toucher)
 │   ├── showreel-poster.svg      (placeholder)
+│   ├── case-abf.svg             (placeholder)
 │   ├── case-smartbrain.svg      (placeholder)
-│   ├── case-betclic.svg         (placeholder)
-│   └── case-freelance.svg       (placeholder)
+│   └── case-betclic.svg         (placeholder)
 ├── .claude/skills/              (skills Claude Code installées sur ce repo)
+├── CLAUDE.md
 ├── .gitignore
 └── README.md
 ```
+
+---
+
+## Design system (résumé)
+
+**Palette** : `paper #F4F1EC` ↔ `ink #0F0E0C` · accent `oxblood #B43329` · dispo `#5C8067`
+**Typo** : Sentient (display + body) · Switzer (UI) · JetBrains Mono (numéros, labels)
+**Motion** : Lenis smooth scroll · GSAP reveals (translateY 24 → 0, fade, threshold 88%) · theme swap au scroll · `prefers-reduced-motion` strictly respected
 
 ---
 
