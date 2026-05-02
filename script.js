@@ -106,9 +106,9 @@
     /* Méta */
     '.case__meta p', '.case__story dt', '.pilier__num', '.timeline__year',
   ];
-  /* Skip splitting sur mobile : le pet est masqué, donc inutile de
-     gonfler le DOM avec des milliers de spans qui ne servent à rien. */
-  const PET_ACTIVE = !reduced && window.innerWidth > 640;
+  /* Skip splitting sur mobile : aligné sur le breakpoint CSS qui masque
+     le pet (768px). Aucun travail JS perdu entre 640-768. */
+  const PET_ACTIVE = !reduced && window.innerWidth >= 768;
   if (PET_ACTIVE) SPLIT_TARGETS.forEach((sel) => document.querySelectorAll(sel).forEach(splitChars));
 
   /* Selectors for "zone" reactivity (whole element gets is-pet-near). */
@@ -401,7 +401,7 @@
 
   /* Init pet (only if visible — CSS hides it on mobile) */
   const petEl = document.querySelector('[data-pet]');
-  if (petEl && !reduced && window.innerWidth > 640) {
+  if (petEl && PET_ACTIVE) {
     new PixelPet(petEl);
   } else if (petEl) {
     /* Static idle frame when reduced motion or mobile */
@@ -412,6 +412,19 @@
      LENIS + GSAP — reveals + theme swap
      ============================================================ */
   const hasGSAP  = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+
+  /* Filet de sécurité : si dans 1.5s les reveals n'ont pas été activés
+     (GSAP qui charge lentement, ScrollTrigger qui rate son init, etc.),
+     on force le contenu visible. Mieux vaut perdre l'animation que
+     laisser un visiteur sur une page blanche. */
+  setTimeout(() => {
+    document.querySelectorAll('[data-reveal]:not(.is-revealed)').forEach((el) => {
+      el.classList.add('is-revealed');
+      el.style.opacity = '';
+      el.style.transform = '';
+    });
+    document.querySelectorAll('[data-reveal-stagger]:not(.is-revealed)').forEach((el) => el.classList.add('is-revealed'));
+  }, 1500);
   const hasLenis = typeof window.Lenis !== 'undefined';
 
   /* Theme swap — scroll-driven, robuste au refresh + scroll inverse.

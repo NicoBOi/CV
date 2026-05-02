@@ -615,7 +615,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-transform: uppercase;
   margin: 0;
   color: var(--ink);
-  word-break: break-word;
+  /* overflow-wrap au lieu de word-break : ne casse que les mots
+     vraiment trop longs, jamais en plein milieu d'un mot court. */
+  overflow-wrap: break-word;
 }
 .case__sub {
   font-family: var(--font-body);
@@ -1179,33 +1181,67 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   opacity: 1;
   transform: translateY(-50%) translateX(0);
 }
-/* Mobile / touch : rail bascule en bandeau horizontal en bas. */
+/* Mobile / touch : rail bascule en bandeau horizontal en bas.
+   Touch targets 44×44 (WCAG 2.5.5), safe-area iOS prise en compte,
+   numéro de section toujours visible sous chaque dot. */
 @media (max-width: 800px), (pointer: coarse) {
   .rail {
     top: auto;
     right: auto;
-    bottom: 16px;
+    bottom: max(12px, env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     flex-direction: row;
-    gap: 12px;
-    padding: 8px 14px;
+    gap: 4px;
+    padding: 6px 8px;
+    background: color-mix(in oklab, currentColor 0%, transparent);
   }
-  .rail a { height: 14px; width: 14px; }
+  .rail a {
+    /* Hit area 44×40 sans changer la taille visuelle du trait. */
+    height: 44px;
+    width: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
   .rail a::before {
-    width: 14px;
+    width: 18px;
     height: 1px;
   }
-  .rail a.is-active::before { width: 18px; }
+  .rail a.is-active::before { width: 28px; }
+  /* Texte des labels (mots) caché — on garde juste le numéro
+     via ::after pour orienter sans encombrer. */
   .rail__label { display: none; }
+  .rail a::after {
+    content: attr(data-rail-num);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: #EDE9DF;
+    opacity: 0.65;
+    transition: opacity 200ms var(--ease), color 200ms var(--ease);
+  }
+  .rail a.is-active::after {
+    opacity: 1;
+    color: var(--accent);
+  }
 }
 
 /* ============================================================
    RESPONSIVE — réglages fins mobile / tablet
    ============================================================ */
 @media (max-width: 720px) {
-  /* Hero : laisser respirer en évitant le titre tronqué. */
-  .hero__title { letter-spacing: -0.035em; max-width: 100%; }
+  /* Hero : laisser respirer + éviter overflow. */
+  .hero__title {
+    letter-spacing: -0.035em;
+    max-width: 100%;
+    /* Évite l'overflow horizontal sans casser un mot en plein milieu. */
+    overflow-wrap: break-word;
+    hyphens: none;
+  }
   .hero__line--italic { font-size: 0.55em; }
   .hero__bottom {
     margin-top: clamp(32px, 6vw, 64px);
@@ -1230,10 +1266,16 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   .production__body p { font-size: 17px; }
   .production__cta em { font-size: 18px; }
 
-  /* Closer : pitch + CTAs compacts. */
+  /* Closer : pitch + CTAs compacts (mais pas full-width). */
   .closer__pitch { font-size: 18px; }
   .closer__ctas { gap: 10px; }
-  .closer__ctas .cta { width: 100%; justify-content: space-between; }
+  .closer__ctas .cta {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: space-between;
+    padding: 14px 18px;
+    font-size: 12px;
+  }
 
   /* Brand pills : wrap proprement. */
   .brand { font-size: 12px; padding: 3px 10px 3px 6px; }
