@@ -45,13 +45,23 @@
   --dur-fast:     220ms;
 }
 
-/* Sections marquées "ink" en phase 0 : neutralisées, palette unique en phase 1. */
-[data-theme="ink"], [data-theme="paper"] {
-  --bg:        #0A0A0A;
-  --fg:        var(--ink);
-  --fg-soft:   var(--ink);
-  --rule:      rgba(237, 233, 223, 0.14);
+/* Alternance dark / light — uniquement les deux teintes du palette,
+   rôles --bg et --ink échangés. Aucune nouvelle couleur. */
+.section[data-section-theme="paper"] {
+  --bg:    #EDE9DF;
+  --ink:   #0A0A0A;
+  --rule:  rgba(10, 10, 10, 0.14);
+  background: var(--bg);
+  color: var(--ink);
 }
+.section[data-section-theme="ink"] {
+  --bg:    #0A0A0A;
+  --ink:   #EDE9DF;
+  --rule:  rgba(237, 233, 223, 0.14);
+  background: var(--bg);
+  color: var(--ink);
+}
+
 
 /* ---------- RESET ---------- */
 *, *::before, *::after { box-sizing: border-box; border-radius: 0 !important; }
@@ -69,6 +79,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+body[data-theme="paper"] {
+  --bg:   #EDE9DF;
+  --ink:  #0A0A0A;
+  --rule: rgba(10, 10, 10, 0.14);
+  --pet-sprite: url('/assets/pet-light.svg');
+}
+body[data-theme="ink"] {
+  --bg:   #0A0A0A;
+  --ink:  #EDE9DF;
+  --rule: rgba(237, 233, 223, 0.14);
+  --pet-sprite: url('/assets/pet-dark.svg');
 }
 
 img, svg, video { display: block; max-width: 100%; height: auto; }
@@ -146,79 +169,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   z-index: 100;
   mix-blend-mode: screen;
 }
-
-/* ---------- TOPBAR ---------- */
-.topbar {
-  position: fixed; top: 0; left: 0; right: 0;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  padding: 18px var(--gutter);
-  z-index: 50;
-  background: var(--bg);
-  border-bottom: 1px solid var(--rule);
-}
-
-.topbar__name {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  text-transform: uppercase;
-}
-
-.topbar__nav {
-  justify-self: center;
-  display: flex; gap: 28px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.topbar__nav a {
-  position: relative;
-  padding: 4px 0;
-  transition: color var(--dur-fast) var(--ease);
-}
-.topbar__nav a::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: 0;
-  height: 1px; background: var(--accent);
-  transform: scaleX(0); transform-origin: left;
-  transition: transform var(--dur-fast) var(--ease);
-}
-.topbar__nav a:hover::after,
-.topbar__nav a:focus-visible::after { transform: scaleX(1); }
-
-.status {
-  justify-self: end;
-  display: inline-flex; align-items: center; gap: 10px;
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 6px 0;
-  background: transparent;
-  border: 0;
-}
-.status__dot {
-  width: 8px; height: 8px;
-  background: var(--accent);
-  animation: status-pulse 2.4s var(--ease-soft) infinite;
-}
-.status__sep { color: var(--ink); margin: 0 2px; opacity: 0.6; }
-
-@keyframes status-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.35; }
-}
-
-@media (max-width: 800px) {
-  .topbar { grid-template-columns: 1fr auto; padding: 14px 18px; }
-  .topbar__nav { display: none; }
-}
+body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 /* ---------- PIXEL PET ---------- */
 .pet {
@@ -227,8 +178,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   width: 32px; height: 32px;
   z-index: 40;
   pointer-events: none;
-  /* Sprite clair sur fond sombre — par défaut en phase 1. */
-  background: url('/assets/pet-dark.svg') 0 0 / 128px 32px no-repeat;
+  /* Sprite suit le thème de section actif (var pilotée par body[data-theme]). */
+  background: var(--pet-sprite, url('/assets/pet-light.svg')) 0 0 / 128px 32px no-repeat;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   transform: translate3d(var(--pet-x, 0px), var(--pet-y, 30vh), 0) scaleX(var(--pet-flip, 1));
@@ -317,7 +268,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   min-height: 100dvh;
   display: grid;
   align-content: end;
-  padding-top: 26vh;
+  padding-top: clamp(48px, 8vh, 120px);
   padding-bottom: clamp(40px, 6vw, 80px);
 }
 
@@ -1031,7 +982,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
-  .status__dot { animation: none !important; }
   .pet { transition: none !important; }
   html { scroll-behavior: auto; }
 }
