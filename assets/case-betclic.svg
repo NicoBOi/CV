@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Betclic Group — placeholder">
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8E4DC"/>
+      <stop offset="100%" stop-color="#D8D2C6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#g2)"/>
+
+  <!-- Modular grid evoking templates / multi-market system -->
+  <g fill="none" stroke="#0E0E0C" stroke-width="1" opacity="0.18">
+    <rect x="120" y="160" width="240" height="180"/>
+    <rect x="380" y="160" width="240" height="180"/>
+    <rect x="640" y="160" width="240" height="180"/>
+    <rect x="900" y="160" width="180" height="180"/>
+
+    <rect x="120" y="360" width="500" height="380"/>
+    <rect x="640" y="360" width="440" height="180"/>
+    <rect x="640" y="560" width="200" height="180"/>
+    <rect x="860" y="560" width="220" height="180"/>
+  </g>
+
+  <!-- Filled accent block -->
+  <rect x="120" y="360" width="500" height="380" fill="#D4582A" opacity="0.85"/>
+  <rect x="640" y="360" width="440" height="180" fill="#0E0E0C" opacity="0.92"/>
+
+  <!-- Country tags -->
+  <g font-family="JetBrains Mono, monospace" font-size="11" fill="#0E0E0C" opacity="0.55" letter-spacing="2">
+    <text x="138" y="195">FR</text>
+    <text x="398" y="195">UK</text>
+    <text x="658" y="195">DE</text>
+    <text x="918" y="195">IT</text>
+    <text x="138" y="775">PT · ES</text>
+  </g>
+
+  <g font-family="JetBrains Mono, monospace" fill="#0E0E0C" font-size="14" letter-spacing="2" opacity="0.7">
+    <text x="40" y="60">CASE 02 · BETCLIC GROUP</text>
+    <text x="40" y="860">Motion 2D/3D · 6 marchés · Studio interne</text>
+    <text x="1160" y="60" text-anchor="end">2021–2022</text>
+  </g>
+</svg>
