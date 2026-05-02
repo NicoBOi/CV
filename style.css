@@ -45,22 +45,10 @@
   --dur-fast:     220ms;
 }
 
-/* Alternance dark / light — uniquement les deux teintes du palette,
-   rôles --bg et --ink échangés. Aucune nouvelle couleur. */
-.section[data-section-theme="paper"] {
-  --bg:    #EDE9DF;
-  --ink:   #0A0A0A;
-  --rule:  rgba(10, 10, 10, 0.14);
-  background: var(--bg);
-  color: var(--ink);
-}
-.section[data-section-theme="ink"] {
-  --bg:    #0A0A0A;
-  --ink:   #EDE9DF;
-  --rule:  rgba(237, 233, 223, 0.14);
-  background: var(--bg);
-  color: var(--ink);
-}
+/* Alternance dark / light pilotée par body[data-theme] (JS ScrollTrigger).
+   Les sections n'imposent plus leur propre couleur : elles héritent
+   de --bg / --ink définis au niveau body, ce qui fait crossfader
+   l'intégralité du viewport au passage entre deux sections. */
 
 
 /* ---------- RESET ---------- */
@@ -203,6 +191,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   padding: var(--section-y) var(--gutter);
   background: var(--bg);
   color: var(--ink);
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
 }
 .section + .section { border-top: 1px solid var(--rule); }
 
