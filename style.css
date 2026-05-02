@@ -131,6 +131,30 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: 0.02em;
 }
 
+/* Brand pills (n8n, Anthropic) — logo SVG monochrome (currentColor)
+   + wordmark mono. Rendu cohérent avec les deux thèmes. */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px 4px 8px;
+  border: 1px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  vertical-align: -2px;
+  white-space: nowrap;
+  color: var(--ink);
+  transition: background-color 220ms var(--ease), color 220ms var(--ease);
+}
+.brand:hover { background: var(--ink); color: var(--bg); }
+.brand__mark {
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+}
+.brand__name { line-height: 1; }
+
 /* ---------- PROGRESS BAR ---------- */
 .progress {
   position: fixed; top: 0; left: 0; right: 0;
@@ -977,15 +1001,20 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    ============================================================ */
 
 /* ---------- CHARS (titres splittés pour réactivité pet) ----------
-   Pas de violet sur les lettres : juste un soulèvement subtil
-   proportionnel à la proximité du pet. La couleur reste --ink. */
+   Pas de violet : juste un saut + scale subtil quand le pet est proche,
+   intensité proportionnelle à la proximité (--char-near 0..1). */
 .char {
   display: inline-block;
-  transition: transform 360ms var(--ease);
+  transition:
+    transform 380ms var(--ease),
+    opacity 380ms var(--ease);
+  transform-origin: center bottom;
   will-change: transform;
 }
 .char.is-near {
-  transform: translateY(calc(-4px * var(--char-near, 1)));
+  transform:
+    translateY(calc(-9px * var(--char-near, 1)))
+    scale(calc(1 + 0.14 * var(--char-near, 1)));
 }
 
 /* ---------- ZONES RÉACTIVES AU PASSAGE DU PET ---------- */
@@ -1134,9 +1163,9 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
 .rail a:hover::before { width: 26px; opacity: 1; }
 .rail__label {
   position: absolute;
-  right: 22px;
+  right: calc(100% + 12px);  /* toujours 12px à gauche de la barre, peu importe sa largeur */
   top: 50%;
-  transform: translateY(-50%) translateX(8px);
+  transform: translateY(-50%) translateX(6px);
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
