@@ -972,8 +972,155 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   transform: none;
 }
 
+/* ============================================================
+   PHASE 2 — micro-interactions et réactivité du pet
+   ============================================================ */
+
+/* ---------- CHARS (titres splittés pour réactivité pet) ---------- */
+.char {
+  display: inline-block;
+  transition:
+    transform 320ms var(--ease),
+    color 320ms var(--ease);
+  will-change: transform, color;
+}
+.char.is-near {
+  color: var(--accent);
+  transform: translateY(calc(-3px * var(--char-near, 1)));
+}
+
+/* ---------- ZONES RÉACTIVES AU PASSAGE DU PET ---------- */
+/* CTA tressaille brièvement quand le pet le frôle. */
+.cta.is-pet-near { animation: pet-twitch 320ms var(--ease); }
+@keyframes pet-twitch {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-2px); }
+  55%  { transform: translateX(2px); }
+  80%  { transform: translateX(-1px); }
+  100% { transform: translateX(0); }
+}
+
+/* Ripple pixel (outline accent qui s'efface) sur les médias. */
+.case__media,
+.reel__frame { isolation: isolate; }
+.case__media.is-pet-near::before,
+.reel__frame.is-pet-near::before {
+  content: '';
+  position: absolute; inset: 0;
+  border: 2px solid var(--accent);
+  pointer-events: none;
+  animation: pet-ripple 520ms var(--ease) forwards;
+  z-index: 2;
+}
+@keyframes pet-ripple {
+  0%   { opacity: 0.9; transform: translate(0, 0) scale(1); }
+  60%  { opacity: 0.4; }
+  100% { opacity: 0;   transform: translate(0, 0) scale(1.025); }
+}
+
+/* Filets / bordures qui vibrent (case study + timeline rows). */
+.case.is-pet-near,
+.timeline__row.is-pet-near {
+  border-color: var(--accent);
+  animation: pet-rule-vibe 280ms var(--ease);
+}
+@keyframes pet-rule-vibe {
+  0%, 100% { transform: translateX(0); }
+  35%      { transform: translateX(-1px); }
+  70%      { transform: translateX(1px); }
+}
+
+/* Section labels — léger soulignement quand le pet passe. */
+.section__label.is-pet-near .section__num { color: var(--accent); }
+
+/* ---------- HOVER LIENS (underline accent left→right) ---------- */
+main a:not(.cta) {
+  position: relative;
+}
+main p a:not(.cta)::after,
+main dd a:not(.cta)::after,
+main li a:not(.cta)::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms var(--ease);
+}
+main p a:not(.cta):hover::after,
+main dd a:not(.cta):hover::after,
+main li a:not(.cta):hover::after { transform: scaleX(1); }
+
+/* ---------- HOVER CASE STUDIES ---------- */
+.case { transition: transform var(--dur) var(--ease); }
+.case:hover .case__title,
+.case:hover .case__sub,
+.case:hover .case__story { transform: translateX(3px); }
+.case__title,
+.case__sub,
+.case__story { transition: transform var(--dur) var(--ease); }
+.case:hover .case__media img { transform: scale(1.025); }
+
+/* ---------- CARET CLIGNOTANT ---------- */
+.caret {
+  display: inline-block;
+  width: 0.55ch;
+  height: 0.95em;
+  background: var(--accent);
+  vertical-align: -0.12em;
+  margin-left: 0.18em;
+  animation: caret-blink 1.05s steps(2, end) infinite;
+}
+@keyframes caret-blink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ---------- SCRAMBLE (état initial avant effet JS) ---------- */
+[data-scramble] { font-variant-numeric: tabular-nums; }
+[data-scramble].is-scrambling { color: var(--accent); }
+
+/* ---------- TYPEWRITER (section numbers) ---------- */
+[data-typewriter] { display: inline-block; white-space: pre; }
+
+/* ---------- STAGGER REVEAL CHILDREN ---------- */
+[data-reveal-stagger] > * {
+  opacity: 0;
+  transform: translateY(12px);
+  will-change: transform, opacity;
+}
+[data-reveal-stagger].is-revealed > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- CURSOR PERSO (DESKTOP) ---------- */
+.cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 8px; height: 8px;
+  background: var(--accent);
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transform: translate3d(-100px, -100px, 0);
+  transition: width 220ms var(--ease), height 220ms var(--ease);
+  opacity: 0;
+}
+.cursor.is-active { opacity: 1; }
+.cursor.is-hover { width: 22px; height: 22px; }
+@media (max-width: 800px), (pointer: coarse), (hover: none) {
+  .cursor { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+  [data-reveal-stagger] > * { opacity: 1 !important; transform: none !important; }
   .pet { transition: none !important; }
+  .char.is-near { transform: none !important; }
+  .caret { animation: none !important; opacity: 1 !important; }
+  .cursor { display: none; }
   html { scroll-behavior: auto; }
 }

@@ -53,6 +53,60 @@
      when axis switches.
      ============================================================ */
 
+  /* ============================================================
+     PHASE 2 — split text into characters for reactive titles.
+     Preserves nested structure (em, strong, .hero__line, etc.).
+     ============================================================ */
+  function splitChars(root) {
+    if (!root || root.dataset.charsSplit) return;
+    root.dataset.charsSplit = '1';
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    const textNodes = [];
+    let n;
+    while ((n = walker.nextNode())) {
+      if (n.parentElement && n.parentElement.closest('script, style, [data-no-split]')) continue;
+      textNodes.push(n);
+    }
+    textNodes.forEach((node) => {
+      const text = node.textContent;
+      if (!text || !text.trim()) return;
+      const frag = document.createDocumentFragment();
+      for (const ch of text) {
+        if (ch === ' ' || ch === ' ') {
+          frag.appendChild(document.createTextNode(ch));
+        } else if (ch === '\n' || ch === '\t') {
+          frag.appendChild(document.createTextNode(ch));
+        } else {
+          const s = document.createElement('span');
+          s.className = 'char';
+          s.textContent = ch;
+          frag.appendChild(s);
+        }
+      }
+      node.parentNode.replaceChild(frag, node);
+    });
+  }
+
+  const SPLIT_TARGETS = [
+    '.hero__title',
+    '.travail__title',
+    '.parcours__title',
+    '.case__title',
+    '.pilier__title',
+    '.timeline__role',
+  ];
+  if (!reduced) SPLIT_TARGETS.forEach((sel) => document.querySelectorAll(sel).forEach(splitChars));
+
+  /* Selectors for "zone" reactivity (whole element gets is-pet-near). */
+  const PET_ZONE_SELECTORS = [
+    '.cta',
+    '.case',
+    '.case__media',
+    '.reel__frame',
+    '.timeline__row',
+    '.section__label',
+  ];
+
   /* List of CSS selectors for guide anchors, in scroll order.
      Each is a key element the pet should point to on the page. */
   const PET_ANCHOR_SELECTORS = [
@@ -88,16 +142,55 @@
       this.phase = null;          /* 'X' or 'Y' — current axis of L motion */
       this.turnUntil = 0;
       this.turnStart = 0;
+      this.chars = [];           /* {el, docX, docY} pour réactivité par lettre */
+      this.zones = [];           /* {el, l, t, r, b} pour réactivité de zones */
+      this.zoneState = new WeakMap();
+      this.proximityAccum = 0;   /* throttle léger du recompute des près-d'ici */
       this.computeAnchors();
+      this.computeReactiveTargets();
       this.tick = this.tick.bind(this);
 
       let resizeT = null;
-      window.addEventListener('resize', () => {
+      const onResize = () => {
         clearTimeout(resizeT);
-        resizeT = setTimeout(() => this.computeAnchors(), 200);
-      }, { passive: true });
+        resizeT = setTimeout(() => {
+          this.computeAnchors();
+          this.computeReactiveTargets();
+        }, 200);
+      };
+      window.addEventListener('resize', onResize, { passive: true });
+      /* Recompute on theme swap (layout shifts subtilement avec font-display) */
+      const mo = new MutationObserver(onResize);
+      mo.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
 
       requestAnimationFrame(this.tick);
+    }
+
+    computeReactiveTargets() {
+      this.chars = [];
+      document.querySelectorAll('.char').forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return;
+        this.chars.push({
+          el,
+          docX: r.left + r.width / 2 + window.scrollX,
+          docY: r.top + r.height / 2 + window.scrollY,
+        });
+      });
+      this.zones = [];
+      PET_ZONE_SELECTORS.forEach((sel) => {
+        document.querySelectorAll(sel).forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.width === 0 && r.height === 0) return;
+          this.zones.push({
+            el,
+            l: r.left + window.scrollX,
+            t: r.top + window.scrollY,
+            r: r.right + window.scrollX,
+            b: r.bottom + window.scrollY,
+          });
+        });
+      });
     }
 
     /* Compute anchor positions in DOCUMENT coords (absolute on page).
@@ -239,7 +332,53 @@
       this.lastX = vx;
       this.lastY = vy;
 
+      /* PHASE 2 — réactivité de l'environnement (~80px de rayon).
+         Throttle à ~30fps pour les checks (1 frame sur 2). */
+      this.proximityAccum++;
+      if (this.proximityAccum >= 2) {
+        this.proximityAccum = 0;
+        this.updateProximity(petDocX + 16, petDocY + 16);
+      }
+
       requestAnimationFrame(this.tick);
+    }
+
+    updateProximity(petCX, petCY) {
+      const R = 80;
+      const R2 = R * R;
+
+      /* Letters within radius — use proximity as intensity 0..1. */
+      for (let i = 0; i < this.chars.length; i++) {
+        const c = this.chars[i];
+        const dx = c.docX - petCX;
+        const dy = c.docY - petCY;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < R2) {
+          const intensity = 1 - Math.sqrt(d2) / R;
+          c.el.style.setProperty('--char-near', intensity.toFixed(3));
+          if (!c.el.classList.contains('is-near')) c.el.classList.add('is-near');
+        } else if (c.el.classList.contains('is-near')) {
+          c.el.classList.remove('is-near');
+          c.el.style.removeProperty('--char-near');
+        }
+      }
+
+      /* Zones — distance to closest point on rect, single class toggle. */
+      for (let i = 0; i < this.zones.length; i++) {
+        const z = this.zones[i];
+        const dx = Math.max(z.l - petCX, 0, petCX - z.r);
+        const dy = Math.max(z.t - petCY, 0, petCY - z.b);
+        const d2 = dx * dx + dy * dy;
+        const inside = d2 < R2;
+        const was = this.zoneState.get(z.el) === true;
+        if (inside && !was) {
+          z.el.classList.add('is-pet-near');
+          this.zoneState.set(z.el, true);
+        } else if (!inside && was) {
+          z.el.classList.remove('is-pet-near');
+          this.zoneState.set(z.el, false);
+        }
+      }
     }
   }
 
@@ -279,8 +418,9 @@
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.config({ ignoreMobileResize: true });
 
-  /* Reveals — staggered translateY + fade */
+  /* Reveals — translateY + fade (skip enfants gérés par parent stagger) */
   gsap.utils.toArray('[data-reveal]').forEach((el) => {
+    if (el.closest('[data-reveal-stagger]') && el.parentElement.hasAttribute('data-reveal-stagger')) return;
     gsap.fromTo(el,
       { y: 24, opacity: 0 },
       {
@@ -333,5 +473,145 @@
       });
     }, { threshold: 0.4 });
     document.querySelectorAll('.section[data-section-theme]').forEach((s) => io.observe(s));
+  }
+
+  /* ============================================================
+     PHASE 2 — caret, scramble, typewriter, stagger, cursor
+     ============================================================ */
+
+  /* Caret violet à la fin des citations clés. */
+  if (!reduced) {
+    document.querySelectorAll('[data-caret]').forEach((el) => {
+      const last = (function findLastTextHost(node) {
+        let cur = node, found = node;
+        while (cur && cur.lastChild) {
+          if (cur.lastChild.nodeType === 1) { cur = cur.lastChild; found = cur; }
+          else break;
+        }
+        return found;
+      })(el);
+      const caret = document.createElement('span');
+      caret.className = 'caret';
+      caret.setAttribute('aria-hidden', 'true');
+      last.appendChild(caret);
+    });
+  }
+
+  /* Stagger reveals — animer les enfants avec un décalage. */
+  if (!reduced && typeof window.gsap !== 'undefined') {
+    document.querySelectorAll('[data-reveal-stagger]').forEach((parent) => {
+      const kids = Array.from(parent.children);
+      if (!kids.length) return;
+      gsap.fromTo(kids,
+        { y: 12, opacity: 0 },
+        {
+          y: 0, opacity: 1,
+          duration: 0.6,
+          ease: 'power2.out',
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: parent,
+            start: 'top 85%',
+            once: true,
+            onEnter: () => parent.classList.add('is-revealed'),
+          },
+        }
+      );
+    });
+  }
+
+  /* Scramble : enchainement rapide de chiffres avant valeur finale.
+     S'applique aux .timeline__year et .case__period. */
+  function scramble(el, finalText, dur) {
+    const chars = '0123456789§§%#';
+    const start = performance.now();
+    const orig = finalText.split('');
+    el.classList.add('is-scrambling');
+    function step(now) {
+      const t = Math.min(1, (now - start) / dur);
+      const settledCount = Math.floor(orig.length * t);
+      let out = '';
+      for (let i = 0; i < orig.length; i++) {
+        if (i < settledCount || /\s/.test(orig[i])) out += orig[i];
+        else out += chars[(Math.random() * chars.length) | 0];
+      }
+      el.textContent = out;
+      if (t < 1) requestAnimationFrame(step);
+      else { el.textContent = finalText; el.classList.remove('is-scrambling'); }
+    }
+    requestAnimationFrame(step);
+  }
+
+  if (!reduced && 'IntersectionObserver' in window) {
+    const SCRAMBLE_SEL = '.timeline__year, .case__period';
+    const scrambleIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        if (el.dataset.scrambled) return;
+        el.dataset.scrambled = '1';
+        const final = el.textContent;
+        scramble(el, final, 380);
+        scrambleIO.unobserve(el);
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll(SCRAMBLE_SEL).forEach((el) => {
+      el.dataset.scramble = '1';
+      scrambleIO.observe(el);
+    });
+  }
+
+  /* Typewriter : section numbers se tapent caractère par caractère. */
+  if (!reduced && 'IntersectionObserver' in window) {
+    const typeIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        if (el.dataset.typed) return;
+        el.dataset.typed = '1';
+        const finalChars = Array.from(el.textContent);
+        el.textContent = '';
+        let i = 0;
+        function step() {
+          if (i >= finalChars.length) return;
+          el.textContent += finalChars[i++];
+          setTimeout(step, 55 + Math.random() * 35);
+        }
+        step();
+        typeIO.unobserve(el);
+      });
+    }, { threshold: 0.7 });
+    document.querySelectorAll('.section__num').forEach((el) => {
+      el.dataset.typewriter = '1';
+      typeIO.observe(el);
+    });
+  }
+
+  /* Custom cursor desktop — point violet avec lag, scale au hover. */
+  const cursor = document.querySelector('[data-cursor]');
+  const isFinePointer = window.matchMedia('(pointer: fine)').matches && window.matchMedia('(hover: hover)').matches;
+  if (cursor && isFinePointer && !reduced) {
+    let mx = -100, my = -100, cx = -100, cy = -100;
+    let active = false;
+    const onMove = (e) => {
+      mx = e.clientX; my = e.clientY;
+      if (!active) { active = true; cursor.classList.add('is-active'); }
+    };
+    window.addEventListener('mousemove', onMove, { passive: true });
+    window.addEventListener('mouseleave', () => { active = false; cursor.classList.remove('is-active'); });
+
+    function tickCursor() {
+      cx += (mx - cx) * 0.22;
+      cy += (my - cy) * 0.22;
+      cursor.style.transform = `translate3d(${cx - 4}px, ${cy - 4}px, 0)`;
+      requestAnimationFrame(tickCursor);
+    }
+    requestAnimationFrame(tickCursor);
+
+    const HOVER_SEL = 'a, button, [role="button"], .cta, .reel__frame, .case__media';
+    document.querySelectorAll(HOVER_SEL).forEach((el) => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('is-hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('is-hover'));
+    });
   }
 })();
