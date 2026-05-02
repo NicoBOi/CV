@@ -64,7 +64,7 @@
     const textNodes = [];
     let n;
     while ((n = walker.nextNode())) {
-      if (n.parentElement && n.parentElement.closest('script, style, [data-no-split]')) continue;
+      if (n.parentElement && n.parentElement.closest('script, style, [data-no-split], .brand, .cta, .tag, .kbd, .rail, .footer, .skip-link, .section__num, .topbar')) continue;
       textNodes.push(n);
     }
     textNodes.forEach((node) => {
@@ -88,14 +88,28 @@
   }
 
   const SPLIT_TARGETS = [
-    '.hero__title',
-    '.travail__title',
-    '.parcours__title',
-    '.case__title',
-    '.pilier__title',
-    '.timeline__role',
+    /* Titres / display */
+    '.hero__title', '.travail__title', '.parcours__title',
+    '.case__title', '.pilier__title', '.timeline__role',
+    /* Citations italique */
+    '.hero__tag', '.reel__caption', '.production__quote', '.closer',
+    /* Paragraphes / body */
+    '.hero__sub',
+    '.pitch__lede', '.pitch__body',
+    '.pilier__desc',
+    '.travail__lead', '.travail__more',
+    '.case__sub', '.case__story dd',
+    '.production__kicker', '.production__body p', '.production__cta',
+    '.timeline__detail',
+    '.closer__pitch', '.closer__sla',
+    '.closer__info dd',
+    /* Méta */
+    '.case__meta p', '.case__story dt', '.pilier__num', '.timeline__year',
   ];
-  if (!reduced) SPLIT_TARGETS.forEach((sel) => document.querySelectorAll(sel).forEach(splitChars));
+  /* Skip splitting sur mobile : le pet est masqué, donc inutile de
+     gonfler le DOM avec des milliers de spans qui ne servent à rien. */
+  const PET_ACTIVE = !reduced && window.innerWidth > 640;
+  if (PET_ACTIVE) SPLIT_TARGETS.forEach((sel) => document.querySelectorAll(sel).forEach(splitChars));
 
   /* Selectors for "zone" reactivity (whole element gets is-pet-near). */
   const PET_ZONE_SELECTORS = [
