@@ -45,55 +45,78 @@
   window.addEventListener('scroll', updateProgress, { passive: true });
 
   /* ============================================================
-     PIXEL PET — scroll-bound 8-bit walker
-     Position is bound directly to scrollY progress on a serpentine
-     path. Walk cycle plays while scroll velocity > 0; switches to
-     idle (breath / blink / occasional nod) after ~300ms inactivity.
-     Sprite flips horizontally when scroll direction reverses.
+     PIXEL PET — orthogonal anchor-based guide (Game Boy style)
+     Position computed from scrollY against a fixed list of anchors.
+     Movement is strictly orthogonal: between two anchors, the pet
+     moves first along the long axis (X or Y), then the other —
+     forming an L. Snap to anchor when within 4px. 100ms turn pose
+     when axis switches.
      ============================================================ */
+
+  /* List of CSS selectors for guide anchors, in scroll order.
+     Each is a key element the pet should point to on the page. */
+  const PET_ANCHOR_SELECTORS = [
+    '#hero-title',
+    '.hero__tag',
+    '#showreel .reel__frame',
+    '.reel__caption',
+    '.pitch__lede',
+    '.travail__title',
+    '#travail .case:nth-of-type(1) .case__title',
+    '#travail .case:nth-of-type(2) .case__title',
+    '#travail .case:nth-of-type(3) .case__title',
+    '.production__quote',
+    '.production__cta',
+    '.parcours__title',
+    '.closer',
+    '.closer__sla',
+  ];
+
   class PixelPet {
     constructor(el) {
       this.el = el;
-      this.size = 36;
-      const init = this.pathFromProgress(this.currentProgress());
-      this.x = init.x - this.size / 2;
-      this.y = init.y - this.size / 2;
-      this.tx = this.x;
-      this.ty = this.y;
+      this.size = 32;
+      this.anchors = [];
+      this.x = 0; this.y = 0;
+      this.lastX = 0; this.lastY = 0;
       this.flip = 1;
       this.frame = 'idle1';
-      this.distAccum = 0;        /* px walked since last frame swap */
-      this.idleTick = 0;
       this.idlePhase = 0;
+      this.lastFrameSwap = 0;
       this.lastBlink = 0;
-      this.lastScrollY = window.scrollY;
-      this.lastMoveAt = performance.now();
-      this.nodStart = 0;
+      this.lastMoveAt = 0;
+      this.phase = null;          /* 'X' or 'Y' — current axis of L motion */
+      this.turnUntil = 0;
+      this.turnStart = 0;
+      this.computeAnchors();
       this.tick = this.tick.bind(this);
-      this.applyTransform();
-      this.el.dataset.petFrame = this.frame;
+
+      let resizeT = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeT);
+        resizeT = setTimeout(() => this.computeAnchors(), 200);
+      }, { passive: true });
+
       requestAnimationFrame(this.tick);
     }
 
-    currentProgress() {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    }
-
-    /* Serpentine path through viewport, parametrized by scroll progress.
-       X uses a cosine wave (1.5 cycles across full scroll) so the pet
-       weaves between margins. Y is linear: top of viewport at start,
-       bottom of viewport at end. */
-    pathFromProgress(p) {
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const yMin = 90;
-      const yMax = vh - 60;
-      const y = yMin + p * (yMax - yMin);
-      const xCenter = vw * 0.5;
-      const xRange = Math.min(vw * 0.42, vw / 2 - 30);
-      const x = xCenter + Math.cos(p * Math.PI * 3) * xRange;
-      return { x, y };
+    /* Compute anchor positions in DOCUMENT coords (absolute on page).
+       Anchor is positioned to the LEFT of the element (pet acts as
+       guide pointing at the start of the text/visual). */
+    computeAnchors() {
+      const PET_W = this.size;
+      const GAP = 14;
+      const list = [];
+      for (const sel of PET_ANCHOR_SELECTORS) {
+        const node = document.querySelector(sel);
+        if (!node) continue;
+        const r = node.getBoundingClientRect();
+        const docX = Math.max(8, r.left + window.scrollX - PET_W - GAP);
+        const docY = r.top + window.scrollY - 4;
+        list.push({ docX, docY, sel });
+      }
+      list.sort((a, b) => a.docY - b.docY);
+      this.anchors = list;
     }
 
     setFrame(name) {
@@ -102,88 +125,120 @@
       this.el.dataset.petFrame = name;
     }
 
-    applyTransform() {
-      const px = Math.round(this.x);
-      const py = Math.round(this.y + this.nodOffset());
-      this.el.style.setProperty('--pet-x', px + 'px');
-      this.el.style.setProperty('--pet-y', py + 'px');
-      this.el.style.setProperty('--pet-flip', String(this.flip));
-    }
-
-    nodOffset() {
-      if (!this.nodStart) return 0;
-      const t = (performance.now() - this.nodStart) / 280;
-      if (t >= 1) { this.nodStart = 0; return 0; }
-      /* small dip then return: sin pulse */
-      return Math.sin(t * Math.PI) * 1.6;
-    }
-
     tick(now) {
-      const scrollY = window.scrollY;
-      const progress = this.currentProgress();
-      const target = this.pathFromProgress(progress);
-      this.tx = target.x - this.size / 2;
-      this.ty = target.y - this.size / 2;
-
-      /* Scroll direction → sprite flip (down = right, up = left) */
-      const sdy = scrollY - this.lastScrollY;
-      if (Math.abs(sdy) > 0.4) {
-        this.flip = sdy > 0 ? 1 : -1;
-        this.lastMoveAt = now;
+      if (this.anchors.length < 2) {
+        requestAnimationFrame(this.tick);
+        return;
       }
-      this.lastScrollY = scrollY;
 
-      /* Lerp toward target — light easing so movement isn't sharp */
-      const dx = this.tx - this.x;
-      const dy = this.ty - this.y;
-      const dist = Math.hypot(dx, dy);
+      const scrollY = window.scrollY;
+      /* Reference Y in document coords — where in the page the reader's
+         eye is currently positioned. 40% of viewport feels natural. */
+      const ref = scrollY + window.innerHeight * 0.4;
 
-      if (dist > 0.5) {
-        const lerp = 0.16;
-        const stepX = dx * lerp;
-        const stepY = dy * lerp;
-        this.x += stepX;
-        this.y += stepY;
-        const stepDist = Math.hypot(stepX, stepY);
-        this.distAccum += stepDist;
+      /* Find bracketing anchors (a = before, b = after) */
+      let i = 0;
+      while (i < this.anchors.length - 1 && this.anchors[i + 1].docY <= ref) i++;
+      const a = this.anchors[i];
+      const b = this.anchors[Math.min(i + 1, this.anchors.length - 1)];
 
-        /* Walk-cycle frame swap every 8 px walked — tile-step feel */
-        if (this.distAccum >= 8) {
-          this.distAccum = 0;
-          this.setFrame(this.frame === 'walk1' ? 'walk2' : 'walk1');
-        } else if (this.frame !== 'walk1' && this.frame !== 'walk2') {
-          this.setFrame('walk1');
-        }
-        this.idleTick = 0;
-        this.lastMoveAt = now;
+      let petDocX, petDocY, currentPhase = this.phase;
+
+      if (a === b) {
+        petDocX = a.docX;
+        petDocY = a.docY;
       } else {
-        /* Idle: breath cycle + occasional blink + rare head nod */
-        const idleSince = now - this.lastMoveAt;
-        if (idleSince > 300) {
-          this.idleTick += 16;
-          if (this.idleTick >= 700) {
-            this.idlePhase ^= 1;
-            const baseFrame = this.idlePhase ? 'idle2' : 'idle1';
-            /* ~12% chance per cycle to blink (140ms) */
-            if (Math.random() < 0.12 && now - this.lastBlink > 2400) {
-              this.lastBlink = now;
-              this.setFrame('blink');
-              setTimeout(() => {
-                if (this.frame === 'blink') this.setFrame(baseFrame);
-              }, 140);
-            } else {
-              this.setFrame(baseFrame);
-            }
-            /* ~6% chance per cycle to do a small head nod */
-            if (!this.nodStart && Math.random() < 0.06) {
-              this.nodStart = now;
-            }
-            this.idleTick = 0;
+        const denom = b.docY - a.docY || 1;
+        const t = Math.max(0, Math.min(1, (ref - a.docY) / denom));
+        const dx = b.docX - a.docX;
+        const dy = b.docY - a.docY;
+        const yFirst = Math.abs(dy) >= Math.abs(dx);
+
+        if (yFirst) {
+          if (t < 0.5) {
+            petDocX = a.docX;
+            petDocY = a.docY + dy * (t * 2);
+            currentPhase = 'Y';
+          } else {
+            petDocX = a.docX + dx * ((t - 0.5) * 2);
+            petDocY = b.docY;
+            currentPhase = 'X';
+          }
+        } else {
+          if (t < 0.5) {
+            petDocX = a.docX + dx * (t * 2);
+            petDocY = a.docY;
+            currentPhase = 'X';
+          } else {
+            petDocX = b.docX;
+            petDocY = a.docY + dy * ((t - 0.5) * 2);
+            currentPhase = 'Y';
           }
         }
       }
 
-      this.applyTransform();
+      /* Snap if within 4px of either anchor */
+      for (const an of [a, b]) {
+        if (Math.abs(petDocX - an.docX) < 4 && Math.abs(petDocY - an.docY) < 4) {
+          petDocX = an.docX;
+          petDocY = an.docY;
+          break;
+        }
+      }
+
+      /* Detect axis change → trigger 100ms turn pose */
+      if (this.phase !== null && currentPhase !== this.phase) {
+        this.turnUntil = now + 100;
+        this.turnStart = now;
+      }
+      this.phase = currentPhase;
+
+      /* Convert to viewport coords */
+      const vx = petDocX;
+      const vy = petDocY - scrollY;
+
+      /* Velocity for walk/idle */
+      const dxp = vx - this.lastX;
+      const dyp = vy - this.lastY;
+      const speed = Math.hypot(dxp, dyp);
+
+      if (speed > 0.5) {
+        if (Math.abs(dxp) > 0.4) this.flip = dxp > 0 ? 1 : -1;
+        this.lastMoveAt = now;
+      }
+
+      const idleSince = now - this.lastMoveAt;
+      const inTurn = now < this.turnUntil;
+
+      /* Frame selection (3 states: idle / walk / turn) */
+      if (inTurn) {
+        const e = now - this.turnStart;
+        this.setFrame(e < 50 ? 'turn1' : 'turn2');
+      } else if (speed > 0.5 || idleSince < 200) {
+        if (now - this.lastFrameSwap > 130) {
+          this.setFrame(this.frame === 'walk1' ? 'walk2' : 'walk1');
+          this.lastFrameSwap = now;
+        }
+        if (this.frame !== 'walk1' && this.frame !== 'walk2') {
+          this.setFrame('walk1');
+          this.lastFrameSwap = now;
+        }
+      } else {
+        if (now - this.lastFrameSwap > 700) {
+          this.idlePhase ^= 1;
+          this.setFrame(this.idlePhase ? 'idle2' : 'idle1');
+          this.lastFrameSwap = now;
+        }
+      }
+
+      /* Apply transform — pixel-snapped */
+      this.el.style.setProperty('--pet-x', Math.round(vx) + 'px');
+      this.el.style.setProperty('--pet-y', Math.round(vy) + 'px');
+      this.el.style.setProperty('--pet-flip', String(this.flip));
+
+      this.lastX = vx;
+      this.lastY = vy;
+
       requestAnimationFrame(this.tick);
     }
   }

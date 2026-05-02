@@ -69,39 +69,49 @@ Le thème (paper / ink) bascule automatiquement au scroll via ScrollTrigger.
 
 ## L'élément signature : le pixel pet
 
-Petit monstre 8-bit (16×16 pixels, sprite SVG inline ~12 KB) **scroll-bound** : sa position est directement liée à la progression du scroll, comme un personnage de Game Boy qui marche au rythme de la lecture du visiteur. Il ne saute pas, il ne se téléporte pas — il marche.
+Petit monstre 8-bit (16×16 pixels) qui guide le regard du lecteur entre les éléments importants du site, comme un PNJ Zelda Game Boy. **Mouvements strictement orthogonaux (en L)**, jamais en diagonale.
 
 ### Comportement
 
-- Position calculée chaque frame depuis `window.scrollY / scrollMax` (progression de 0 à 1).
-- **Path serpentine** : Y linéaire (haut viewport au début → bas viewport à la fin), X cosinusoïdal 1.5 cycles (droite → centre → gauche → centre → droite). Le pet zigzague à travers la mise en page.
-- **Vitesse de marche = vitesse de scroll** : scroll rapide → marche rapide (frame swap fréquent), scroll lent → marche lente.
-- **Scroll vers le haut** : le pet fait demi-tour (sprite horizontalement flippé).
-- **Scroll arrêté > 300 ms** : passage en idle (respiration alternée 700 ms, clignement aléatoire ~12%, petit hochement de tête ~6%).
-- Mouvement avec easing léger (lerp 0.16) pour pas être trop sec, pixels arrondis pour la crispness 8-bit.
+- Au mount, le pet calcule la position absolue (dans la page) de **14 ancres** : début des titres, bords haut-gauche des visuels, citations clés, CTAs.
+- À chaque frame, il lit `window.scrollY`, trouve les deux ancres encadrantes, et **se déplace en L** : d'abord sur l'axe long (X ou Y), puis sur l'axe court — jamais en diagonale.
+- À chaque changement d'axe, il **pivote** 100ms (turn pose) avant de repartir.
+- Quand il arrive à <4px d'une ancre, il **snap** dessus exactement.
+- En marche : sprite `walk1`/`walk2` qui alterne, flippé horizontalement selon la direction.
+- Au repos (>200ms sans mouvement) : passage en idle, alternance `idle1`/`idle2` toutes les 700ms.
+- Resize : ancres recalculées avec debounce 200ms.
 
-### 10 frames disponibles
+### Liste des ancres (ordre du scroll)
 
-| Frame | État courant |
-|---|---|
-| `idle1` / `idle2` | Idle (respiration) |
-| `blink` | Idle clignement (140 ms) |
-| `walk1` / `walk2` | Marche (cycle = 1 swap toutes les 8 px parcourus) |
-| `wave` / `jump` / `surprise` / `clap1` / `clap2` | Réservées (sprite préparé pour usages futurs — animations contextuelles, easter eggs, etc.) |
+Dans `script.js` → `PET_ANCHOR_SELECTORS` :
+
+```js
+'#hero-title', '.hero__tag', '#showreel .reel__frame', '.reel__caption',
+'.pitch__lede', '.travail__title',
+'#travail .case:nth-of-type(1) .case__title',
+'#travail .case:nth-of-type(2) .case__title',
+'#travail .case:nth-of-type(3) .case__title',
+'.production__quote', '.production__cta', '.parcours__title',
+'.closer', '.closer__sla'
+```
+
+### Sprite
+
+2 fichiers SVG (4 frames horizontales chacun, viewBox 64×16) :
+- `assets/pet-light.svg` — corps `#181614`, œil `#B43329` (sections paper)
+- `assets/pet-dark.svg` — corps `#F4F1EC`, œil `#B43329` (sections ink)
+
+Swap automatique via `[data-theme="ink"]`. Le pet est un `<div>` simple avec `background-image` et `background-position` — aucun SVG inline.
 
 ### Modifier le pet
 
-- **`index.html`** — sprite inline (rechercher `pet__f--idle1`).
-- **`script.js`** — classe `PixelPet`, méthodes `pathFromProgress`, `tick`.
-- **`style.css`** — bloc `/* PIXEL PET */`, règles `.pet[data-pet-frame="<name>"]`.
+| Pour | Édit |
+|---|---|
+| Ajouter une ancre | Ajouter un selector dans `PET_ANCHOR_SELECTORS` (script.js) |
+| Changer un sprite | Régénérer `pet-light.svg` / `pet-dark.svg` (script Python dans le commit du sprite) |
+| Désactiver totalement | Retirer le `<div class="pet">` dans `index.html` |
 
-Pour changer la trajectoire : éditer `pathFromProgress(p)` dans `script.js`.
-Pour changer la vitesse de la marche : éditer le seuil `8` dans `if (this.distAccum >= 8)`.
-Pour changer l'easing : éditer `const lerp = 0.16`.
-Pour modifier les pixels d'une frame : éditer la grille ASCII dans le commit qui a généré le sprite (script Python, cf. git log) et régénérer.
-Pour désactiver totalement : retirer le `<div class="pet">` dans `index.html`.
-
-**Mobile (< 640px)** : caché. **A11y** : `aria-hidden="true"`, `pointer-events: none`, frame statique en `prefers-reduced-motion`.
+**Mobile (< 768px)** : caché. **A11y** : `aria-hidden="true"`, `pointer-events: none`, frame statique en `prefers-reduced-motion`.
 
 ---
 
