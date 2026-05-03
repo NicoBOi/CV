@@ -475,6 +475,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   grid-template-columns: 1fr;
   gap: clamp(28px, 3.5vw, 56px);
   max-width: 72ch;
+  margin-inline: 0 auto;
 }
 .pitch__lede {
   font-family: var(--font-body);
@@ -578,6 +579,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: grid;
   gap: clamp(20px, 2.5vw, 36px);
   max-width: 64ch;
+  margin-inline: 0 auto;
 }
 .travail__title {
   font-family: var(--font-display);
@@ -809,6 +811,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: grid;
   gap: clamp(20px, 2.5vw, 36px);
   max-width: 64ch;
+  margin-inline: 0 auto;
 }
 .production__body p {
   font-family: var(--font-body);
@@ -874,6 +877,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: grid;
   gap: clamp(22px, 2.6vw, 36px);
   max-width: 64ch;
+  margin-inline: 0 auto;
 }
 .parcours__line {
   display: grid;
