@@ -349,9 +349,29 @@
       }
       this.phase = currentPhase;
 
+      /* Clamp Y pour que le pet reste TOUJOURS dans le viewport.
+         Si l'ancre cible est trop bas/haut, le pet attend en marge
+         plutôt que de plonger hors écran. */
+      const vh = window.innerHeight;
+      const margin = 100;
+      const minDocY = scrollY + margin;
+      const maxDocY = scrollY + vh - margin;
+      const clampedDocY = Math.max(minDocY, Math.min(maxDocY, petDocY));
+
+      /* Smooth lerp : le pet ne téléporte plus, il rattrape sa cible
+         doucement. Lerp 0.08 = ~30 frames pour converger, ce qui
+         laisse 300-500ms de présence à chaque ancre. */
+      if (this.smoothX === undefined) {
+        this.smoothX = petDocX;
+        this.smoothY = clampedDocY;
+      } else {
+        this.smoothX += (petDocX - this.smoothX) * 0.08;
+        this.smoothY += (clampedDocY - this.smoothY) * 0.08;
+      }
+
       /* Convert to viewport coords */
-      const vx = petDocX;
-      const vy = petDocY - scrollY;
+      const vx = this.smoothX;
+      const vy = this.smoothY - scrollY;
 
       /* Velocity for walk/idle */
       const dxp = vx - this.lastX;
