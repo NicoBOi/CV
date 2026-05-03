@@ -8,6 +8,12 @@
 (() => {
   'use strict';
 
+  /* Refresh = retour en haut. Désactive la restauration de scroll
+     du navigateur et force scrollTo(0,0) au chargement. */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  window.addEventListener('load', () => window.scrollTo(0, 0));
+
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- Year stamp ---------- */
