@@ -720,6 +720,57 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   margin-right: 12px;
 }
 
+/* Clients — mur typographique. Une ligne par marque, classées par
+   importance décroissante. Nom Archivo Black UPPERCASE XL, méta mono
+   small à droite. Filet entre chaque ligne. */
+.clients {
+  max-width: var(--max);
+  margin-inline: auto;
+  width: 100%;
+  border-top: 1px solid var(--rule);
+}
+.clients__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: clamp(16px, 3vw, 48px);
+  padding: clamp(20px, 3vw, 36px) 0;
+  border-bottom: 1px solid var(--rule);
+  transition: padding-left var(--dur) var(--ease);
+}
+.clients__name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(36px, 6.4vw, 88px);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.clients__meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.6;
+  text-align: right;
+  white-space: nowrap;
+}
+@media (hover: hover) {
+  .clients__row:hover { padding-left: 12px; }
+  .clients__row:hover .clients__meta { opacity: 1; color: var(--accent); }
+}
+@media (max-width: 720px) {
+  .clients__row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: clamp(16px, 4vw, 24px) 0;
+  }
+  .clients__meta { text-align: left; opacity: 0.65; }
+}
+
 /* ============================================================
    05 — PRODUCTION INTELLIGENTE
    ============================================================ */
