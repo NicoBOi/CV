@@ -184,6 +184,7 @@
      élément clé dans l'ordre du scroll. Anchor sur le premier .char
      quand dispo (cf. computeAnchors). */
   const PET_ANCHOR_SELECTORS = [
+    '[data-pet-stage]',
     '#hero-title',
     '.hero__meta',
     '#showreel .reel__frame',
@@ -294,47 +295,61 @@
       }
 
       const scrollY = window.scrollY;
-      /* Reference Y in document coords — where in the page the reader's
-         eye is currently positioned. 40% of viewport feels natural. */
-      const ref = scrollY + window.innerHeight * 0.4;
 
-      /* Find bracketing anchors (a = before, b = after) */
-      let i = 0;
-      while (i < this.anchors.length - 1 && this.anchors[i + 1].docY <= ref) i++;
-      const a = this.anchors[i];
-      const b = this.anchors[Math.min(i + 1, this.anchors.length - 1)];
-
+      /* Mode playground : tant qu'on est en haut de page (scrollY < 50px),
+         le pet "joue" autour du premier anchor (data-pet-stage en haut du
+         hero) avec une petite oscillation X/Y sinusoïdale. Court-circuite
+         le calcul d'interpolation entre anchors. */
       let petDocX, petDocY, currentPhase = this.phase;
+      let a, b;
 
-      if (a === b) {
-        petDocX = a.docX;
-        petDocY = a.docY;
+      if (scrollY < 50 && this.anchors[0]) {
+        const stage = this.anchors[0];
+        a = b = stage;
+        petDocX = stage.docX + Math.sin(now / 1200) * 22;
+        petDocY = stage.docY + Math.cos(now / 1700) * 14;
+        currentPhase = (Math.sin(now / 800) > 0) ? 'X' : 'Y';
       } else {
-        const denom = b.docY - a.docY || 1;
-        const t = Math.max(0, Math.min(1, (ref - a.docY) / denom));
-        const dx = b.docX - a.docX;
-        const dy = b.docY - a.docY;
-        const yFirst = Math.abs(dy) >= Math.abs(dx);
+        /* Reference Y in document coords — where in the page the reader's
+           eye is currently positioned. 40% of viewport feels natural. */
+        const ref = scrollY + window.innerHeight * 0.4;
 
-        if (yFirst) {
-          if (t < 0.5) {
-            petDocX = a.docX;
-            petDocY = a.docY + dy * (t * 2);
-            currentPhase = 'Y';
-          } else {
-            petDocX = a.docX + dx * ((t - 0.5) * 2);
-            petDocY = b.docY;
-            currentPhase = 'X';
-          }
+        /* Find bracketing anchors (a = before, b = after) */
+        let i = 0;
+        while (i < this.anchors.length - 1 && this.anchors[i + 1].docY <= ref) i++;
+        a = this.anchors[i];
+        b = this.anchors[Math.min(i + 1, this.anchors.length - 1)];
+
+        if (a === b) {
+          petDocX = a.docX;
+          petDocY = a.docY;
         } else {
-          if (t < 0.5) {
-            petDocX = a.docX + dx * (t * 2);
-            petDocY = a.docY;
-            currentPhase = 'X';
+          const denom = b.docY - a.docY || 1;
+          const t = Math.max(0, Math.min(1, (ref - a.docY) / denom));
+          const dx = b.docX - a.docX;
+          const dy = b.docY - a.docY;
+          const yFirst = Math.abs(dy) >= Math.abs(dx);
+
+          if (yFirst) {
+            if (t < 0.5) {
+              petDocX = a.docX;
+              petDocY = a.docY + dy * (t * 2);
+              currentPhase = 'Y';
+            } else {
+              petDocX = a.docX + dx * ((t - 0.5) * 2);
+              petDocY = b.docY;
+              currentPhase = 'X';
+            }
           } else {
-            petDocX = b.docX;
-            petDocY = a.docY + dy * ((t - 0.5) * 2);
-            currentPhase = 'Y';
+            if (t < 0.5) {
+              petDocX = a.docX + dx * (t * 2);
+              petDocY = a.docY;
+              currentPhase = 'X';
+            } else {
+              petDocX = b.docX;
+              petDocY = a.docY + dy * ((t - 0.5) * 2);
+              currentPhase = 'Y';
+            }
           }
         }
       }

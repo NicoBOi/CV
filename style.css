@@ -1397,13 +1397,25 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
    Indicateur en bas du hero. Visible au chargement, fade out au-delà
    de 100px de scroll, réapparaît au retour. Trait vertical descendant
    en boucle (animation linear infinite). */
+/* Playground anchor invisible au top du hero (~12vh) où le pet vient
+   se poser quand on est au repos en haut de page. */
+.hero__pet-stage {
+  position: absolute;
+  top: clamp(70px, 14vh, 180px);
+  left: clamp(80px, 12vw, 220px);
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
 .scroll-cue {
   position: absolute;
-  left: var(--gutter);
+  right: var(--gutter);
   bottom: clamp(24px, 4vh, 56px);
+  left: auto;
   display: inline-flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 14px;
   pointer-events: none;
   opacity: 0;
@@ -1443,7 +1455,7 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   100% { transform: translateY(112px); opacity: 0; }
 }
 @media (max-width: 720px) {
-  .scroll-cue { left: var(--gutter); bottom: clamp(20px, 4vh, 40px); }
+  .scroll-cue { right: var(--gutter); left: auto; bottom: clamp(20px, 4vh, 40px); }
   .scroll-cue__line { height: 36px; }
   .scroll-cue__line::before { animation-duration: 1.4s; }
 }
