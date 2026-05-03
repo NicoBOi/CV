@@ -358,6 +358,17 @@
     }
 
     updateProximity(petCX, petCY) {
+      /* Bail-out total si on est passé sous le breakpoint mobile :
+         pet caché en CSS, aucune raison de continuer les calculs ni
+         d'ajouter des classes is-near aux chars. */
+      if (window.innerWidth < 768) {
+        document.querySelectorAll('.char.is-near').forEach((c) => {
+          c.classList.remove('is-near');
+          c.style.removeProperty('--char-near');
+        });
+        document.querySelectorAll('.is-pet-near').forEach((z) => z.classList.remove('is-pet-near'));
+        return;
+      }
       /* Rayons distincts : chars plus généreux pour que le passage du pet
          le long d'une ligne fasse danser plusieurs lettres ; zones plus
          serrées pour que CTAs / médias ne réagissent qu'au contact. */
@@ -446,6 +457,10 @@
   syncTheme();
   window.addEventListener('scroll', syncTheme, { passive: true });
   window.addEventListener('resize', syncTheme, { passive: true });
+  /* Re-sync après chargement des fonts (le layout shift peut décaler les
+     offsetTop calculés avant que Newsreader/Archivo soient prêts). */
+  window.addEventListener('load', syncTheme);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncTheme);
 
   if (reduced || !hasGSAP) {
     document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-revealed'));
