@@ -785,7 +785,12 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   margin: clamp(20px, 3vw, 40px) 0 0;
   padding-top: clamp(24px, 3vw, 40px);
   border-top: 1px solid var(--rule);
+  display: grid;
+  gap: clamp(16px, 2vw, 28px);
+  align-items: start;
+  justify-items: start;
 }
+.production__cta-pitch { margin: 0; }
 .production__cta em {
   font-family: var(--font-body);
   font-style: italic;
@@ -950,6 +955,12 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   font-size: 14px;
   letter-spacing: 0.01em;
   color: var(--ink);
+}
+.closer__info-hint {
+  font-size: 11px !important;
+  letter-spacing: 0.04em !important;
+  opacity: 0.6;
+  margin-top: 2px !important;
 }
 .closer__info a {
   position: relative;
