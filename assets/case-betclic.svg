@@ -1,41 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Betclic Group — placeholder">
-  <defs>
-    <linearGradient id="bc-bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#EAE5DC"/>
-      <stop offset="100%" stop-color="#D8D2C6"/>
-    </linearGradient>
-  </defs>
-  <rect width="1600" height="1000" fill="url(#bc-bg)"/>
-
-  <!-- modular grid evoking templates / multi-market system -->
-  <g fill="none" stroke="#0F0E0C" stroke-width="1.2" opacity="0.18">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Betclic Group">
+  <rect width="1600" height="1000" fill="#0A0A0A"/>
+  <g fill="none" stroke="#EDE9DF" stroke-width="1.2" opacity="0.18">
     <rect x="120" y="160" width="320" height="220"/>
     <rect x="460" y="160" width="320" height="220"/>
     <rect x="800" y="160" width="320" height="220"/>
     <rect x="1140" y="160" width="340" height="220"/>
-
     <rect x="120" y="400" width="660" height="440"/>
     <rect x="800" y="400" width="680" height="220"/>
     <rect x="800" y="640" width="320" height="200"/>
     <rect x="1140" y="640" width="340" height="200"/>
   </g>
-
-  <!-- accent block + ink block, asymmetric -->
-  <rect x="120" y="400" width="660" height="440" fill="#B43329" opacity="0.92"/>
-  <rect x="800" y="400" width="680" height="220" fill="#0F0E0C" opacity="0.94"/>
-
-  <!-- country tags -->
-  <g font-family="JetBrains Mono, monospace" font-size="12" fill="#0F0E0C" opacity="0.6" letter-spacing="2.4">
-    <text x="138" y="194">FR</text>
-    <text x="478" y="194">UK</text>
-    <text x="818" y="194">DE</text>
-    <text x="1158" y="194">IT</text>
-    <text x="1158" y="676">PT · ES</text>
-  </g>
-
-  <g font-family="JetBrains Mono, monospace" fill="#0F0E0C" font-size="13" letter-spacing="2.4" opacity="0.7">
-    <text x="48" y="56">CASE 03 · BETCLIC GROUP</text>
-    <text x="48" y="960">Motion 2D/3D · 6 marchés · Studio interne</text>
-    <text x="1552" y="56" text-anchor="end">2021 — 2022</text>
-  </g>
+  <rect x="120" y="400" width="660" height="440" fill="#6D4FFF" opacity="0.92"/>
+  <rect x="800" y="400" width="680" height="220" fill="#EDE9DF" opacity="0.95"/>
 </svg>

@@ -1,36 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Smart Brain — placeholder">
-  <defs>
-    <radialGradient id="sb-bg" cx="0.32" cy="0.36" r="0.85">
-      <stop offset="0%" stop-color="#1A1816"/>
-      <stop offset="100%" stop-color="#0F0E0C"/>
-    </radialGradient>
-  </defs>
-  <rect width="1600" height="1000" fill="url(#sb-bg)"/>
-
-  <!-- subtle scenic grid -->
-  <g stroke="#F4F1EC" opacity="0.05" stroke-width="1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Smart Brain">
+  <rect width="1600" height="1000" fill="#0A0A0A"/>
+  <g stroke="#EDE9DF" opacity="0.06" stroke-width="1">
     <path d="M0 333 H1600 M0 666 H1600 M400 0 V1000 M800 0 V1000 M1200 0 V1000"/>
   </g>
-
-  <!-- concentric rings — magic + signal -->
   <g transform="translate(800 500)">
-    <circle r="280" fill="none" stroke="#F4F1EC" stroke-width="1.2" opacity="0.34"/>
-    <circle r="200" fill="none" stroke="#B43329" stroke-width="1.6" opacity="0.78"/>
-    <circle r="110" fill="none" stroke="#F4F1EC" stroke-width="1" opacity="0.54"/>
-    <circle r="5" fill="#B43329"/>
+    <circle r="300" fill="none" stroke="#EDE9DF" stroke-width="1.2" opacity="0.34"/>
+    <circle r="220" fill="none" stroke="#6D4FFF" stroke-width="1.8" opacity="0.85"/>
+    <circle r="120" fill="none" stroke="#EDE9DF" stroke-width="1" opacity="0.54"/>
+    <circle r="6" fill="#6D4FFF"/>
   </g>
-
-  <!-- compass ticks -->
-  <g stroke="#F4F1EC" stroke-width="1" opacity="0.34">
-    <line x1="490" y1="500" x2="520" y2="500"/>
-    <line x1="1080" y1="500" x2="1110" y2="500"/>
-    <line x1="800" y1="190" x2="800" y2="220"/>
-    <line x1="800" y1="780" x2="800" y2="810"/>
-  </g>
-
-  <g font-family="JetBrains Mono, monospace" fill="#F4F1EC" font-size="13" letter-spacing="2.4" opacity="0.62">
-    <text x="48" y="56">CASE 02 · SMART BRAIN</text>
-    <text x="48" y="960">Live · Direction artistique · Motion · Unity</text>
-    <text x="1552" y="56" text-anchor="end">2023 — 2024</text>
+  <g stroke="#EDE9DF" stroke-width="1" opacity="0.34">
+    <line x1="470" y1="500" x2="510" y2="500"/>
+    <line x1="1090" y1="500" x2="1130" y2="500"/>
+    <line x1="800" y1="170" x2="800" y2="210"/>
+    <line x1="800" y1="790" x2="800" y2="830"/>
   </g>
 </svg>
