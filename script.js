@@ -111,28 +111,85 @@
   const PET_ACTIVE = !reduced && window.innerWidth >= 768;
   if (PET_ACTIVE) SPLIT_TARGETS.forEach((sel) => document.querySelectorAll(sel).forEach(splitChars));
 
-  /* Selectors for "zone" reactivity (whole element gets is-pet-near). */
-  const PET_ZONE_SELECTORS = [
-    '.cta',
-    '.case',
-    '.case__media',
-    '.reel__frame',
-    '.timeline__row',
-    '.section__label',
+  /* ============================================================
+     Triggers pet : animations one-shot par type d'élément.
+     Une cible ne peut être déclenchée qu'une seule fois.
+     ============================================================ */
+  function firePetTrigger(el, type) {
+    if (el.dataset.petTriggered) return;
+    el.dataset.petTriggered = '1';
+
+    if (type === 'cascade' || type === 'cascade-line') {
+      let chars = Array.from(el.querySelectorAll('.char'));
+      if (type === 'cascade-line' && chars.length) {
+        /* Ne déclenche que la première ligne (chars partageant le même top). */
+        const firstTop = chars[0].getBoundingClientRect().top;
+        chars = chars.filter(c => Math.abs(c.getBoundingClientRect().top - firstTop) < 4);
+      }
+      chars.forEach((c, i) => {
+        setTimeout(() => {
+          c.classList.add('is-pet-trigger');
+          setTimeout(() => c.classList.remove('is-pet-trigger'), 360);
+        }, i * 22);
+      });
+      el.classList.add('is-pet-seen');
+    } else if (type === 'scanline') {
+      el.classList.add('is-pet-scanline');
+      setTimeout(() => {
+        el.classList.remove('is-pet-scanline');
+        el.classList.add('is-pet-seen');
+      }, 760);
+    } else if (type === 'bounce') {
+      el.classList.add('is-pet-bounce');
+      setTimeout(() => {
+        el.classList.remove('is-pet-bounce');
+        el.classList.add('is-pet-seen');
+      }, 380);
+    } else if (type === 'glitch') {
+      el.classList.add('is-pet-glitch');
+      setTimeout(() => {
+        el.classList.remove('is-pet-glitch');
+        el.classList.add('is-pet-seen');
+      }, 280);
+    }
+  }
+
+  /* Triggers : élément + type d'effet quand le pet le frôle, one-shot. */
+  const PET_TRIGGERS = [
+    { sel: '.hero__title',         type: 'cascade' },
+    { sel: '.travail__title',      type: 'cascade' },
+    { sel: '.parcours__title',     type: 'cascade' },
+    { sel: '.case__title',         type: 'cascade' },
+    { sel: '.pilier__title',       type: 'cascade' },
+    { sel: '.production__quote',   type: 'cascade-line' },
+    { sel: '.closer',              type: 'cascade-line' },
+    { sel: '.pitch__lede',         type: 'cascade-line' },
+    { sel: '.pitch__body',         type: 'cascade-line' },
+    { sel: '.case__sub',           type: 'cascade-line' },
+    { sel: '.timeline__detail',    type: 'cascade-line' },
+    { sel: '.closer__pitch',       type: 'cascade-line' },
+    { sel: '.case__media',         type: 'scanline' },
+    { sel: '.reel__frame',         type: 'scanline' },
+    { sel: '.cta',                 type: 'bounce' },
+    { sel: '.section__num',        type: 'glitch' },
   ];
 
-  /* List of CSS selectors for guide anchors, in scroll order.
-     Each is a key element the pet should point to on the page. */
+  /* Trajectoire narrative : le pet vient se poser au début de chaque
+     élément clé dans l'ordre du scroll. Anchor sur le premier .char
+     quand dispo (cf. computeAnchors). */
   const PET_ANCHOR_SELECTORS = [
     '#hero-title',
-    '.hero__tag',
+    '.hero__meta',
     '#showreel .reel__frame',
     '.reel__caption',
     '.pitch__lede',
     '.travail__title',
     '#travail .case:nth-of-type(1) .case__title',
+    '#travail .case:nth-of-type(1) .case__media',
     '#travail .case:nth-of-type(2) .case__title',
+    '#travail .case:nth-of-type(2) .case__media',
     '#travail .case:nth-of-type(3) .case__title',
+    '#travail .case:nth-of-type(3) .case__media',
     '.production__quote',
     '.production__cta',
     '.parcours__title',
@@ -181,23 +238,13 @@
     }
 
     computeReactiveTargets() {
-      this.chars = [];
-      document.querySelectorAll('.char').forEach((el) => {
-        const r = el.getBoundingClientRect();
-        if (r.width === 0 && r.height === 0) return;
-        this.chars.push({
-          el,
-          docX: r.left + r.width / 2 + window.scrollX,
-          docY: r.top + r.height / 2 + window.scrollY,
-        });
-      });
-      this.zones = [];
-      PET_ZONE_SELECTORS.forEach((sel) => {
+      this.triggers = [];
+      PET_TRIGGERS.forEach(({ sel, type }) => {
         document.querySelectorAll(sel).forEach((el) => {
           const r = el.getBoundingClientRect();
           if (r.width === 0 && r.height === 0) return;
-          this.zones.push({
-            el,
+          this.triggers.push({
+            el, type,
             l: r.left + window.scrollX,
             t: r.top + window.scrollY,
             r: r.right + window.scrollX,
@@ -207,9 +254,9 @@
       });
     }
 
-    /* Compute anchor positions in DOCUMENT coords (absolute on page).
-       Anchor is positioned to the LEFT of the element (pet acts as
-       guide pointing at the start of the text/visual). */
+    /* Pour chaque ancre : si l'élément contient un .char (titre/paragraphe
+       splitté), on cible la première lettre. Le pet se pose donc à côté
+       du PREMIER MOT, pas du milieu du conteneur — narration claire. */
     computeAnchors() {
       const PET_W = this.size;
       const GAP = 14;
@@ -217,7 +264,9 @@
       for (const sel of PET_ANCHOR_SELECTORS) {
         const node = document.querySelector(sel);
         if (!node) continue;
-        const r = node.getBoundingClientRect();
+        const firstChar = node.querySelector ? node.querySelector('.char') : null;
+        const target = firstChar || node;
+        const r = target.getBoundingClientRect();
         const docX = Math.max(8, r.left + window.scrollX - PET_W - GAP);
         const docY = r.top + window.scrollY - 4;
         list.push({ docX, docY, sel });
@@ -351,61 +400,26 @@
       this.proximityAccum++;
       if (this.proximityAccum >= 2) {
         this.proximityAccum = 0;
-        this.updateProximity(petDocX + 16, petDocY + 16);
+        this.updateTriggers(petDocX + 16, petDocY + 16);
       }
 
       requestAnimationFrame(this.tick);
     }
 
-    updateProximity(petCX, petCY) {
-      /* Bail-out total si on est passé sous le breakpoint mobile :
-         pet caché en CSS, aucune raison de continuer les calculs ni
-         d'ajouter des classes is-near aux chars. */
-      if (window.innerWidth < 768) {
-        document.querySelectorAll('.char.is-near').forEach((c) => {
-          c.classList.remove('is-near');
-          c.style.removeProperty('--char-near');
-        });
-        document.querySelectorAll('.is-pet-near').forEach((z) => z.classList.remove('is-pet-near'));
-        return;
-      }
-      /* Rayons distincts : chars plus généreux pour que le passage du pet
-         le long d'une ligne fasse danser plusieurs lettres ; zones plus
-         serrées pour que CTAs / médias ne réagissent qu'au contact. */
-      const R_CHAR = 130;
-      const R_CHAR2 = R_CHAR * R_CHAR;
-      const R_ZONE = 64;
-      const R_ZONE2 = R_ZONE * R_ZONE;
-
-      for (let i = 0; i < this.chars.length; i++) {
-        const c = this.chars[i];
-        const dx = c.docX - petCX;
-        const dy = c.docY - petCY;
+    updateTriggers(petCX, petCY) {
+      if (window.innerWidth < 768) return;
+      /* Pour chaque cible : si le pet est dans un rayon de 70px ET que
+         la cible n'a pas encore été déclenchée, on fire le trigger
+         correspondant à son type. One-shot. */
+      const R = 70;
+      const R2 = R * R;
+      for (let i = 0; i < this.triggers.length; i++) {
+        const t = this.triggers[i];
+        if (t.el.dataset.petTriggered) continue;
+        const dx = Math.max(t.l - petCX, 0, petCX - t.r);
+        const dy = Math.max(t.t - petCY, 0, petCY - t.b);
         const d2 = dx * dx + dy * dy;
-        if (d2 < R_CHAR2) {
-          const intensity = 1 - Math.sqrt(d2) / R_CHAR;
-          c.el.style.setProperty('--char-near', intensity.toFixed(3));
-          if (!c.el.classList.contains('is-near')) c.el.classList.add('is-near');
-        } else if (c.el.classList.contains('is-near')) {
-          c.el.classList.remove('is-near');
-          c.el.style.removeProperty('--char-near');
-        }
-      }
-
-      for (let i = 0; i < this.zones.length; i++) {
-        const z = this.zones[i];
-        const dx = Math.max(z.l - petCX, 0, petCX - z.r);
-        const dy = Math.max(z.t - petCY, 0, petCY - z.b);
-        const d2 = dx * dx + dy * dy;
-        const inside = d2 < R_ZONE2;
-        const was = this.zoneState.get(z.el) === true;
-        if (inside && !was) {
-          z.el.classList.add('is-pet-near');
-          this.zoneState.set(z.el, true);
-        } else if (!inside && was) {
-          z.el.classList.remove('is-pet-near');
-          this.zoneState.set(z.el, false);
-        }
+        if (d2 < R2) firePetTrigger(t.el, t.type);
       }
     }
   }
@@ -625,6 +639,19 @@
       el.dataset.typewriter = '1';
       typeIO.observe(el);
     });
+  }
+
+  /* Scroll cue — visible au chargement, disparaît après 100px de scroll. */
+  const scrollCue = document.querySelector('[data-scroll-cue]');
+  if (scrollCue) {
+    function updateScrollCue() {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      if (y < 100) scrollCue.classList.add('is-visible');
+      else scrollCue.classList.remove('is-visible');
+    }
+    /* Délai 200ms pour ne pas apparaître en même temps que le hero entrance. */
+    setTimeout(updateScrollCue, 200);
+    window.addEventListener('scroll', updateScrollCue, { passive: true });
   }
 
   /* Back-to-top — visible après ~60% de viewport scrollé. */

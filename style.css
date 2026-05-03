@@ -661,8 +661,8 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .case__media {
   position: relative;
   aspect-ratio: 8 / 5;
-  background: var(--bg);
-  border: 1px solid var(--rule);
+  background: transparent;
+  border: 0;
   overflow: hidden;
 }
 .case__media img {
@@ -1031,18 +1031,71 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    PHASE 2 — micro-interactions et réactivité du pet
    ============================================================ */
 
-/* ---------- CHARS (textes splittés pour réactivité pet) ----------
-   Highlight violet uniquement sur les périphériques avec un vrai hover
-   ET un viewport >= 768px (où le pet est visible). Sur mobile / touch,
-   la règle ne s'applique pas même si JS ajoutait une classe is-near. */
+/* ---------- CHARS (textes splittés pour triggers pet) ----------
+   Effet domino : .is-pet-trigger sur une lettre la passe en accent
+   pour ~320ms. Appliqué en cascade par JS avec un délai par lettre.
+   Le visuel ne s'active que sur desktop (où le pet est visible). */
 .char {
   display: inline;
-  transition: color 280ms var(--ease);
+  transition: color 320ms var(--ease);
   will-change: color;
 }
 @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
-  .char.is-near {
+  .char.is-pet-trigger {
     color: var(--accent);
+  }
+}
+
+/* Pet triggers — animations one-shot par type d'élément. */
+.case__media.is-pet-scanline,
+.reel__frame.is-pet-scanline { position: relative; }
+.case__media.is-pet-scanline::after,
+.reel__frame.is-pet-scanline::after {
+  content: '';
+  position: absolute; left: 0; right: 0;
+  top: 0; height: 2px;
+  background: var(--accent);
+  pointer-events: none;
+  z-index: 3;
+  animation: pet-scanline 760ms linear forwards;
+}
+@keyframes pet-scanline {
+  0%   { top: 0; opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: calc(100% - 2px); opacity: 0.2; }
+}
+
+.cta.is-pet-bounce { animation: pet-bounce 380ms var(--ease); }
+@keyframes pet-bounce {
+  0%, 100% { transform: translateY(0); }
+  40%      { transform: translateY(-6px); }
+  70%      { transform: translateY(-2px); }
+}
+
+.section__num.is-pet-glitch { animation: pet-glitch 280ms steps(5); }
+@keyframes pet-glitch {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-1px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+}
+
+/* Trace subtile post-passage : petit carré violet 3px à gauche de
+   l'élément déjà déclenché. Position absolue → pas de shift de
+   layout. Uniquement desktop. */
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+  .is-pet-seen {
+    position: relative;
+  }
+  .is-pet-seen::before {
+    content: '';
+    position: absolute;
+    left: -10px; top: 0.4em;
+    width: 3px; height: 3px;
+    background: var(--accent);
+    opacity: 0.55;
+    pointer-events: none;
   }
 }
 
@@ -1329,6 +1382,61 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   .production__quote { font-size: clamp(26px, 8vw, 56px); }
 }
 
+/* ---------- SCROLL CUE ----------
+   Indicateur en bas du hero. Visible au chargement, fade out au-delà
+   de 100px de scroll, réapparaît au retour. Trait vertical descendant
+   en boucle (animation linear infinite). */
+.scroll-cue {
+  position: absolute;
+  left: var(--gutter);
+  bottom: clamp(24px, 4vh, 56px);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 360ms var(--ease), transform 360ms var(--ease);
+}
+.scroll-cue.is-visible { opacity: 1; transform: translateY(0); }
+.scroll-cue__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.scroll-cue__line {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 56px;
+  background: rgba(0,0,0,0); /* invisible track */
+  overflow: hidden;
+}
+.scroll-cue__line::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: -56px;
+  height: 56px;
+  background: var(--accent);
+  animation: scroll-cue-drop 1.6s var(--ease) infinite;
+}
+@keyframes scroll-cue-drop {
+  0%   { transform: translateY(0); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(112px); opacity: 0; }
+}
+@media (max-width: 720px) {
+  .scroll-cue { left: var(--gutter); bottom: clamp(20px, 4vh, 40px); }
+  .scroll-cue__line { height: 36px; }
+  .scroll-cue__line::before { animation-duration: 1.4s; }
+}
+
 /* ---------- BACK-TO-TOP ----------
    Bouton flottant carré bottom-right, visible après ~60% de viewport
    scrollé. Mix-blend-difference pour rester lisible sur les deux thèmes. */
@@ -1406,7 +1514,9 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
   [data-reveal-stagger] > * { opacity: 1 !important; transform: none !important; }
   .pet { transition: none !important; }
-  .char.is-near { color: inherit !important; }
+  .char.is-pet-trigger { color: inherit !important; }
+  .is-pet-scanline::after, .is-pet-bounce, .is-pet-glitch { animation: none !important; }
+  .is-pet-seen::before { display: none !important; }
   .caret { animation: none !important; opacity: 1 !important; }
   html { scroll-behavior: auto; }
 }
