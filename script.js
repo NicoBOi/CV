@@ -96,7 +96,7 @@
   const SPLIT_TARGETS = [
     /* Titres / display */
     '.hero__title', '.travail__title', '.parcours__title',
-    '.case__title', '.pilier__title', '.timeline__role',
+    '.case__title', '.pilier__title',
     '.clients__name',
     /* Citations italique */
     '.hero__tag', '.reel__caption', '.production__quote', '.closer',
@@ -107,11 +107,11 @@
     '.travail__lead', '.travail__more',
     '.case__sub', '.case__story dd',
     '.production__kicker', '.production__body p', '.production__cta',
-    '.timeline__detail',
+    '.parcours__story',
     '.closer__pitch', '.closer__sla',
     '.closer__info dd',
     /* Méta */
-    '.case__meta p', '.case__story dt', '.pilier__num', '.timeline__year',
+    '.case__meta p', '.case__story dt', '.pilier__num', '.parcours__year',
   ];
   /* Skip splitting sur mobile : aligné sur le breakpoint CSS qui masque
      le pet (768px). Aucun travail JS perdu entre 640-768. */
@@ -174,7 +174,7 @@
     { sel: '.pitch__lede',         type: 'cascade-line' },
     { sel: '.pitch__body',         type: 'cascade-line' },
     { sel: '.case__sub',           type: 'cascade-line' },
-    { sel: '.timeline__detail',    type: 'cascade-line' },
+    { sel: '.parcours__story',    type: 'cascade-line' },
     { sel: '.closer__pitch',       type: 'cascade-line' },
     { sel: '.case__media',         type: 'scanline' },
     { sel: '.reel__frame',         type: 'scanline' },
@@ -619,7 +619,7 @@
   }
 
   /* Scramble : enchainement rapide de chiffres avant valeur finale.
-     S'applique aux .timeline__year et .case__period. */
+     S'applique aux .parcours__year et .case__period. */
   function scramble(el, finalText, dur) {
     const chars = '0123456789§§%#';
     const start = performance.now();
@@ -641,7 +641,7 @@
   }
 
   if (!reduced && 'IntersectionObserver' in window) {
-    const SCRAMBLE_SEL = '.timeline__year, .case__period';
+    const SCRAMBLE_SEL = '.parcours__year, .case__period';
     const scrambleIO = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
