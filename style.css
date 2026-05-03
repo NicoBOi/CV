@@ -1318,6 +1318,53 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   .production__quote { font-size: clamp(26px, 8vw, 56px); }
 }
 
+/* ---------- BACK-TO-TOP ----------
+   Bouton flottant carré bottom-right, visible après ~60% de viewport
+   scrollé. Mix-blend-difference pour rester lisible sur les deux thèmes. */
+.to-top {
+  position: fixed;
+  right: clamp(14px, 2vw, 28px);
+  bottom: clamp(16px, 2vw, 32px);
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #EDE9DF;
+  border: 1px solid #EDE9DF;
+  mix-blend-mode: difference;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition:
+    opacity 280ms var(--ease),
+    transform 280ms var(--ease),
+    background-color 220ms var(--ease),
+    color 220ms var(--ease);
+}
+.to-top.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.to-top svg { width: 18px; height: 18px; display: block; }
+@media (hover: hover) {
+  .to-top:hover { background: #EDE9DF; color: #0A0A0A; }
+}
+/* Mobile : safe-area iOS ; placé bottom-right pour ne pas chevaucher
+   la rail centrale en bas. */
+@media (max-width: 800px), (pointer: coarse) {
+  .to-top {
+    right: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: 44px;
+    height: 44px;
+  }
+}
+
 /* Anti-sticky-hover : sur touch, le :hover reste collé après un tap.
    Tous les changements visuels au hover sont neutralisés en touch
    pour éviter les éléments qui restent en violet/inversés. */

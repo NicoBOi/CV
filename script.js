@@ -627,6 +627,20 @@
     });
   }
 
+  /* Back-to-top — visible après ~60% de viewport scrollé. */
+  const toTopBtn = document.querySelector('[data-to-top]');
+  if (toTopBtn) {
+    function updateToTop() {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      const threshold = window.innerHeight * 0.6;
+      if (y > threshold) toTopBtn.classList.add('is-visible');
+      else toTopBtn.classList.remove('is-visible');
+    }
+    updateToTop();
+    window.addEventListener('scroll', updateToTop, { passive: true });
+    window.addEventListener('resize', updateToTop, { passive: true });
+  }
+
   /* Rail nav — état actif synchro avec la section visible. */
   const railLinks = document.querySelectorAll('.rail a[href^="#"]');
   if (railLinks.length && 'IntersectionObserver' in window) {
