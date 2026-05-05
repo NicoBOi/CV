@@ -448,6 +448,82 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   background: var(--bg);
   border: 0;
 }
+
+/* Overlay custom : volume, play/pause, barre de progression, replay.
+   Bandeau bas, fond légèrement teinté pour la lisibilité au-dessus
+   d'une vidéo en mouvement. Pas de blur, pas de glassmorphism. */
+.reel__controls {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  z-index: 5;
+  background: rgba(10, 10, 10, 0.55);
+  color: #EDE9DF;
+  transition: opacity 280ms var(--ease);
+}
+.reel__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 200ms var(--ease), transform 200ms var(--ease);
+}
+@media (hover: hover) {
+  .reel__btn:hover { color: var(--accent); }
+}
+.reel__icon {
+  width: 18px; height: 18px;
+  display: block;
+}
+/* Toggle icônes selon état du lecteur (play/pause + audible/muted). */
+.reel__icon--pause,
+.reel__icon--muted { display: none; }
+[data-reel-play][data-state="pause"] .reel__icon--play { display: none; }
+[data-reel-play][data-state="pause"] .reel__icon--pause { display: block; }
+[data-reel-volume][data-state="muted"] .reel__icon--audible { display: none; }
+[data-reel-volume][data-state="muted"] .reel__icon--muted { display: block; }
+
+.reel__progress {
+  flex: 1;
+  position: relative;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+}
+.reel__progress-track {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: rgba(237, 233, 223, 0.25);
+}
+.reel__progress-bar {
+  position: absolute;
+  left: 0; top: 50%;
+  height: 2px;
+  width: 0%;
+  background: var(--accent);
+  transform: translateY(-50%);
+  transition: width 80ms linear;
+  pointer-events: none;
+}
+.reel__progress:focus-visible .reel__progress-track { background: rgba(237, 233, 223, 0.4); }
+
+@media (max-width: 720px) {
+  .reel__controls { gap: 8px; padding: 8px 10px; }
+  .reel__btn { width: 28px; height: 28px; }
+  .reel__icon { width: 16px; height: 16px; }
+}
 .reel__video[data-played] + .reel__play { opacity: 0; pointer-events: none; }
 
 .reel__play {

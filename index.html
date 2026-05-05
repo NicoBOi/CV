@@ -32,6 +32,7 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+  <script defer src="https://player.vimeo.com/api/player.js"></script>
   <script defer src="/script.js"></script>
 </head>
 <body data-theme="paper">
@@ -105,11 +106,28 @@
         <div class="reel__frame" data-reveal>
           <iframe
             class="reel__video"
-            src="https://player.vimeo.com/video/1175061669?title=0&byline=0&portrait=0&dnt=1"
+            data-reel-iframe
+            src="https://player.vimeo.com/video/1175061669?autoplay=1&muted=1&controls=0&loop=0&title=0&byline=0&portrait=0&dnt=1&playsinline=1"
             title="Showreel Nicolas Sempere"
-            loading="lazy"
             allow="autoplay; fullscreen; picture-in-picture"
             allowfullscreen></iframe>
+          <div class="reel__controls" data-reel-controls aria-hidden="false">
+            <button class="reel__btn" type="button" data-reel-play aria-label="Lecture / pause">
+              <svg class="reel__icon reel__icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5l13 7-13 7V5z" fill="currentColor"/></svg>
+              <svg class="reel__icon reel__icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7V5zm6 0h4v14h-4V5z" fill="currentColor"/></svg>
+            </button>
+            <button class="reel__btn" type="button" data-reel-volume aria-label="Couper / activer le son">
+              <svg class="reel__icon reel__icon--audible" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm12.5 2a3.5 3.5 0 0 0-2-3.16v6.32A3.5 3.5 0 0 0 15.5 12zM14 4.34v2.06A6 6 0 0 1 14 17.6v2.06A8 8 0 0 0 14 4.34z" fill="currentColor"/></svg>
+              <svg class="reel__icon reel__icon--muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 4V6L7 10H3zm14 1.5L20 14.5l1.5-1.5L18.5 10 21.5 7 20 5.5 17 8.5 14 5.5 12.5 7l3 3-3 3 1.5 1.5 3-3z" fill="currentColor"/></svg>
+            </button>
+            <div class="reel__progress" data-reel-progress role="slider" aria-label="Progression" tabindex="0">
+              <div class="reel__progress-track"></div>
+              <div class="reel__progress-bar" data-reel-progress-bar></div>
+            </div>
+            <button class="reel__btn" type="button" data-reel-replay aria-label="Recommencer">
+              <svg class="reel__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V1L7 6l5 5V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z" fill="currentColor"/></svg>
+            </button>
+          </div>
         </div>
         <figcaption class="reel__caption" data-reveal data-pet-station data-pet-action="clap" data-pet-anchor="below">
           <em>Six ans de travail. Quatre univers. Une seule règle : que chaque image tienne encore dans trois ans.</em>

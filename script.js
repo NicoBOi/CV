@@ -20,22 +20,125 @@
   const yearEl = document.querySelector('[data-year]');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ---------- Showreel play ---------- */
-  const reelBtn   = document.querySelector('[data-reel-play]');
-  const reelVideo = document.querySelector('[data-showreel]');
-  if (reelBtn && reelVideo) {
-    reelBtn.addEventListener('click', () => {
-      const hasSrc = reelVideo.querySelector('source') || reelVideo.src;
-      if (!hasSrc) {
-        reelBtn.setAttribute('aria-disabled', 'true');
-        const lbl = reelBtn.querySelector('.reel__play-label');
-        if (lbl) lbl.textContent = 'Showreel · à venir';
-        return;
-      }
-      reelVideo.setAttribute('data-played', '');
-      reelVideo.muted = false;
-      reelVideo.play().catch(() => {});
+  /* ---------- Showreel : Vimeo Player API + overlay custom ----------
+     Autoplay muted (politique navigateur), bascule en volume bas dès
+     que possible. Overlay custom avec play/pause, mute, progress, replay. */
+  function initReel() {
+    const iframe = document.querySelector('[data-reel-iframe]');
+    if (!iframe || typeof window.Vimeo === 'undefined') return;
+
+    const player = new Vimeo.Player(iframe);
+    const playBtn   = document.querySelector('[data-reel-play]');
+    const volBtn    = document.querySelector('[data-reel-volume]');
+    const replayBtn = document.querySelector('[data-reel-replay]');
+    const progress  = document.querySelector('[data-reel-progress]');
+    const progressBar = document.querySelector('[data-reel-progress-bar]');
+
+    let duration = 0;
+    let isPlaying = false;
+    let isMuted = true;
+    /* Volume cible quand on dé-mute. Bas par défaut, comme demandé. */
+    const TARGET_VOLUME = 0.18;
+
+    /* Tente de jouer en non-muted bas dès qu'une interaction utilisateur
+       est détectée n'importe où sur la page. Sinon le navigateur bloque. */
+    let hasUnmuted = false;
+    function tryUnmute() {
+      if (hasUnmuted) return;
+      hasUnmuted = true;
+      player.setMuted(false)
+        .then(() => player.setVolume(TARGET_VOLUME))
+        .then(() => {
+          isMuted = false;
+          if (volBtn) volBtn.dataset.state = 'audible';
+        })
+        .catch(() => { hasUnmuted = false; });
+    }
+    ['click', 'keydown', 'scroll', 'touchstart'].forEach((ev) => {
+      window.addEventListener(ev, tryUnmute, { once: true, passive: true });
     });
+
+    player.getDuration().then((d) => { duration = d; }).catch(() => {});
+
+    player.on('play', () => {
+      isPlaying = true;
+      if (playBtn) playBtn.dataset.state = 'pause';
+    });
+    player.on('pause', () => {
+      isPlaying = false;
+      if (playBtn) playBtn.dataset.state = 'play';
+    });
+    player.on('ended', () => {
+      isPlaying = false;
+      if (playBtn) playBtn.dataset.state = 'play';
+      if (progressBar) progressBar.style.width = '100%';
+    });
+    player.on('timeupdate', (e) => {
+      if (progressBar) progressBar.style.width = ((e.percent || 0) * 100).toFixed(2) + '%';
+    });
+
+    if (playBtn) {
+      playBtn.dataset.state = 'pause'; /* autoplay, donc commence en pause icon */
+      playBtn.addEventListener('click', () => {
+        isPlaying ? player.pause() : player.play();
+      });
+    }
+
+    if (volBtn) {
+      volBtn.dataset.state = 'muted'; /* autoplay impose muted au départ */
+      volBtn.addEventListener('click', async () => {
+        try {
+          const muted = await player.getMuted();
+          if (muted) {
+            await player.setMuted(false);
+            await player.setVolume(TARGET_VOLUME);
+            isMuted = false;
+            volBtn.dataset.state = 'audible';
+          } else {
+            await player.setMuted(true);
+            isMuted = true;
+            volBtn.dataset.state = 'muted';
+          }
+        } catch (_) {}
+      });
+    }
+
+    if (replayBtn) {
+      replayBtn.addEventListener('click', () => {
+        player.setCurrentTime(0).then(() => player.play()).catch(() => {});
+      });
+    }
+
+    if (progress) {
+      function seekFromEvent(ev) {
+        const rect = progress.getBoundingClientRect();
+        const x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - rect.left;
+        const pct = Math.max(0, Math.min(1, x / rect.width));
+        if (!duration) return player.getDuration().then((d) => { duration = d; player.setCurrentTime(pct * d); });
+        player.setCurrentTime(pct * duration).catch(() => {});
+      }
+      progress.addEventListener('click', seekFromEvent);
+      progress.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
+        ev.preventDefault();
+        const delta = ev.key === 'ArrowLeft' ? -5 : 5;
+        player.getCurrentTime().then((t) => player.setCurrentTime(Math.max(0, t + delta)));
+      });
+    }
+  }
+
+  /* Vimeo SDK chargé en defer ; init dès qu'il est dispo. */
+  if (typeof window.Vimeo !== 'undefined') {
+    initReel();
+  } else {
+    /* Fallback : polling court le temps que le SDK arrive (defer order). */
+    let tries = 0;
+    const t = setInterval(() => {
+      if (typeof window.Vimeo !== 'undefined' || tries++ > 30) {
+        clearInterval(t);
+        if (typeof window.Vimeo !== 'undefined') initReel();
+      }
+    }, 100);
   }
 
   /* ---------- Scroll progress bar ---------- */
