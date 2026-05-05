@@ -360,7 +360,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 /* Sous-titre meta : mono small uppercase, sur une ligne. */
 .hero__meta {
-  margin: var(--space-block) 0 0;
+  margin: var(--space-block) auto 0;
   font-family: var(--font-mono);
   font-size: clamp(11px, 0.85vw, 14px);
   font-weight: 500;
@@ -373,7 +373,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 /* Pitch sous le meta : tagline factuelle, 2 phrases.
    Body font (Newsreader), taille moyenne, max 56ch. */
 .hero__pitch {
-  margin: var(--space-stack) 0 0;
+  margin: var(--space-stack) auto 0;
   font-family: var(--font-body);
   font-size: clamp(15px, 1.1vw, 17px);
   line-height: 1.55;
