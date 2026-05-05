@@ -60,21 +60,35 @@
 
     /* Tente de jouer en non-muted bas dès qu'une interaction utilisateur
        est détectée n'importe où sur la page. Sinon le navigateur bloque. */
+    /* tryUnmute : tente d'unmuter + setVolume au premier clic / tap /
+       keydown utilisateur. Le scroll ne qualifie PAS pour la policy
+       autoplay (Chrome / Safari l'ignorent), donc retiré des events. */
     let hasUnmuted = false;
     function tryUnmute() {
       if (hasUnmuted) return;
       hasUnmuted = true;
       player.setMuted(false)
         .then(() => player.setVolume(userVolume))
-        .then(() => {
-          isMuted = false;
-          if (volBtn) volBtn.dataset.state = 'audible';
-          syncSliderFill(userVolume * 100);
-        })
         .catch(() => { hasUnmuted = false; });
     }
-    ['click', 'keydown', 'scroll', 'touchstart'].forEach((ev) => {
+    ['click', 'keydown', 'touchstart'].forEach((ev) => {
       window.addEventListener(ev, tryUnmute, { once: true, passive: true });
+    });
+
+    /* Sync UI à l'état réel du player : Chrome peut re-muter en silence
+       quand play() est appelé sans gesture qualifiant. volumechange
+       permet de capter la réalité et d'aligner le bouton + slider. */
+    player.on('volumechange', (data) => {
+      const muted = data && data.muted;
+      const vol = data && typeof data.volume === 'number' ? data.volume : userVolume;
+      if (muted || vol === 0) {
+        if (volBtn) volBtn.dataset.state = 'muted';
+      } else {
+        if (volBtn) volBtn.dataset.state = 'audible';
+        userVolume = vol;
+        syncSliderFill(vol * 100);
+        if (volSlider) volSlider.value = String(Math.round(vol * 100));
+      }
     });
 
     player.getDuration().then((d) => { duration = d; }).catch(() => {});
@@ -124,6 +138,7 @@
     });
 
     function togglePlay() {
+      tryUnmute();
       isPlaying ? player.pause() : player.play();
     }
 
