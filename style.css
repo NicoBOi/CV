@@ -53,6 +53,10 @@
   --gutter:       clamp(20px, 4vw, 64px);
   --section-y:    var(--space-section);
   --max:          1320px;
+  /* Colonne unique de lecture pour tout le body. Toutes les blocs
+     centrés héritent de cette largeur, donc ils partagent le même
+     axe et le même bord gauche. */
+  --col:          clamp(560px, 90vw, 720px);
 
   /* Motion */
   --ease:         cubic-bezier(0.16, 1, 0.3, 1);
@@ -247,7 +251,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 .section__label {
   display: block;
-  margin: 0 0 var(--space-label);
+  max-width: var(--col);
+  margin: 0 auto var(--space-label);
+  text-align: center;
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
@@ -318,7 +324,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 
 .hero {
-  max-width: var(--max);
+  max-width: var(--col);
   margin-inline: auto;
   width: 100%;
 }
@@ -332,7 +338,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-transform: uppercase;
   margin: 0;
   color: var(--ink);
+  text-align: center;
 }
+.hero__meta, .hero__pitch { text-align: center; }
 .hero__line { display: block; }
 .hero__line--soft { color: var(--ink); }
 .hero__line--italic {
@@ -432,7 +440,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .reel {
   margin: 0 auto;
-  max-width: var(--max);
+  max-width: var(--col);
 }
 .reel__frame {
   position: relative;
@@ -634,14 +642,15 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 
 .reel__caption {
-  margin: var(--space-block) 0 0;
+  margin: var(--space-block) auto 0;
   font-family: var(--font-quote);
   font-style: italic;
   font-weight: 400;
   font-size: clamp(22px, 2vw, 30px);
   line-height: 1.3;
   color: var(--ink);
-  max-width: 60ch;
+  max-width: var(--col);
+  text-align: center;
 }
 .reel__caption em { font-style: italic; color: var(--ink); }
 
@@ -654,7 +663,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .pitch,
 .piliers {
-  max-width: var(--max);
+  max-width: var(--col);
   margin-inline: auto;
   width: 100%;
 }
@@ -663,7 +672,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-stack);
-  max-width: 72ch;
+  max-width: var(--col);
   margin-inline: auto;
 }
 .pitch__lede {
@@ -723,7 +732,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   letter-spacing: 0.14em;
   color: var(--accent);
   text-transform: uppercase;
+  text-align: center;
 }
+.pilier { text-align: center; justify-items: center; }
+.pilier__desc { max-width: 32ch; margin-inline: auto; }
 .pilier__title {
   font-family: var(--font-display);
   font-weight: 400;
@@ -759,7 +771,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .travail__head,
 .case,
 .travail__more {
-  max-width: var(--max);
+  max-width: var(--col);
   margin-inline: auto;
   width: 100%;
 }
@@ -767,7 +779,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .travail__head {
   display: grid;
   gap: var(--space-stack);
-  max-width: 64ch;
+  max-width: var(--col);
   margin-inline: auto;
 }
 .travail__title {
@@ -777,9 +789,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   line-height: 0.88;
   letter-spacing: -0.04em;
   text-transform: uppercase;
-  margin: 0;
+  margin: 0 auto;
   max-width: 14ch;
   color: var(--ink);
+  text-align: center;
 }
 .travail__title em {
   font-style: normal;
@@ -888,7 +901,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    parent .section--travail (var(--space-block)) gère l'écart au-dessus.
    Pas de margin-top + padding-top double. */
 .clients-band {
-  max-width: var(--max);
+  max-width: var(--col);
   margin-inline: auto;
   width: 100%;
   padding-top: var(--space-stack);
@@ -958,7 +971,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    Nom du projet en Archivo Black, contexte italique mono accent,
    3 paragraphes en serif body. Filets entre les projets. */
 .project {
-  max-width: var(--max);
+  max-width: var(--col);
   margin-inline: auto;
   width: 100%;
   padding: var(--space-block) 0;
@@ -976,6 +989,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-transform: uppercase;
   margin: 0;
   color: var(--ink);
+  text-align: center;
 }
 .project__context {
   margin: 0;
@@ -984,13 +998,14 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  text-align: center;
   color: var(--accent);
 }
 .project__context em { font-style: normal; }
 .project__body {
   display: grid;
   gap: var(--space-stack);
-  max-width: 64ch;
+  max-width: var(--col);
   margin-top: var(--s-1);
   margin-inline: auto;
 }
@@ -1011,7 +1026,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   gap: var(--space-block);
   overflow: hidden;
 }
-.section--production > * { position: relative; max-width: var(--max); margin-inline: auto; width: 100%; }
+.section--production > * { position: relative; max-width: var(--col); margin-inline: auto; width: 100%; }
 
 .production__kicker {
   font-family: var(--font-mono);
@@ -1024,14 +1039,14 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 
 .production__quote {
-  margin: 0;
+  margin: 0 auto;
   font-family: var(--font-quote);
   font-style: italic;
   font-weight: 400;
   font-size: var(--fs-quote);
   line-height: 1.05;
   letter-spacing: 0;
-  max-width: 22ch;
+  max-width: var(--col);
   color: var(--ink);
 }
 .production__quote strong { font-weight: 400; font-style: italic; }
@@ -1047,7 +1062,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .production__body {
   display: grid;
   gap: var(--space-stack);
-  max-width: 64ch;
+  max-width: var(--col);
   margin-inline: auto;
 }
 .production__body p {
@@ -1085,7 +1100,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    ============================================================ */
 .parcours__head,
 .parcours {
-  max-width: var(--max);
+  max-width: var(--col);
   margin-inline: auto;
   width: 100%;
 }
@@ -1099,6 +1114,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-transform: uppercase;
   margin: 0;
   color: var(--ink);
+  text-align: center;
 }
 .parcours__title em {
   font-style: normal;
@@ -1113,7 +1129,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .parcours {
   display: grid;
   gap: var(--space-stack);
-  max-width: 64ch;
+  max-width: var(--col);
   margin-inline: auto;
 }
 .parcours__line {
@@ -1158,7 +1174,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   gap: var(--space-block);
 }
 .section--contact > * {
-  max-width: var(--max);
+  max-width: var(--col);
   margin-inline: auto;
   width: 100%;
 }
@@ -1171,8 +1187,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   font-size: clamp(28px, 4.8vw, 64px);
   line-height: 1.15;
   letter-spacing: 0;
-  max-width: 28ch;
+  max-width: var(--col);
   color: var(--ink);
+  text-align: center;
 }
 .closer p { margin: 0; }
 .closer strong { font-weight: 400; font-style: italic; }
@@ -1192,7 +1209,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   font-size: clamp(20px, 1.5vw, 26px);
   font-weight: 400;
   color: var(--ink);
-  max-width: 56ch;
+  max-width: var(--col);
   line-height: 1.55;
 }
 .closer__pitch em {
@@ -1206,6 +1223,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-stack);
+  max-width: var(--col);
+  margin-inline: auto;
+  width: 100%;
 }
 
 /* CTA principal : bouton typographique propre. Pas de boîte bordée.
@@ -1303,7 +1323,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   gap: var(--space-stack);
   padding-top: var(--space-block);
   border-top: 1px solid var(--rule);
-  margin: 0;
+  margin: 0 auto;
+  max-width: var(--col);
+  width: 100%;
 }
 .closer__info > div { display: grid; gap: 6px; }
 .closer__info dt {
