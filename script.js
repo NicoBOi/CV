@@ -99,8 +99,26 @@
       setPaused(true);
       if (progressBar) progressBar.style.width = '100%';
     });
-    /* Au load on est en autoplay : pas paused. */
-    setPaused(false);
+    /* Au load la vidéo ne joue pas tant qu'on n'est pas dessus. État "paused"
+       jusqu'à ce que l'IntersectionObserver déclenche le play. */
+    setPaused(true);
+
+    /* Auto-play quand le frame entre dans le viewport (≥ 50% visible),
+       auto-pause quand il en sort (< 10%). Hystérésis pour éviter le
+       flicker au seuil exact. La vidéo est muted donc le navigateur
+       autorise le play() programmé. */
+    if ('IntersectionObserver' in window && frame) {
+      const reelObserver = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.intersectionRatio >= 0.5) {
+            player.play().catch(() => {});
+          } else if (e.intersectionRatio < 0.1) {
+            player.pause().catch(() => {});
+          }
+        });
+      }, { threshold: [0, 0.1, 0.5, 1] });
+      reelObserver.observe(frame);
+    }
     player.on('timeupdate', (e) => {
       if (progressBar) progressBar.style.width = ((e.percent || 0) * 100).toFixed(2) + '%';
     });
@@ -110,7 +128,7 @@
     }
 
     if (playBtn) {
-      playBtn.dataset.state = 'pause'; /* autoplay, donc commence en pause icon */
+      playBtn.dataset.state = 'play'; /* la vidéo ne joue pas tant qu'on n'est pas dessus */
       playBtn.addEventListener('click', (ev) => {
         togglePlay();
         blurIfMouse(ev);
