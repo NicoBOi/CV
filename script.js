@@ -559,22 +559,8 @@
     );
   });
 
-  /* Hero — entrance immédiate (pas de scroll trigger), avec
-     immediateRender:false pour ne PAS appliquer le from-state inline
-     avant que la tween commence. Évite le flash visible→invisible→fade. */
-  const heroLines = gsap.utils.toArray('#hero [data-reveal]');
-  if (heroLines.length) {
-    gsap.fromTo(heroLines,
-      { y: 28, opacity: 0 },
-      {
-        y: 0, opacity: 1,
-        duration: 0.9, ease: 'power3.out',
-        stagger: 0.08, delay: 0.05,
-        immediateRender: false,
-        onComplete: () => heroLines.forEach((el) => el.classList.add('is-revealed')),
-      }
-    );
-  }
+  /* Hero : visible immédiatement via CSS (#hero [data-reveal] opacity 1).
+     Aucune entrance JS pour éviter le délai d'affichage au load. */
 
   /* Theme : voir bloc syncTheme remonté avant l'early return.
      Lenis aussi appelle syncTheme dans son hook 'scroll' plus haut. */

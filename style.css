@@ -348,6 +348,17 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .hero__meta .hero__bullet { opacity: 0.55; margin: 0 0.5em; }
 
+/* Pitch sous le meta : tagline factuelle, 2 phrases.
+   Body font (Newsreader), taille moyenne, max 56ch. */
+.hero__pitch {
+  margin: clamp(18px, 2.5vh, 36px) 0 0;
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.55;
+  max-width: 56ch;
+  color: var(--ink);
+}
+
 .hero__bottom {
   display: grid;
   grid-template-columns: 1fr;
