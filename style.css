@@ -56,7 +56,7 @@
   /* Colonne unique de lecture pour tout le body. Toutes les blocs
      centrés héritent de cette largeur, donc ils partagent le même
      axe et le même bord gauche. */
-  --col:          clamp(560px, 90vw, 720px);
+  --col:          clamp(640px, 90vw, 880px);
 
   /* Motion */
   --ease:         cubic-bezier(0.16, 1, 0.3, 1);
@@ -341,7 +341,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-align: center;
 }
 .hero__meta { text-align: center; }
-.hero__pitch { text-align: left; }
+.hero__pitch { text-align: center; }
 .hero__line { display: block; }
 .hero__line--soft { color: var(--ink); }
 .hero__line--italic {
@@ -441,7 +441,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .reel {
   margin: 0 auto;
-  max-width: clamp(720px, 88vw, 1180px);
+  max-width: clamp(880px, 90vw, 1280px);
 }
 .reel__frame {
   position: relative;
@@ -670,7 +670,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 /* Piliers : grille 3 colonnes, plus large pour aérer les cartes
    (sinon 720/3 = 240px par carte = trop serré). */
 .piliers {
-  max-width: clamp(720px, 88vw, 1100px);
+  max-width: clamp(880px, 90vw, 1180px);
   margin-inline: auto;
   width: 100%;
 }
@@ -688,9 +688,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   font-size: clamp(22px, 1.9vw, 30px);
   line-height: 1.4;
   letter-spacing: 0;
-  margin: 0;
+  margin: 0 auto;
   max-width: 38ch;
   color: var(--ink);
+  text-align: center;
 }
 .pitch__highlight {
   display: inline;
@@ -705,8 +706,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   font-size: clamp(18px, 1.3vw, 22px);
   line-height: 1.5;
   color: var(--ink);
-  margin: 0;
+  margin: 0 auto;
   max-width: 40ch;
+  text-align: center;
 }
 .pitch__body em { font-style: italic; color: var(--ink); }
 .pitch__body strong { font-weight: 500; font-style: normal; color: var(--ink); }
@@ -746,7 +748,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .pilier__desc {
   max-width: 32ch;
   margin-inline: auto;
-  text-align: left;
+  text-align: center;
 }
 .pilier__stack { text-align: center; }
 .pilier__title {
@@ -920,7 +922,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    parent .section--travail (var(--space-block)) gère l'écart au-dessus.
    Pas de margin-top + padding-top double. */
 .clients-band {
-  max-width: clamp(720px, 88vw, 1100px);
+  max-width: clamp(900px, 94vw, 1320px);
   margin-inline: auto;
   width: 100%;
   padding-top: var(--space-stack);
@@ -939,11 +941,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .clients-band__list {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  justify-content: center;
-  row-gap: clamp(20px, 3vw, 36px);
-  column-gap: clamp(28px, 4vw, 56px);
+  justify-content: space-between;
+  gap: clamp(16px, 2vw, 32px);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -951,10 +952,15 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .clients-band__item {
   display: flex;
   align-items: center;
-  height: 100%;
+  flex-shrink: 1;
+  min-width: 0;
   color: var(--ink);
   opacity: 0.78;
   transition: opacity 240ms var(--ease);
+}
+/* Sur petit écran, on autorise le wrap pour pas écraser les noms. */
+@media (max-width: 760px) {
+  .clients-band__list { flex-wrap: wrap; justify-content: center; row-gap: 16px; }
 }
 .clients-band__item:hover { opacity: 1; }
 /* Logo SVG / IMG : hauteur fixe, ratio préservé. La calibration
