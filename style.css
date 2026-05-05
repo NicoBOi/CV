@@ -453,6 +453,23 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    Hover-only sur desktop : invisible quand la vidéo joue tranquille,
    apparaît au survol du frame ou au focus clavier. Touch : toujours
    visible (pas de hover). En pause : forcé visible aussi. */
+/* Click target invisible posé sur l'iframe : permet de toggle play/pause
+   en cliquant n'importe où sur la vidéo. Z-index 4 (sous les controls
+   à 5), couvre l'iframe à 1. */
+.reel__click-target {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  z-index: 4;
+}
+.reel__click-target:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+
 .reel__controls {
   position: absolute;
   left: 0; right: 0; bottom: 0;
@@ -467,8 +484,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   pointer-events: none;
   transition: opacity 240ms var(--ease);
 }
+/* Visible sur hover, sur focus clavier explicite (:has + :focus-visible
+   évite le sticky du :focus-within après click souris), ou en pause. */
 .reel__frame:hover .reel__controls,
-.reel__frame:focus-within .reel__controls,
+.reel__frame:has(:focus-visible) .reel__controls,
 .reel__frame[data-paused="true"] .reel__controls {
   opacity: 1;
   pointer-events: auto;

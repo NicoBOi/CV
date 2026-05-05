@@ -29,12 +29,21 @@
 
     const player = new Vimeo.Player(iframe);
     const frame    = iframe.closest('.reel__frame');
+    const clickTarget = document.querySelector('[data-reel-click]');
     const playBtn  = document.querySelector('[data-reel-play]');
     const volBtn   = document.querySelector('[data-reel-volume]');
     const volSlider = document.querySelector('[data-reel-volume-slider]');
     const replayBtn = document.querySelector('[data-reel-replay]');
     const progress  = document.querySelector('[data-reel-progress]');
     const progressBar = document.querySelector('[data-reel-progress-bar]');
+
+    /* Évite le sticky :focus après un click souris : on retire le focus
+       du bouton dès que l'event provient d'un click souris (pas keyboard). */
+    function blurIfMouse(ev) {
+      if (ev && ev.detail !== 0 && ev.currentTarget && ev.currentTarget.blur) {
+        ev.currentTarget.blur();
+      }
+    }
 
     let duration = 0;
     let isPlaying = false;
@@ -96,16 +105,30 @@
       if (progressBar) progressBar.style.width = ((e.percent || 0) * 100).toFixed(2) + '%';
     });
 
+    function togglePlay() {
+      isPlaying ? player.pause() : player.play();
+    }
+
     if (playBtn) {
       playBtn.dataset.state = 'pause'; /* autoplay, donc commence en pause icon */
-      playBtn.addEventListener('click', () => {
-        isPlaying ? player.pause() : player.play();
+      playBtn.addEventListener('click', (ev) => {
+        togglePlay();
+        blurIfMouse(ev);
+      });
+    }
+
+    /* Click n'importe où sur la zone vidéo (en dehors des controls)
+       toggle play/pause. */
+    if (clickTarget) {
+      clickTarget.addEventListener('click', (ev) => {
+        togglePlay();
+        blurIfMouse(ev);
       });
     }
 
     if (volBtn) {
       volBtn.dataset.state = 'muted'; /* autoplay impose muted au départ */
-      volBtn.addEventListener('click', async () => {
+      volBtn.addEventListener('click', async (ev) => {
         try {
           const muted = await player.getMuted();
           if (muted) {
@@ -123,6 +146,7 @@
             volBtn.dataset.state = 'muted';
           }
         } catch (_) {}
+        blurIfMouse(ev);
       });
     }
 
@@ -149,8 +173,9 @@
     }
 
     if (replayBtn) {
-      replayBtn.addEventListener('click', () => {
+      replayBtn.addEventListener('click', (ev) => {
         player.setCurrentTime(0).then(() => player.play()).catch(() => {});
+        blurIfMouse(ev);
       });
     }
 
@@ -327,7 +352,6 @@
     { sel: '.parcours__story',    type: 'cascade-line' },
     { sel: '.closer__pitch',       type: 'cascade-line' },
     { sel: '.case__media',         type: 'scanline' },
-    { sel: '.reel__frame',         type: 'scanline' },
     { sel: '.cta',                 type: 'bounce' },
     { sel: '.section__num',        type: 'glitch' },
   ];
