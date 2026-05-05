@@ -48,15 +48,15 @@
     let duration = 0;
     let isPlaying = false;
     let isMuted = true;
-    /* Volume cible initial quand on dé-mute. Bas par défaut. */
-    const TARGET_VOLUME = 0.18;
+    /* Volume cible initial quand on dé-mute. */
+    const TARGET_VOLUME = 0.50;
     let userVolume = TARGET_VOLUME; /* Dernier volume réglé via slider. */
 
     function syncSliderFill(pct) {
       if (!volSlider) return;
       volSlider.style.setProperty('--fill', Math.max(0, Math.min(100, pct)) + '%');
     }
-    syncSliderFill(volSlider ? +volSlider.value : 18);
+    syncSliderFill(volSlider ? +volSlider.value : 50);
 
     /* Tente de jouer en non-muted bas dès qu'une interaction utilisateur
        est détectée n'importe où sur la page. Sinon le navigateur bloque. */

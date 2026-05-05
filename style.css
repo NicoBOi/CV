@@ -544,8 +544,8 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   background:
     linear-gradient(to right,
       var(--accent) 0%,
-      var(--accent) var(--fill, 18%),
-      rgba(237, 233, 223, 0.25) var(--fill, 18%),
+      var(--accent) var(--fill, 50%),
+      rgba(237, 233, 223, 0.25) var(--fill, 50%),
       rgba(237, 233, 223, 0.25) 100%);
   background-size: 100% 2px;
   background-position: center center;
