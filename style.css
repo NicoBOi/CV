@@ -714,55 +714,51 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   margin-right: 12px;
 }
 
-/* Clients — mur typographique. Une ligne par marque, classées par
-   importance décroissante. Nom Archivo Black UPPERCASE XL, méta mono
-   small à droite. Filet entre chaque ligne. */
-.clients {
+/* Projects — trois pièces maîtresses racontées en prose.
+   Nom du projet en Archivo Black, contexte italique mono accent,
+   3 paragraphes en serif body. Filets entre les projets. */
+.project {
   max-width: var(--max);
   margin-inline: auto;
   width: 100%;
+  padding: clamp(48px, 6vw, 96px) 0;
   border-top: 1px solid var(--rule);
-}
-.clients__row {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: baseline;
-  gap: clamp(16px, 3vw, 48px);
-  padding: clamp(20px, 3vw, 36px) 0;
-  border-bottom: 1px solid var(--rule);
-  transition: padding-left var(--dur) var(--ease);
+  gap: clamp(16px, 2vw, 28px);
 }
-.clients__name {
+.project:first-of-type { border-top: 0; padding-top: 0; }
+.project__name {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(36px, 6.4vw, 88px);
+  font-size: clamp(36px, 5.4vw, 80px);
   line-height: 0.92;
   letter-spacing: -0.04em;
   text-transform: uppercase;
+  margin: 0;
   color: var(--ink);
 }
-.clients__meta {
+.project__context {
+  margin: 0;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--accent);
+}
+.project__context em { font-style: normal; }
+.project__body {
+  display: grid;
+  gap: clamp(14px, 1.6vw, 22px);
+  max-width: 64ch;
+  margin-top: clamp(8px, 1vw, 14px);
+}
+.project__body p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(17px, 1.2vw, 20px);
+  line-height: 1.55;
   color: var(--ink);
-  opacity: 0.6;
-  text-align: right;
-  white-space: nowrap;
-}
-@media (hover: hover) {
-  .clients__row:hover { padding-left: 12px; }
-  .clients__row:hover .clients__meta { opacity: 1; color: var(--accent); }
-}
-@media (max-width: 720px) {
-  .clients__row {
-    grid-template-columns: 1fr;
-    gap: 6px;
-    padding: clamp(16px, 4vw, 24px) 0;
-  }
-  .clients__meta { text-align: left; opacity: 0.65; }
 }
 
 /* ============================================================
@@ -967,8 +963,67 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 .closer__ctas {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+/* CTA principal dominant : grand bloc mailto, label + adresse stackés */
+.cta-mailto {
+  display: inline-grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(20px, 4vw, 64px);
+  padding: clamp(20px, 2.6vw, 32px) clamp(24px, 3vw, 40px);
+  background: var(--ink);
+  color: var(--bg);
+  border: 1px solid var(--ink);
+  font-family: var(--font-mono);
+  text-decoration: none;
+  width: 100%;
+  max-width: 720px;
+  transition: background-color 220ms var(--ease), color 220ms var(--ease);
+}
+.cta-mailto__label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(28px, 3.2vw, 48px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+.cta-mailto__address {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(13px, 1vw, 16px);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+.cta-mailto .cta__arr { width: 28px; height: 28px; grid-row: 1 / span 2; transition: transform var(--dur-fast) var(--ease); }
+@media (hover: hover) {
+  .cta-mailto:hover { background: var(--bg); color: var(--ink); }
+  .cta-mailto:hover .cta__arr { transform: translateX(6px); }
+}
+
+/* CTA secondaire discret : simple lien souligné */
+.cta-cv {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  opacity: 0.7;
+  transition: opacity 220ms var(--ease), color 220ms var(--ease);
+}
+@media (hover: hover) {
+  .cta-cv:hover { opacity: 1; color: var(--accent); border-color: var(--accent); }
 }
 
 .closer__info {
@@ -1073,6 +1128,13 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   will-change: transform, opacity;
 }
 [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+/* Hero : visible IMMÉDIATEMENT au chargement, sans attendre JS / scroll.
+   Si GSAP charge, son entrance choreography animera via inline styles
+   (qui overridont ces valeurs). Sans JS, le hero reste visible. */
+#hero [data-reveal] {
   opacity: 1;
   transform: none;
 }
