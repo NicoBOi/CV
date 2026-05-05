@@ -340,7 +340,8 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   color: var(--ink);
   text-align: center;
 }
-.hero__meta, .hero__pitch { text-align: center; }
+.hero__meta { text-align: center; }
+.hero__pitch { text-align: left; }
 .hero__line { display: block; }
 .hero__line--soft { color: var(--ink); }
 .hero__line--italic {
@@ -440,7 +441,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .reel {
   margin: 0 auto;
-  max-width: var(--col);
+  max-width: clamp(720px, 88vw, 1180px);
 }
 .reel__frame {
   position: relative;
@@ -661,9 +662,15 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: grid;
   gap: var(--space-block);
 }
-.pitch,
-.piliers {
+.pitch {
   max-width: var(--col);
+  margin-inline: auto;
+  width: 100%;
+}
+/* Piliers : grille 3 colonnes, plus large pour aérer les cartes
+   (sinon 720/3 = 240px par carte = trop serré). */
+.piliers {
+  max-width: clamp(720px, 88vw, 1100px);
   margin-inline: auto;
   width: 100%;
 }
@@ -734,8 +741,14 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-transform: uppercase;
   text-align: center;
 }
-.pilier { text-align: center; justify-items: center; }
-.pilier__desc { max-width: 32ch; margin-inline: auto; }
+/* Pilier : num + title centrés, description ferrée à gauche dans la colonne. */
+.pilier { justify-items: center; text-align: center; }
+.pilier__desc {
+  max-width: 32ch;
+  margin-inline: auto;
+  text-align: left;
+}
+.pilier__stack { text-align: center; }
 .pilier__title {
   font-family: var(--font-display);
   font-weight: 400;
@@ -766,7 +779,13 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 /* ============================================================
    04 — TRAVAIL
    ============================================================ */
-.section--travail { display: grid; gap: var(--space-block); }
+/* Travail : gap normal entre projets, mais BIG gap après le head H2
+   pour aérer la transition titre → projets. */
+.section--travail {
+  display: grid;
+  gap: var(--space-block);
+}
+.section--travail .travail__head { margin-bottom: var(--space-section); }
 
 .travail__head,
 .case,
@@ -901,11 +920,12 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    parent .section--travail (var(--space-block)) gère l'écart au-dessus.
    Pas de margin-top + padding-top double. */
 .clients-band {
-  max-width: var(--col);
+  max-width: clamp(720px, 88vw, 1100px);
   margin-inline: auto;
   width: 100%;
   padding-top: var(--space-stack);
   border-top: 1px solid var(--rule);
+  text-align: center;
 }
 .clients-band__label {
   margin: 0 0 var(--space-stack);
@@ -921,9 +941,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: clamp(20px, 4vw, 56px);
-  height: clamp(48px, 6vw, 72px);
+  justify-content: center;
+  row-gap: clamp(20px, 3vw, 36px);
+  column-gap: clamp(28px, 4vw, 56px);
   list-style: none;
   margin: 0;
   padding: 0;
