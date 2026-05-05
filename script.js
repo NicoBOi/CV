@@ -97,7 +97,7 @@
     /* Titres / display */
     '.hero__title', '.travail__title', '.parcours__title',
     '.case__title', '.pilier__title',
-    '.clients__name',
+    '.project__name', '.project__context',
     /* Citations italique */
     '.hero__tag', '.reel__caption', '.production__quote', '.closer',
     /* Paragraphes / body */
@@ -106,6 +106,7 @@
     '.pilier__desc',
     '.travail__lead', '.travail__more',
     '.case__sub', '.case__story dd',
+    '.project__body p',
     '.production__kicker', '.production__body p', '.production__cta',
     '.parcours__story',
     '.closer__pitch', '.closer__sla',
@@ -168,7 +169,8 @@
     { sel: '.parcours__title',     type: 'cascade' },
     { sel: '.case__title',         type: 'cascade' },
     { sel: '.pilier__title',       type: 'cascade' },
-    { sel: '.clients__name',       type: 'cascade' },
+    { sel: '.project__name',       type: 'cascade' },
+    { sel: '.project__body p',     type: 'cascade-line' },
     { sel: '.production__quote',   type: 'cascade-line' },
     { sel: '.closer',              type: 'cascade-line' },
     { sel: '.pitch__lede',         type: 'cascade-line' },
@@ -193,13 +195,9 @@
     '.reel__caption',
     '.pitch__lede',
     '.travail__title',
-    '#travail .clients__row:nth-of-type(1)',
-    '#travail .clients__row:nth-of-type(2)',
-    '#travail .clients__row:nth-of-type(3)',
-    '#travail .clients__row:nth-of-type(4)',
-    '#travail .clients__row:nth-of-type(5)',
-    '#travail .clients__row:nth-of-type(6)',
-    '#travail .clients__row:nth-of-type(7)',
+    '#travail .project:nth-of-type(1) .project__name',
+    '#travail .project:nth-of-type(2) .project__name',
+    '#travail .project:nth-of-type(3) .project__name',
     '.production__quote',
     '.production__cta',
     '.parcours__title',
@@ -540,8 +538,11 @@
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.config({ ignoreMobileResize: true });
 
-  /* Reveals — translateY + fade (skip enfants gérés par parent stagger) */
+  /* Reveals — translateY + fade (skip enfants gérés par parent stagger
+     ET skip le hero qui doit être visible immédiatement, sans dépendre
+     du scroll trigger). */
   gsap.utils.toArray('[data-reveal]').forEach((el) => {
+    if (el.closest('#hero')) return;
     if (el.closest('[data-reveal-stagger]') && el.parentElement.hasAttribute('data-reveal-stagger')) return;
     gsap.fromTo(el,
       { y: 24, opacity: 0 },
@@ -558,16 +559,21 @@
     );
   });
 
-  /* Hero — initial entrance choreography */
+  /* Hero — entrance immédiate (pas de scroll trigger), avec
+     immediateRender:false pour ne PAS appliquer le from-state inline
+     avant que la tween commence. Évite le flash visible→invisible→fade. */
   const heroLines = gsap.utils.toArray('#hero [data-reveal]');
   if (heroLines.length) {
-    gsap.set(heroLines, { y: 36, opacity: 0 });
-    gsap.to(heroLines, {
-      y: 0, opacity: 1,
-      duration: 1.1, ease: 'power3.out',
-      stagger: 0.10, delay: 0.1,
-      onComplete: () => heroLines.forEach((el) => el.classList.add('is-revealed')),
-    });
+    gsap.fromTo(heroLines,
+      { y: 28, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        duration: 0.9, ease: 'power3.out',
+        stagger: 0.08, delay: 0.05,
+        immediateRender: false,
+        onComplete: () => heroLines.forEach((el) => el.classList.add('is-revealed')),
+      }
+    );
   }
 
   /* Theme : voir bloc syncTheme remonté avant l'early return.
