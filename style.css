@@ -450,8 +450,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 
 /* Overlay custom : volume, play/pause, barre de progression, replay.
-   Bandeau bas, fond légèrement teinté pour la lisibilité au-dessus
-   d'une vidéo en mouvement. Pas de blur, pas de glassmorphism. */
+   Hover-only sur desktop : invisible quand la vidéo joue tranquille,
+   apparaît au survol du frame ou au focus clavier. Touch : toujours
+   visible (pas de hover). En pause : forcé visible aussi. */
 .reel__controls {
   position: absolute;
   left: 0; right: 0; bottom: 0;
@@ -462,7 +463,18 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   z-index: 5;
   background: rgba(10, 10, 10, 0.55);
   color: #EDE9DF;
-  transition: opacity 280ms var(--ease);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms var(--ease);
+}
+.reel__frame:hover .reel__controls,
+.reel__frame:focus-within .reel__controls,
+.reel__frame[data-paused="true"] .reel__controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+@media (hover: none), (pointer: coarse) {
+  .reel__controls { opacity: 1; pointer-events: auto; }
 }
 .reel__btn {
   display: inline-flex;
@@ -491,6 +503,65 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 [data-reel-play][data-state="pause"] .reel__icon--pause { display: block; }
 [data-reel-volume][data-state="muted"] .reel__icon--audible { display: none; }
 [data-reel-volume][data-state="muted"] .reel__icon--muted { display: block; }
+
+/* Volume : bouton mute/unmute + slider continu pour ajuster le niveau. */
+.reel__volume {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.reel__volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 72px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  /* Track avec fill : le pourcentage rempli en accent, le reste en cream alpha.
+     Le fill est piloté par --fill (set en JS sur l'input event). */
+  background:
+    linear-gradient(to right,
+      var(--accent) 0%,
+      var(--accent) var(--fill, 18%),
+      rgba(237, 233, 223, 0.25) var(--fill, 18%),
+      rgba(237, 233, 223, 0.25) 100%);
+  background-size: 100% 2px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.reel__volume-slider::-webkit-slider-runnable-track {
+  height: 2px;
+  background: transparent;
+  border: 0;
+}
+.reel__volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 11px; height: 11px;
+  background: #EDE9DF;
+  border: 0;
+  margin-top: -4.5px;
+  cursor: pointer;
+}
+.reel__volume-slider::-moz-range-track {
+  height: 2px;
+  background: transparent;
+  border: 0;
+}
+.reel__volume-slider::-moz-range-thumb {
+  width: 11px; height: 11px;
+  background: #EDE9DF;
+  border: 0;
+  cursor: pointer;
+}
+.reel__volume-slider:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--accent); outline-offset: 1px; }
+.reel__volume-slider:focus-visible::-moz-range-thumb     { outline: 2px solid var(--accent); outline-offset: 1px; }
+@media (max-width: 720px) {
+  .reel__volume-slider { width: 56px; }
+}
 
 .reel__progress {
   flex: 1;

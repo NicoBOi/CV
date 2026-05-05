@@ -28,8 +28,10 @@
     if (!iframe || typeof window.Vimeo === 'undefined') return;
 
     const player = new Vimeo.Player(iframe);
-    const playBtn   = document.querySelector('[data-reel-play]');
-    const volBtn    = document.querySelector('[data-reel-volume]');
+    const frame    = iframe.closest('.reel__frame');
+    const playBtn  = document.querySelector('[data-reel-play]');
+    const volBtn   = document.querySelector('[data-reel-volume]');
+    const volSlider = document.querySelector('[data-reel-volume-slider]');
     const replayBtn = document.querySelector('[data-reel-replay]');
     const progress  = document.querySelector('[data-reel-progress]');
     const progressBar = document.querySelector('[data-reel-progress-bar]');
@@ -37,8 +39,15 @@
     let duration = 0;
     let isPlaying = false;
     let isMuted = true;
-    /* Volume cible quand on dé-mute. Bas par défaut, comme demandé. */
+    /* Volume cible initial quand on dé-mute. Bas par défaut. */
     const TARGET_VOLUME = 0.18;
+    let userVolume = TARGET_VOLUME; /* Dernier volume réglé via slider. */
+
+    function syncSliderFill(pct) {
+      if (!volSlider) return;
+      volSlider.style.setProperty('--fill', Math.max(0, Math.min(100, pct)) + '%');
+    }
+    syncSliderFill(volSlider ? +volSlider.value : 18);
 
     /* Tente de jouer en non-muted bas dès qu'une interaction utilisateur
        est détectée n'importe où sur la page. Sinon le navigateur bloque. */
@@ -47,10 +56,11 @@
       if (hasUnmuted) return;
       hasUnmuted = true;
       player.setMuted(false)
-        .then(() => player.setVolume(TARGET_VOLUME))
+        .then(() => player.setVolume(userVolume))
         .then(() => {
           isMuted = false;
           if (volBtn) volBtn.dataset.state = 'audible';
+          syncSliderFill(userVolume * 100);
         })
         .catch(() => { hasUnmuted = false; });
     }
@@ -60,19 +70,28 @@
 
     player.getDuration().then((d) => { duration = d; }).catch(() => {});
 
+    function setPaused(paused) {
+      if (frame) frame.dataset.paused = paused ? 'true' : 'false';
+    }
+
     player.on('play', () => {
       isPlaying = true;
       if (playBtn) playBtn.dataset.state = 'pause';
+      setPaused(false);
     });
     player.on('pause', () => {
       isPlaying = false;
       if (playBtn) playBtn.dataset.state = 'play';
+      setPaused(true);
     });
     player.on('ended', () => {
       isPlaying = false;
       if (playBtn) playBtn.dataset.state = 'play';
+      setPaused(true);
       if (progressBar) progressBar.style.width = '100%';
     });
+    /* Au load on est en autoplay : pas paused. */
+    setPaused(false);
     player.on('timeupdate', (e) => {
       if (progressBar) progressBar.style.width = ((e.percent || 0) * 100).toFixed(2) + '%';
     });
@@ -91,14 +110,40 @@
           const muted = await player.getMuted();
           if (muted) {
             await player.setMuted(false);
-            await player.setVolume(TARGET_VOLUME);
+            const v = userVolume > 0 ? userVolume : TARGET_VOLUME;
+            await player.setVolume(v);
+            userVolume = v;
             isMuted = false;
             volBtn.dataset.state = 'audible';
+            syncSliderFill(v * 100);
+            if (volSlider) volSlider.value = String(Math.round(v * 100));
           } else {
             await player.setMuted(true);
             isMuted = true;
             volBtn.dataset.state = 'muted';
           }
+        } catch (_) {}
+      });
+    }
+
+    if (volSlider) {
+      volSlider.addEventListener('input', async (ev) => {
+        const pct = +ev.target.value;
+        const v = pct / 100;
+        userVolume = v;
+        syncSliderFill(pct);
+        try {
+          /* Toute action sur le slider unmute le player. */
+          if (v > 0) {
+            await player.setMuted(false);
+            isMuted = false;
+            if (volBtn) volBtn.dataset.state = 'audible';
+          } else {
+            await player.setMuted(true);
+            isMuted = true;
+            if (volBtn) volBtn.dataset.state = 'muted';
+          }
+          await player.setVolume(v);
         } catch (_) {}
       });
     }
