@@ -33,9 +33,25 @@
   --fs-quote:     clamp(28px, 5.2vw, 76px);
   --fs-hero:      clamp(40px, 9.4vw, 144px);
 
-  /* Spacing — section-y plus compact sur mobile. */
-  --gutter:       clamp(18px, 4vw, 80px);
-  --section-y:    clamp(80px, 14vw, 220px);
+  /* Spacing — échelle stricte basée sur 8px.
+     Toutes les marges/paddings du site dérivent de cette échelle. */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 48px;
+  --s-6: 64px;
+  --s-7: 96px;
+  --s-8: 128px;
+
+  /* Tokens layout-level (responsive, snapent sur multiples de 8). */
+  --space-section: clamp(80px, 10vw, 128px);  /* top + bottom des sections (symétrique) */
+  --space-label:   clamp(48px, 5vw, 72px);    /* sous chaque section label */
+  --space-block:   clamp(32px, 4vw, 56px);    /* entre blocs majeurs dans une section */
+  --space-stack:   clamp(16px, 2vw, 28px);    /* entre items connexes */
+
+  --gutter:       clamp(20px, 4vw, 64px);
+  --section-y:    var(--space-section);
   --max:          1320px;
 
   /* Motion */
@@ -231,7 +247,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 .section__label {
   display: block;
-  margin: 0 0 clamp(72px, 9vw, 140px);
+  margin: 0 0 var(--space-label);
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
@@ -291,16 +307,13 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   min-height: 100dvh;
   display: grid;
   align-content: end;
-  padding-top: clamp(48px, 8vh, 120px);
-  padding-bottom: clamp(40px, 6vw, 80px);
+  /* Hérite de --section-y du parent .section : symétrique top/bottom. */
 }
 /* Mobile : contenu en haut, pas de min-height qui crée un vide. */
 @media (max-width: 720px) {
   .section--hero {
     min-height: auto;
     align-content: start;
-    padding-top: clamp(28px, 6vh, 60px);
-    padding-bottom: clamp(40px, 8vw, 64px);
   }
 }
 
@@ -338,7 +351,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 /* Sous-titre meta : mono small uppercase, sur une ligne. */
 .hero__meta {
-  margin: clamp(28px, 4.5vh, 64px) 0 0;
+  margin: var(--space-block) 0 0;
   font-family: var(--font-mono);
   font-size: clamp(11px, 0.85vw, 14px);
   font-weight: 500;
@@ -351,7 +364,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 /* Pitch sous le meta : tagline factuelle, 2 phrases.
    Body font (Newsreader), taille moyenne, max 56ch. */
 .hero__pitch {
-  margin: clamp(18px, 2.5vh, 36px) 0 0;
+  margin: var(--space-stack) 0 0;
   font-family: var(--font-body);
   font-size: clamp(15px, 1.1vw, 17px);
   line-height: 1.55;
@@ -415,8 +428,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    02 — SHOWREEL
    ============================================================ */
 .section--showreel {
-  padding-top: clamp(96px, 11vw, 160px);
-  padding-bottom: clamp(96px, 11vw, 160px);
+  /* Hérite de --section-y, plus aucun override. */
 }
 .reel {
   margin: 0 auto;
@@ -456,7 +468,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 
 .reel__caption {
-  margin: clamp(28px, 4vw, 56px) 0 0;
+  margin: var(--space-block) 0 0;
   font-family: var(--font-quote);
   font-style: italic;
   font-weight: 400;
@@ -472,7 +484,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    ============================================================ */
 .section--approche {
   display: grid;
-  gap: clamp(80px, 10vw, 160px);
+  gap: var(--space-block);
 }
 .pitch,
 .piliers {
@@ -484,7 +496,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .pitch {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(28px, 3.5vw, 56px);
+  gap: var(--space-stack);
   max-width: 72ch;
   margin-inline: 0 auto;
 }
@@ -526,10 +538,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   .piliers { grid-template-columns: repeat(3, 1fr); }
 }
 .pilier {
-  padding: clamp(48px, 6vw, 80px) clamp(20px, 3vw, 40px);
+  padding: var(--space-block) var(--space-stack);
   border-bottom: 1px solid var(--rule);
   display: grid;
-  gap: 18px;
+  gap: var(--s-2);
   align-content: start;
 }
 @media (min-width: 880px) {
@@ -576,7 +588,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 /* ============================================================
    04 — TRAVAIL
    ============================================================ */
-.section--travail { display: grid; gap: clamp(60px, 8vw, 120px); }
+.section--travail { display: grid; gap: var(--space-block); }
 
 .travail__head,
 .case,
@@ -588,7 +600,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 .travail__head {
   display: grid;
-  gap: clamp(20px, 2.5vw, 36px);
+  gap: var(--space-stack);
   max-width: 64ch;
   margin-inline: 0 auto;
 }
@@ -705,18 +717,19 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   color: var(--ink);
 }
 
-/* Bandeau logos clients passés. Pleine largeur de section,
-   logos en ligne, alignés verticalement au centre, monochrome ink. */
+/* Bandeau logos clients passés. Intégré au flux de section travail,
+   pas largué dans une zone morte. Single source de spacing : le gap
+   parent .section--travail (var(--space-block)) gère l'écart au-dessus.
+   Pas de margin-top + padding-top double. */
 .clients-band {
   max-width: var(--max);
   margin-inline: auto;
   width: 100%;
-  margin-top: clamp(40px, 6vw, 96px);
-  padding-top: clamp(28px, 3.5vw, 48px);
+  padding-top: var(--space-stack);
   border-top: 1px solid var(--rule);
 }
 .clients-band__label {
-  margin: 0 0 clamp(20px, 2.5vw, 36px);
+  margin: 0 0 var(--space-stack);
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
@@ -782,7 +795,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   max-width: var(--max);
   margin-inline: auto;
   width: 100%;
-  padding: clamp(48px, 6vw, 96px) 0;
+  padding: var(--space-block) 0;
   border-top: 1px solid var(--rule);
   display: grid;
   gap: clamp(16px, 2vw, 28px);
@@ -810,9 +823,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .project__context em { font-style: normal; }
 .project__body {
   display: grid;
-  gap: clamp(14px, 1.6vw, 22px);
+  gap: var(--space-stack);
   max-width: 64ch;
-  margin-top: clamp(8px, 1vw, 14px);
+  margin-top: var(--s-1);
 }
 .project__body p {
   margin: 0;
@@ -828,7 +841,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .section--production {
   position: relative;
   display: grid;
-  gap: clamp(40px, 5vw, 80px);
+  gap: var(--space-block);
   overflow: hidden;
 }
 .section--production > * { position: relative; max-width: var(--max); margin-inline: auto; width: 100%; }
@@ -866,7 +879,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 
 .production__body {
   display: grid;
-  gap: clamp(20px, 2.5vw, 36px);
+  gap: var(--space-stack);
   max-width: 64ch;
   margin-inline: 0 auto;
 }
@@ -880,11 +893,11 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 
 .production__cta {
-  margin: clamp(20px, 3vw, 40px) 0 0;
-  padding-top: clamp(24px, 3vw, 40px);
+  margin: var(--space-block) 0 0;
+  padding-top: var(--space-stack);
   border-top: 1px solid var(--rule);
   display: grid;
-  gap: clamp(16px, 2vw, 28px);
+  gap: var(--space-stack);
   align-items: start;
   justify-items: start;
 }
@@ -909,7 +922,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   margin-inline: auto;
   width: 100%;
 }
-.parcours__head { margin-bottom: clamp(40px, 5vw, 84px); }
+.parcours__head { margin-bottom: var(--space-block); }
 .parcours__title {
   font-family: var(--font-display);
   font-weight: 400;
@@ -932,14 +945,14 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    du mur typographique de §04 Travail. */
 .parcours {
   display: grid;
-  gap: clamp(22px, 2.6vw, 36px);
+  gap: var(--space-stack);
   max-width: 64ch;
   margin-inline: 0 auto;
 }
 .parcours__line {
   display: grid;
   grid-template-columns: clamp(56px, 7vw, 96px) 1fr;
-  gap: clamp(20px, 3vw, 40px);
+  gap: var(--space-stack);
   align-items: baseline;
 }
 .parcours__year {
@@ -975,8 +988,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    ============================================================ */
 .section--contact {
   display: grid;
-  gap: clamp(36px, 4.5vw, 60px);
-  padding-bottom: clamp(64px, 9vw, 140px);
+  gap: var(--space-block);
 }
 .section--contact > * {
   max-width: var(--max);
@@ -1026,7 +1038,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 14px;
+  gap: var(--space-stack);
 }
 
 /* CTA principal : bouton typographique propre. Pas de boîte bordée.
@@ -1121,8 +1133,8 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .closer__info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 28px;
-  padding-top: clamp(28px, 3vw, 44px);
+  gap: var(--space-stack);
+  padding-top: var(--space-block);
   border-top: 1px solid var(--rule);
   margin: 0;
 }
@@ -1521,59 +1533,28 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
    RESPONSIVE — réglages fins mobile / tablet
    ============================================================ */
 @media (max-width: 720px) {
-  /* Hero : laisser respirer + éviter overflow. */
+  /* Mobile : ajustements TYPOGRAPHIQUES uniquement, pas de spacing.
+     Les tokens --space-* (clamp) gèrent déjà l'adaptation responsive. */
   .hero__title {
     letter-spacing: -0.035em;
     max-width: 100%;
-    /* Évite l'overflow horizontal sans casser un mot en plein milieu. */
     overflow-wrap: break-word;
     hyphens: none;
   }
   .hero__line--italic { font-size: 0.55em; }
-  .hero__bottom {
-    margin-top: clamp(32px, 6vw, 64px);
-    padding-top: 24px;
-    gap: 28px;
-  }
   .hero__sub { font-size: 15px; }
-
-  /* Sections : labels plus compacts. */
-  .section__label { margin-bottom: clamp(40px, 9vw, 72px); }
-
-  /* Cases : padding interne réduit. */
-  .case { padding: clamp(40px, 8vw, 64px) 0; gap: 28px; }
-  .case__story { gap: 20px; }
   .case__story dd { font-size: 15px; }
-
-  /* Travail more / pitch body : tailles serrées. */
   .pitch__body { font-size: 16px; }
   .travail__more { font-size: 16px; }
-
-  /* Production : quote + CTAs compacts. */
   .production__body p { font-size: 17px; }
   .production__cta em { font-size: 18px; }
-
-  /* Closer : pitch + CTAs compacts (mais pas full-width). */
   .closer__pitch { font-size: 18px; }
-  .closer__ctas { gap: 10px; }
-  .closer__ctas .cta {
-    flex: 1 1 auto;
-    min-width: 0;
-    justify-content: space-between;
-    padding: 14px 18px;
-    font-size: 12px;
-  }
-
-  /* Brand pills : wrap proprement. */
   .brand { font-size: 12px; padding: 3px 10px 3px 6px; }
   .brand__mark { width: 14px; height: 14px; }
-
-  /* Footer : padding mobile. */
-  .footer { padding: 24px 18px; }
-
-  /* Rail : laisser de l'espace pour le bandeau bottom. */
-  main { padding-bottom: 0; }
-  .section--contact { padding-bottom: clamp(80px, 14vw, 140px); }
+  /* Footer : padding mobile aligné sur le système. */
+  .footer { padding: var(--space-stack) var(--gutter); }
+  /* Bandeau rail bottom : marge bas pour ne pas couper le contenu. */
+  main { padding-bottom: var(--space-block); }
 }
 
 @media (max-width: 480px) {
