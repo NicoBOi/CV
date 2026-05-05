@@ -113,25 +113,28 @@
       setPaused(true);
       if (progressBar) progressBar.style.width = '100%';
     });
-    /* Au load la vidéo ne joue pas tant qu'on n'est pas dessus. État "paused"
-       jusqu'à ce que l'IntersectionObserver déclenche le play. */
+    /* Au load : pas d'autoplay. La vidéo attend que l'utilisateur
+       clique sur le big-play overlay. État "paused" + "not-started". */
     setPaused(true);
 
-    /* Auto-play quand le frame entre dans le viewport (≥ 50% visible),
-       auto-pause quand il en sort (< 10%). Hystérésis pour éviter le
-       flicker au seuil exact. La vidéo est muted donc le navigateur
-       autorise le play() programmé. */
-    if ('IntersectionObserver' in window && frame) {
-      const reelObserver = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.intersectionRatio >= 0.5) {
-            player.play().catch(() => {});
-          } else if (e.intersectionRatio < 0.1) {
-            player.pause().catch(() => {});
-          }
-        });
-      }, { threshold: [0, 0.1, 0.5, 1] });
-      reelObserver.observe(frame);
+    /* Big play : premier lancement. Unmute + volume 50% + play. Le clic
+       est un user gesture qui débloque l'audio (browser autoplay policy).
+       Ensuite l'overlay disparaît et les controls (sous la vidéo) prennent le relais. */
+    const bigPlayBtn = document.querySelector('[data-reel-big-play]');
+    const figure = iframe.closest('.reel');
+    if (bigPlayBtn) {
+      bigPlayBtn.addEventListener('click', async () => {
+        try {
+          await player.setMuted(false);
+          await player.setVolume(userVolume || 0.5);
+          await player.play();
+          isMuted = false;
+          if (volBtn) volBtn.dataset.state = 'audible';
+          if (frame) frame.dataset.state = 'started';
+          if (figure) figure.dataset.state = 'started';
+          syncSliderFill((userVolume || 0.5) * 100);
+        } catch (_) {}
+      });
     }
     player.on('timeupdate', (e) => {
       if (progressBar) progressBar.style.width = ((e.percent || 0) * 100).toFixed(2) + '%';
