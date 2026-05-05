@@ -705,24 +705,74 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   color: var(--ink);
 }
 
-.travail__more {
-  margin-top: clamp(20px, 3vw, 40px);
-  padding-top: clamp(24px, 3vw, 40px);
+/* Bandeau logos clients passés. Pleine largeur de section,
+   logos en ligne, alignés verticalement au centre, monochrome ink. */
+.clients-band {
+  max-width: var(--max);
+  margin-inline: auto;
+  width: 100%;
+  margin-top: clamp(40px, 6vw, 96px);
+  padding-top: clamp(28px, 3.5vw, 48px);
   border-top: 1px solid var(--rule);
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: var(--fs-lede);
-  color: var(--ink);
 }
-.travail__more-label {
+.clients-band__label {
+  margin: 0 0 clamp(20px, 2.5vw, 36px);
   font-family: var(--font-mono);
-  font-style: normal;
-  font-weight: 500;
   font-size: 11px;
+  font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin-right: 12px;
+  color: var(--ink);
+  opacity: 0.55;
+}
+.clients-band__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(20px, 4vw, 56px);
+  height: clamp(48px, 6vw, 72px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.clients-band__item {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  color: var(--ink);
+  opacity: 0.78;
+  transition: opacity 240ms var(--ease);
+}
+.clients-band__item:hover { opacity: 1; }
+/* Logo SVG / IMG : hauteur fixe, ratio préservé. La calibration
+   optique de chaque logo se fait dans son viewBox interne. */
+.clients-band__item img,
+.clients-band__item svg {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+/* Placeholder texte (en attendant les vrais logos) : Archivo Black
+   uppercase, calibré en taille pour rester équilibré au sein du bandeau. */
+.clients-band__item span {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(14px, 1.3vw, 18px);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+@media (max-width: 720px) {
+  .clients-band__list {
+    height: auto;
+    justify-content: flex-start;
+    gap: 18px 28px;
+  }
+  .clients-band__item { height: 32px; }
 }
 
 /* Projects — trois pièces maîtresses racontées en prose.
@@ -976,53 +1026,84 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 18px;
+  gap: 14px;
 }
 
-/* CTA principal dominant : grand bloc mailto, label + adresse stackés */
-.cta-mailto {
-  display: inline-grid;
-  grid-template-columns: 1fr auto;
+/* CTA principal : bouton typographique propre. Pas de boîte bordée.
+   Texte Archivo Black + arrow inline, underline accent qui se trace
+   au hover, arrow qui glisse. */
+.contact-btn {
+  display: inline-flex;
   align-items: center;
-  gap: clamp(20px, 4vw, 64px);
-  padding: clamp(20px, 2.6vw, 32px) clamp(24px, 3vw, 40px);
-  background: var(--ink);
-  color: var(--bg);
-  border: 1px solid var(--ink);
-  font-family: var(--font-mono);
-  text-decoration: none;
-  width: 100%;
-  max-width: 720px;
-  transition: background-color 220ms var(--ease), color 220ms var(--ease);
-}
-.cta-mailto__label {
-  display: block;
+  gap: clamp(14px, 1.4vw, 22px);
+  padding: 6px 0 8px;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(28px, 3.2vw, 48px);
-  line-height: 0.95;
+  font-size: clamp(28px, 3.4vw, 52px);
+  line-height: 1;
   letter-spacing: -0.04em;
   text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  position: relative;
+  isolation: isolate;
 }
-.cta-mailto__address {
-  display: block;
-  margin-top: 6px;
-  font-size: clamp(13px, 1vw, 16px);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  opacity: 0.7;
+.contact-btn__text {
+  display: inline-block;
+  position: relative;
 }
-.cta-mailto .cta__arr { width: 28px; height: 28px; grid-row: 1 / span 2; transition: transform var(--dur-fast) var(--ease); }
+.contact-btn__text::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 360ms var(--ease);
+}
+.contact-btn__arrow {
+  width: clamp(22px, 2.4vw, 36px);
+  height: auto;
+  flex-shrink: 0;
+  color: var(--ink);
+  transition: transform 280ms var(--ease), color 280ms var(--ease);
+}
 @media (hover: hover) {
-  .cta-mailto:hover { background: var(--bg); color: var(--ink); }
-  .cta-mailto:hover .cta__arr { transform: translateX(6px); }
+  .contact-btn:hover .contact-btn__text::after { transform: scaleX(1); }
+  .contact-btn:hover .contact-btn__arrow {
+    transform: translateX(10px);
+    color: var(--accent);
+  }
 }
 
-/* CTA secondaire discret : simple lien souligné */
-.cta-cv {
-  display: inline-block;
+/* Email visible sous le bouton, mono small. */
+.contact-email {
+  margin: 0;
   font-family: var(--font-mono);
   font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  opacity: 0.65;
+}
+.contact-email a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 220ms var(--ease), color 220ms var(--ease);
+}
+@media (hover: hover) {
+  .contact-email a:hover { color: var(--accent); border-color: var(--accent); }
+}
+
+/* CTA secondaire discret : lien souligné CV */
+.contact-cv {
+  margin-top: clamp(8px, 1vw, 14px);
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1030,11 +1111,11 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-decoration: none;
   border-bottom: 1px solid currentColor;
   padding-bottom: 2px;
-  opacity: 0.7;
-  transition: opacity 220ms var(--ease), color 220ms var(--ease);
+  opacity: 0.6;
+  transition: opacity 220ms var(--ease), color 220ms var(--ease), border-color 220ms var(--ease);
 }
 @media (hover: hover) {
-  .cta-cv:hover { opacity: 1; color: var(--accent); border-color: var(--accent); }
+  .contact-cv:hover { opacity: 1; color: var(--accent); border-color: var(--accent); }
 }
 
 .closer__info {
