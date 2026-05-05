@@ -664,7 +664,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   grid-template-columns: 1fr;
   gap: var(--space-stack);
   max-width: 72ch;
-  margin-inline: 0 auto;
+  margin-inline: auto;
 }
 .pitch__lede {
   font-family: var(--font-body);
@@ -768,7 +768,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: grid;
   gap: var(--space-stack);
   max-width: 64ch;
-  margin-inline: 0 auto;
+  margin-inline: auto;
 }
 .travail__title {
   font-family: var(--font-display);
@@ -992,6 +992,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   gap: var(--space-stack);
   max-width: 64ch;
   margin-top: var(--s-1);
+  margin-inline: auto;
 }
 .project__body p {
   margin: 0;
@@ -1047,7 +1048,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: grid;
   gap: var(--space-stack);
   max-width: 64ch;
-  margin-inline: 0 auto;
+  margin-inline: auto;
 }
 .production__body p {
   font-family: var(--font-body);
@@ -1113,7 +1114,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: grid;
   gap: var(--space-stack);
   max-width: 64ch;
-  margin-inline: 0 auto;
+  margin-inline: auto;
 }
 .parcours__line {
   display: grid;
@@ -1163,7 +1164,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 
 .closer {
-  margin: 0;
+  margin: 0 auto;
   font-family: var(--font-quote);
   font-style: italic;
   font-weight: 400;
@@ -1186,7 +1187,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 
 .closer__pitch {
-  margin: 0;
+  margin: 0 auto;
   font-family: var(--font-body);
   font-size: clamp(20px, 1.5vw, 26px);
   font-weight: 400;
