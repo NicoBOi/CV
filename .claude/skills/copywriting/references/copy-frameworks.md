@@ -48,7 +48,7 @@ Headline formulas, page section types, and structural templates.
 > An online whiteboard for teams to ideate and brainstorm together
 
 **You don't have to {skills or resources} to {achieve desirable outcome}**
-> "With Ahrefs, you don't have to be an SEO pro to rank higher and get more traffic"
+> With Ahrefs, you don't have to be an SEO pro to rank higher and get more traffic
 
 ---
 
@@ -65,7 +65,7 @@ Headline formulas, page section types, and structural templates.
 ### Proof-Focused
 
 **[Number] [people] use [product] to [outcome]**
-> "50,000 marketers use Drip to send better emails"
+> 50,000 marketers use Drip to send better emails
 
 **{Key benefit of your product}**
 > Sound clear in online meetings
