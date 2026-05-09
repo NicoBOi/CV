@@ -31,7 +31,7 @@
   --fs-h3:        clamp(24px, 2.6vw, 44px);
   --fs-h2:        clamp(36px, 5.4vw, 80px);
   --fs-quote:     clamp(28px, 5.2vw, 76px);
-  --fs-hero:      clamp(40px, 7.8vw, 120px);
+  --fs-hero:      clamp(32px, 7.8vw, 120px);
 
   /* Spacing — échelle stricte basée sur 8px.
      Toutes les marges/paddings du site dérivent de cette échelle. */
