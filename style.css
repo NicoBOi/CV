@@ -452,6 +452,22 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-transform: uppercase;
 }
 
+/* Credits sous le pitch — credentials en mono small.
+   Sépare visuellement la prose (pitch) des chiffres (credentials). */
+.hero__credits {
+  margin: var(--space-stack) auto 0;
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 0.85vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.65;
+  text-align: center;
+  max-width: 64ch;
+}
+.hero__credits .hero__bullet { opacity: 0.6; margin: 0 0.5em; }
+
 /* CTAs sous le pitch — ferrés centre, gap mesuré. */
 .hero__ctas {
   display: flex;
