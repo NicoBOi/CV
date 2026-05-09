@@ -77,17 +77,39 @@
       <span class="hero__pet-stage" data-pet-stage aria-hidden="true"></span>
 
       <div class="hero">
+        <p class="hero__status" data-reveal>
+          <span class="hero__status-dot" aria-hidden="true"></span>
+          Disponible immédiatement <span class="hero__status-sep" aria-hidden="true">·</span> CDI ou freelance
+        </p>
+
         <h1 id="hero-title" class="hero__title" data-pet-station data-pet-action="wave" data-pet-anchor="below-right">
           <span class="hero__line" data-reveal>Chef de projet</span>
           <span class="hero__line" data-reveal>créatif</span>
-          <span class="hero__line" data-reveal>· AI creative</span>
+          <span class="hero__line hero__line--accent" data-reveal>+ AI creative</span>
         </h1>
 
-        <p class="hero__meta" data-reveal>Réalisation <span class="hero__bullet">·</span> Motion <span class="hero__bullet">·</span> 3D <span class="hero__bullet">·</span> IA</p>
+        <p class="hero__stats" data-reveal>
+          6 ans <span class="hero__bullet">·</span> 4 CDI <span class="hero__bullet">·</span> Betclic, Smart Brain, Open Zone, A Better Feeling
+        </p>
 
         <p class="hero__pitch" data-reveal>
-          Je pilote des projets créatifs de bout en bout. Réa, montage, motion, 3D. Avec les outils IA qui évitent à l'équipe de perdre des jours en déclinaisons.
+          Je pilote des projets créatifs de bout en bout. Réa, montage, motion, 3D. Sur Betclic, mes templates ont fait passer une déclinaison 6 marchés de <strong>1 jour à 3 heures</strong>.
         </p>
+
+        <div class="hero__ctas" data-reveal>
+          <a class="cta cta--primary" href="#showreel">
+            Voir le reel
+            <svg class="cta__arr cta__arr--down" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v14M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a class="cta cta--ghost" href="mailto:nicosmp.pro@gmail.com">
+            Écrivez-moi
+            <svg class="cta__arr" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
       </div>
 
       <!-- Scroll cue : indique qu'il y a du contenu en dessous, disparaît au scroll. -->
@@ -107,7 +129,8 @@
           <iframe
             class="reel__video"
             data-reel-iframe
-            src="https://player.vimeo.com/video/1175061669?muted=1&controls=0&loop=0&title=0&byline=0&portrait=0&dnt=1&playsinline=1"
+            loading="lazy"
+            src="https://player.vimeo.com/video/1175061669?muted=1&autoplay=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1&playsinline=1&background=0"
             title="Showreel Nicolas Sempere"
             allow="autoplay; fullscreen; picture-in-picture"
             allowfullscreen></iframe>
@@ -143,7 +166,7 @@
         </div>
 
         <figcaption class="reel__caption" data-reveal data-pet-station data-pet-action="clap" data-pet-anchor="below">
-          <em>Six ans de travail. Quatre univers. Une seule règle : que chaque image tienne encore dans trois ans.</em>
+          <em>Six ans, quatre univers, un seul critère : que l'image tienne encore dans trois ans.</em>
         </figcaption>
       </figure>
     </section>
@@ -192,13 +215,17 @@
 
       <header class="travail__head">
         <h2 id="travail-title" class="travail__title" data-reveal data-pet-station data-pet-action="wave" data-pet-anchor="right">
-          Trois projets. <em>Trois preuves.</em>
+          <span class="travail__title-line">Trois projets.</span>
+          <span class="travail__title-line"><em>Trois preuves.</em></span>
         </h2>
       </header>
 
       <article class="project" data-reveal>
         <h3 class="project__name">A Better Feeling</h3>
         <p class="project__context"><em>Marque de lunettes londoniennes. Freelance, 2020 à 2022.</em></p>
+        <div class="project__media" aria-hidden="true">
+          <img src="/assets/case-abf.svg" alt="" loading="lazy" decoding="async">
+        </div>
         <div class="project__body">
           <p>Une collection toutes les six à huit semaines, et derrière chaque drop, un univers visuel à porter sur les réseaux, le e-commerce et la presse, sans rupture de style entre les saisons.</p>
           <p>3D artist sur le projet&nbsp;: je modélise les lunettes, je construis les mises en scène et je rends les visuels qui servent les campagnes. Quand un produit doit exister en image avant même d'être fabriqué, c'est moi qu'on appelle.</p>
@@ -209,6 +236,9 @@
       <article class="project" data-reveal>
         <h3 class="project__name">Open Zone</h3>
         <p class="project__context"><em>Magie digitale pour événements corporate. CDI 2022.</em></p>
+        <div class="project__media" aria-hidden="true">
+          <img src="/assets/case-openzone.svg" alt="" loading="lazy" decoding="async">
+        </div>
         <div class="project__body">
           <p>Le magicien lève la main, l'écran derrière lui se déforme. Il claque des doigts, un objet apparaît. Tout en direct, sans post-production, sans triche. Un format encore très rare en France.</p>
           <p>Direction artistique de l'univers visuel et 3D, animation des assets dans After Effects, intégration dans Unity pour que tout réagisse en direct. Côté scène, tout doit tomber au quart de seconde, sinon l'effet s'effondre devant 200 personnes.</p>
@@ -219,6 +249,9 @@
       <article class="project" data-reveal>
         <h3 class="project__name">Betclic Group</h3>
         <p class="project__context"><em>Studio in-house, paris sportifs. CDI 2021 à 2022.</em></p>
+        <div class="project__media" aria-hidden="true">
+          <img src="/assets/case-betclic.svg" alt="" loading="lazy" decoding="async">
+        </div>
         <div class="project__body">
           <p>Une équipe marketing qui produit en continu pour des audiences sportives qui swipent vite, déclinées sur six marchés européens. La charte ne pardonne rien, le calendrier non plus.</p>
           <p>Motion designer 3D dans le studio, et concepteur des templates qui permettent à n'importe qui dans l'équipe de décliner sans casser la charte.</p>
@@ -235,15 +268,12 @@
            dans son SVG (viewBox + padding interne) pour avoir une
            présence visuelle équivalente. -->
       <div class="clients-band" data-reveal>
-        <p class="clients-band__label">Clients passés</p>
-        <ul class="clients-band__list" role="list" aria-label="Logos clients passés">
+        <p class="clients-band__label">Et aussi</p>
+        <ul class="clients-band__list" role="list" aria-label="Autres clients">
           <li class="clients-band__item"><span>Phillips</span></li>
           <li class="clients-band__item"><span>Smart Brain</span></li>
           <li class="clients-band__item"><span>Showroom Privé</span></li>
           <li class="clients-band__item"><span>Double Salto</span></li>
-          <li class="clients-band__item"><span>A Better Feeling</span></li>
-          <li class="clients-band__item"><span>Open Zone</span></li>
-          <li class="clients-band__item"><span>Betclic</span></li>
         </ul>
       </div>
     </section>
@@ -296,7 +326,8 @@
 
       <header class="parcours__head">
         <h2 id="parcours-title" class="parcours__title" data-reveal data-pet-station data-pet-action="idle" data-pet-anchor="right">
-          Six ans. <em>Six lignes.</em>
+          <span class="parcours__title-line">Six ans.</span>
+          <span class="parcours__title-line"><em>Six lignes.</em></span>
         </h2>
       </header>
 
@@ -322,8 +353,8 @@
           <p class="parcours__story">Retour freelance senior à plein temps. <em>Phillips</em>, <em>Double Salto</em>.</p>
         </li>
         <li class="parcours__line" data-reveal>
-          <span class="parcours__year">2026</span>
-          <p class="parcours__story">Aujourd'hui&nbsp;: disponible immédiatement, CDI ou freelance long. Mes outils IA tournent en parallèle — n8n, Claude, scripts maison.</p>
+          <span class="parcours__year">Aujourd'hui</span>
+          <p class="parcours__story">Disponible immédiatement, CDI ou freelance long. Mes outils IA tournent en parallèle — n8n, Claude, scripts maison.</p>
         </li>
       </ol>
     </section>
@@ -352,6 +383,12 @@
             <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
+        <a class="contact-btn contact-btn--ghost" href="https://calendly.com/nicosmp-pro/new-meeting" target="_blank" rel="noopener" data-cta="calendly">
+          <span class="contact-btn__text">Réserver un call · 20 min</span>
+          <svg class="contact-btn__arrow" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
         <p class="contact-email"><a href="mailto:nicosmp.pro@gmail.com">nicosmp.pro@gmail.com</a></p>
         <a class="contact-cv" href="/CVPDF/CV-Nicolas-Sempere.pdf" download data-cta="cv">
           Télécharger le CV
@@ -373,13 +410,23 @@
           <dd class="closer__info-hint">Freelance&nbsp;: 350 à 500 € / jour selon la mission.</dd>
         </div>
         <div>
+          <dt>LinkedIn</dt>
+          <!-- TODO Nicolas : remplacer le handle par ton URL réelle. -->
+          <dd><a href="https://www.linkedin.com/in/nicolas-sempere/" target="_blank" rel="noopener">/in/nicolas-sempere</a></dd>
+        </div>
+        <div>
+          <dt>Vimeo</dt>
+          <!-- TODO Nicolas : remplacer par ton URL profil Vimeo. -->
+          <dd><a href="https://vimeo.com/nicolassempere" target="_blank" rel="noopener">vimeo.com/nicolassempere</a></dd>
+        </div>
+        <div>
           <dt>GitHub</dt>
           <dd><a href="https://github.com/NicoBOi" target="_blank" rel="noopener">@NicoBOi</a></dd>
           <dd class="closer__info-hint">Mes outils IA, n8n et Claude.</dd>
         </div>
         <div>
           <dt>Bordeaux</dt>
-          <dd>France · partout en remote</dd>
+          <dd>France — remote OK partout</dd>
         </div>
       </dl>
     </section>
