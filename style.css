@@ -31,7 +31,7 @@
   --fs-h3:        clamp(24px, 2.6vw, 44px);
   --fs-h2:        clamp(36px, 5.4vw, 80px);
   --fs-quote:     clamp(28px, 5.2vw, 76px);
-  --fs-hero:      clamp(40px, 9.4vw, 144px);
+  --fs-hero:      clamp(40px, 7.8vw, 120px);
 
   /* Spacing — échelle stricte basée sur 8px.
      Toutes les marges/paddings du site dérivent de cette échelle. */
@@ -55,8 +55,9 @@
   --max:          1320px;
   /* Colonne unique de lecture pour tout le body. Toutes les blocs
      centrés héritent de cette largeur, donc ils partagent le même
-     axe et le même bord gauche. */
-  --col:          clamp(640px, 90vw, 880px);
+     axe et le même bord gauche. min(...) plutôt que clamp pour ne pas
+     forcer un minimum de 640 sur mobile (qui débordait viewport). */
+  --col:          min(880px, 90vw);
 
   /* Motion */
   --ease:         cubic-bezier(0.16, 1, 0.3, 1);
@@ -331,6 +332,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   max-width: min(95vw, 1500px);
   margin-inline: auto;
   width: 100%;
+  text-align: center;
 }
 
 .hero__title {
@@ -389,20 +391,24 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 /* Status pill au-dessus du H1 — point vivant qui dit "dispo". */
 .hero__status {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  margin: 0 auto var(--space-stack);
-  padding: 6px 14px;
+  justify-content: center;
+  gap: 6px 10px;
+  margin: 0 auto var(--s-2);
+  padding: 5px 14px;
   border: 1px solid var(--rule);
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink);
-  text-align: center;
+  max-width: 100%;
+  white-space: nowrap;
 }
-.hero .hero__status { display: flex; width: max-content; }
+.hero .hero__status { display: inline-flex; }
+.hero__status-text { white-space: nowrap; }
 .hero__status-dot {
   width: 8px; height: 8px;
   background: #5C8067;
@@ -433,13 +439,17 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 .hero__stats .hero__bullet { opacity: 0.55; margin: 0 0.5em; }
 
-/* Variante "+ AI creative" — taille un peu plus petite et accent oxblood-like
-   pour signifier que c'est une spécialité, pas un job title séparé. */
+/* Variante "+ AI creative" — taille plus petite, ton ink atténué.
+   L'accent purple était trop loud, fragmentait la cohésion visuelle du H1. */
 .hero__line--accent {
-  font-size: 0.62em;
-  color: var(--accent);
-  letter-spacing: -0.02em;
-  margin-top: 0.12em;
+  font-size: 0.5em;
+  color: var(--ink);
+  opacity: 0.55;
+  letter-spacing: 0;
+  margin-top: 0.24em;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
 /* CTAs sous le pitch — ferrés centre, gap mesuré. */
@@ -448,7 +458,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   flex-wrap: wrap;
   justify-content: center;
   gap: clamp(12px, 1.5vw, 20px);
-  margin: var(--space-block) auto 0;
+  margin: var(--space-stack) auto 0;
 }
 
 .hero__bottom {
@@ -857,6 +867,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-transform: uppercase;
   margin: 0 0 4px;
   color: var(--ink);
+  min-height: 1.76em;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 .pilier__desc {
   margin: 0;
@@ -884,7 +898,7 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   display: grid;
   gap: var(--space-block);
 }
-.section--travail .travail__head { margin-bottom: var(--space-section); }
+.section--travail .travail__head { margin-bottom: var(--space-block); }
 
 .travail__head,
 .case,
@@ -908,7 +922,6 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   letter-spacing: -0.04em;
   text-transform: uppercase;
   margin: 0 auto;
-  max-width: 14ch;
   color: var(--ink);
   text-align: center;
 }
@@ -1115,23 +1128,9 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   color: var(--ink);
   text-align: center;
 }
-/* Visuel projet — vignette 16:10 entre context et body. Pas de border-radius
-   (cohérent avec le reste du site), discrète bordure pour cadrer en mode paper. */
-.project__media {
-  width: 100%;
-  max-width: var(--col);
-  margin: var(--s-2) auto 0;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  background: var(--bg);
-  border: 1px solid var(--rule);
-}
-.project__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+/* Visuel projet — masqué tant que les vrais visuels (frames vidéo / photos)
+   ne sont pas en place. Garde la structure HTML pour swap facile. */
+.project__media { display: none; }
 .project__context {
   margin: 0;
   font-family: var(--font-mono);
@@ -1164,10 +1163,14 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 .section--production {
   position: relative;
   display: grid;
-  gap: var(--space-block);
+  gap: var(--space-stack);
   overflow: hidden;
 }
 .section--production > * { position: relative; max-width: var(--col); margin-inline: auto; width: 100%; }
+/* Le label de section a déjà son margin-bottom (--space-label).
+   Avec grid + gap, on cumulait 2 espaces. On neutralise le margin pour que
+   seul le gap décide. */
+.section--production .section__label { margin-bottom: 0; }
 
 .production__kicker {
   font-family: var(--font-mono);
@@ -1313,13 +1316,14 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
    ============================================================ */
 .section--contact {
   display: grid;
-  gap: var(--space-block);
+  gap: var(--space-stack);
 }
 .section--contact > * {
   max-width: var(--col);
   margin-inline: auto;
   width: 100%;
 }
+.section--contact .section__label { margin-bottom: 0; }
 
 .closer {
   margin: 0 auto;
@@ -1824,13 +1828,16 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   .rail {
     top: auto;
     right: auto;
-    bottom: max(12px, env(safe-area-inset-bottom));
+    bottom: max(16px, env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     flex-direction: row;
     gap: 4px;
-    padding: 6px 8px;
-    background: color-mix(in oklab, currentColor 0%, transparent);
+    padding: 6px 12px;
+    background: color-mix(in oklab, var(--bg) 92%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--rule);
   }
   .rail a {
     /* Hit area 44×40 sans changer la taille visuelle du trait. */
@@ -1888,9 +1895,10 @@ main li a:not(.cta):hover::after { transform: scaleX(1); }
   .closer__pitch { font-size: 18px; }
   .brand { font-size: 12px; padding: 3px 10px 3px 6px; }
   .brand__mark { width: 14px; height: 14px; }
-  /* Footer : padding mobile aligné sur le système. */
-  .footer { padding: var(--space-stack) var(--gutter); }
-  /* Bandeau rail bottom : marge bas pour ne pas couper le contenu. */
+  /* Footer : padding mobile + marge bas pour clearer le rail flottant. */
+  .footer { padding: var(--space-stack) var(--gutter); padding-bottom: clamp(80px, 12vh, 100px); }
+  /* Bandeau rail bottom : marge bas pour que le contenu main ne tombe
+     pas sous le bandeau de nav fixé. */
   main { padding-bottom: var(--space-block); }
 }
 
