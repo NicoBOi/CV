@@ -324,7 +324,10 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
 }
 
 .hero {
-  max-width: var(--col);
+  /* Hero plus large que --col pour que chaque ligne du H1 tienne sur sa propre ligne
+     ("CHEF DE PROJET" à 144px ≈ 1350px de large). Pitch + meta gardent leur
+     contrainte de lisibilité via leurs propres max-width plus bas. */
+  max-width: min(95vw, 1500px);
   margin-inline: auto;
   width: 100%;
 }
