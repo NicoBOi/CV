@@ -841,8 +841,13 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   grid-template-columns: 1fr;
   border-top: 1px solid var(--rule);
 }
+/* Subgrid desktop : num/title/desc/stack alignés horizontalement
+   sur les 3 piliers (titres 1 vs 2 lignes ne décalent plus le bas). */
 @media (min-width: 880px) {
-  .piliers { grid-template-columns: repeat(3, 1fr); }
+  .piliers {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto 1fr auto;
+  }
 }
 .pilier {
   padding: var(--space-block) var(--space-stack);
@@ -852,7 +857,13 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   align-content: start;
 }
 @media (min-width: 880px) {
-  .pilier { border-right: 1px solid var(--rule); border-bottom: 0; }
+  .pilier {
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+    align-content: stretch;
+    border-right: 1px solid var(--rule);
+    border-bottom: 0;
+  }
   .pilier:last-child { border-right: 0; }
   .pilier:first-child { padding-left: 0; }
   .pilier:last-child  { padding-right: 0; }
@@ -874,19 +885,19 @@ body[data-theme="paper"] .grain { mix-blend-mode: multiply; opacity: 0.06; }
   text-align: center;
 }
 .pilier__stack { text-align: center; }
+/* Block layout : pas de flex sur un H3 text-only (whitespace fragile
+   avec Archivo Black + letter-spacing négatif). word-spacing positif
+   garantit la lisibilité des espaces malgré le tracking serré. */
 .pilier__title {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: var(--fs-h3);
-  line-height: 0.88;
-  letter-spacing: -0.04em;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  word-spacing: 0.08em;
   text-transform: uppercase;
   margin: 0 0 4px;
   color: var(--ink);
-  min-height: 1.76em;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
 }
 .pilier__desc {
   margin: 0;
